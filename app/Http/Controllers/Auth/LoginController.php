@@ -97,9 +97,11 @@ class LoginController extends Controller
         return redirect()->route('login')->with('success', 'Check your mail for password reset instructions.');
     }
     public function password_reset($id){
-   $id = decrypt($id);
-   
+        $id = decrypt($id);
+
       return view('auth.passwords.confirm',['id' => $id]);
     }
-
+    public function update_password(Request $request){
+      dd($request);
+    }
 }
