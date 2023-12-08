@@ -44,7 +44,7 @@
 @endif
 <div style="margin-top: 30px;">
 <h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Member</span>
+  <span class="text-muted fw-light">Member </span>
 </h4>
 <div class="row" style="position:absolute; top:180px; right:50px ">
   <div class="col-md-12">
