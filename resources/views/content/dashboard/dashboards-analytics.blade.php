@@ -196,10 +196,10 @@ up -->
                     </div>
                     <span class="fw-semibold d-block mb-1">Unpaid Amount</span>
                     <h5 class="card-title mb-2">{{ $unpaid_amt }}</h5>
-                
+
             </div>
         </div>
-      
+
     </div>
 </div>
 <div class="col-lg-4 col-md-4 order-1">
@@ -674,7 +674,7 @@ up -->
 <div id="walletsuccess" class="modal fade" >
 	<div class="modal-dialog modal-confirm modal-sm">
 		<div class="modal-content">
-			<div class="modal-header">				
+			<div class="modal-header">
 				<center><h4 class="modal-title">Success</h4>	</center>
 			</div><hr>
 			<div class="modal-body">

@@ -40,14 +40,14 @@ Route::prefix('server-commands')->group(function () {
 // authentication
 Route::get('/welcome', function () {
      return to_route('login');
-});
+})->name('welcome');
 
 Auth::routes();
 Route::get('/forget-password',[LoginController::class,'forget_password'])->name('forget-password');
 Route::get('/check-mail',[LoginController::class,'checkmail'])->name('check-mail');
 Route::get('send-mail', [LoginController::class, 'send_mail'])->name('send-mail');
 Route::get('password-reset/{id}', [LoginController::class, 'password_reset'])->name('password-reset');
-Route::get('update-password', [LoginController::class, 'update_password'])->name('update-password');
+Route::put('update-password/{id}', [LoginController::class, 'update_password'])->name('update-password');
 Route::get('/home', $controller_path . '\HomeController@index')->name('home');
 
 Route::group(['middleware' => ['auth']], function () {

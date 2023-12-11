@@ -13,15 +13,15 @@
   <div class="col-md-12">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('roles.index')}}"><i class="bx me-1"></i> Back</a></li>
-      
+
     </ul>
   </div></div>
 <div class="row">
   <!-- Basic Layout -->
   <div class="col-xxl">
     <div class="card mb-4" style="top:30px">
-     
-      
+
+
       <div class="card-body">
         <form name="editRole" action="{{route('roles.update',$roles->id)}}" method="post" >
             @csrf
@@ -30,9 +30,9 @@
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label" for="basic-default-name">Name</label>
             <div class="col-sm-10">
-              <input type="text" name="name" class="form-control" id="basic-default-name" placeholder="Enter Roles"  value="{{$roles->name}}" {{$roles->id == 1 ? 'readonly' : ''}} />
+              <input type="text" name="name" class="form-control" id="basic-default-name" placeholder="Enter Roles"  value="{{$roles->name}}" {{$roles->id == 1 || $roles->name =='Super Admin' ? 'readonly' : ''}} />
             </div>
-       
+
             <div class="row"><div class="col-12">
             <label class="col-sm-2 col-form-label" for="basic-default-name" style="margin-left: -17px; margin-top:20px;">Permission</label>
             <div class="container">
@@ -69,6 +69,7 @@
         <h5>{{ $prefixData['heading'] }}</h5> <!-- Display the heading -->
         <div class="form-check col-12" >
             @foreach ($prefixData['permissions'] as $permissionData)
+        
             <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permissionData['name'] }}" {{in_array($permissionData['name'],$checked_role) ? 'checked' : ''}} id="flexCheckDefault{{ $loop->parent->index }}-{{ $loop->index }}">
             <label class="form-check-label" style="display:inline-flex; width:91px; margin-bottom:15px; font-weight:100;" for="flexCheckDefault{{ $loop->parent->index }}-{{ $loop->index }}">
                 {{ $permissionData['permissionName'] }}

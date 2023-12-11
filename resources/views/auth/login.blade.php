@@ -6,8 +6,23 @@
     <title>{{ __('Login') }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+<style>
+  .modal-backdrop {
+    opacity: 0.5 !important;
+  }
+  </style>
 <body style="background-color: #e8f6f9;">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  @if (session()->has('popup'))
 
+  <script>
+      $(function() {
+        $('.success-msg').text('Password updated successfully')
+        $('#walletsuccess').removeClass('fade');
+        $('#walletsuccess').modal('show');
+      });
+  </script>
+  @endif
 @if(session()->has('msg'))
     <div class="alert alert-danger">
         {{ session()->get('msg') }}
@@ -67,10 +82,26 @@
         </div>
     </div>
 </div>
-
+<div id="walletsuccess" class="modal fade"  data-backdrop="static" data-keyboard="false" >
+	<div class="modal-dialog modal-centered modal-confirm modal-sm">
+		<div class="modal-content">
+			<center><div class="modal-header btn-success">
+				<h4 class="modal-title ">Success</h4>
+			</div></center><hr>
+			<div class="modal-body">
+				<p class="text-center success-msg"></p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success btn-block" id="success-popup" data-bs-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
+
     function allowNumbersOnly(e) {
     var key = e.key;
     if (isNaN(key) || key === ' ' || key === null) {
@@ -105,6 +136,9 @@
         submitHandler: function(form) {
             form.submit();
         }
+    });
+    $('#success-popup').click(function(){
+      $('#walletsuccess').modal('hide');
     });
 </script>
 

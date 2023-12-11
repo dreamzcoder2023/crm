@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Mail\forgetpassword;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
@@ -94,7 +95,7 @@ class LoginController extends Controller
         // dd(config('mail.username'));
         Mail::to($user->email)->send(new forgetpassword($data));
 
-        return redirect()->route('login')->with('success', 'Check your mail for password reset instructions.');
+        return response()->json($data);
     }
     public function password_reset($id){
         $id = decrypt($id);
@@ -102,6 +103,11 @@ class LoginController extends Controller
       return view('auth.passwords.confirm',['id' => $id]);
     }
     public function update_password(Request $request){
-      dd($request);
+      //dd($request);
+      $user = User::find($request->id);
+      $user['password'] = $request->password;
+      $user['confirm_password'] = Hash::make($request->confirm_password);
+      $user->update();
+      return to_route('login')->with('popup','Password updated successfully');
     }
 }
