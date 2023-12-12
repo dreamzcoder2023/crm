@@ -2,7 +2,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<style> 
+
+<style>
 #expenses_listing_table th,
 #expenses_listing_table td {
   width: 10%; /* Adjust the width as needed */
@@ -11,6 +12,7 @@
   text-overflow: ellipsis; /* Add ellipsis for long text */
   overflow: hidden; /* Hide overflowing content */
 }
+
 </style>
 @php
 /* Display elements */
@@ -127,7 +129,7 @@ $container = ($container ?? 'container-xxl');
 <script>
   $(document).ready(function(){
     $('.error').addClass('hide');
-   
+
     // $('#transfer-popup').modal();
     // $('#transfer-popup').modal({backdrop:'static', keyboard:false});
   });
@@ -136,16 +138,16 @@ $container = ($container ?? 'container-xxl');
   //    window.location.reload();
   // });
     $('#wallet-click').click(function(){
-      var url = '{{ route("wallet-create") }}';       
+      var url = '{{ route("wallet-create") }}';
       window.location.href=url;
     });
- 
+
   $('#transfer-click').click(function(){
-  
-    var url = '{{ route("transfer-create") }}';       
+
+    var url = '{{ route("transfer-create") }}';
       window.location.href=url;
     });
-   
+
 </script>
- 
+
   @endsection

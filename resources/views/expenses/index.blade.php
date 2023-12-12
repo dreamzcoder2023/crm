@@ -1,11 +1,9 @@
 @extends('layouts/contentNavbarLayout')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+
+
 
 <style>
 #expenses_listing_table th,
@@ -16,6 +14,10 @@
   text-overflow: ellipsis; /* Add ellipsis for long text */
   overflow: hidden; /* Hide overflowing content */
 }
+.bootstrap-select {
+  max-width: 150px;
+}
+
 
 /* Customize the styling further if needed */
 
@@ -46,6 +48,7 @@ table {
 td, th {
   padding: 5px; /* Reduce cell padding */
 }
+
 
   </style>
 @section('title','Expenses')
@@ -79,7 +82,7 @@ td, th {
         <div class="container justify-content-start">
             <div class="row aa">
                 <div class="col-4 col-lg-2">
-                    <select class="form-select" name="category_id" id="category_id">
+                    <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
                         <option value="">Select category</option>
                         @foreach($category as $category)
                         <option value="{{$category->id}}"{{$category->id == $category_filter ? 'selected' : ''}}>{{$category->name}}</option>
@@ -87,7 +90,7 @@ td, th {
                     </select>
                 </div>
                 <div class="col-2">
-                    <select class="form-select" name="project_id" id="project_id">
+                    <select class="form-group selectpicker" name="project_id" id="project_id">
                         <option value="">Select Project</option>
                         @foreach($project as $project)
                         <option value="{{$project->id}}"{{$project->id == $project_filter ? 'selected' : ''}}>{{$project->name}}</option>
@@ -96,7 +99,7 @@ td, th {
                 </div>
                 @role('Admin')
                 <div class="col-2">
-                    <select class="form-select" name="user_id" id="user_id">
+                    <select class="form-group selectpicker" name="user_id" id="user_id">
                         <option value="">Select Member</option>
                         @foreach($user as $user)
                         <option value="{{$user->id}}"{{$user->id == $user_filter ? 'selected' : ''}}>{{$user->first_name}} {{$user->last_name}} - {{$user->name}}</option>
@@ -190,7 +193,7 @@ td, th {
         <a data-toggle="modal" href="javascript:void(0)" data-user="{{$expense->user_id}}" data-id="{{$expense->id}}" class="deleteExpense"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
         @endcan
       </td>
- 
+
        </tr>
        @endforeach
 
@@ -268,13 +271,17 @@ td, th {
 
 <!-- modal popup for delete role ended -->
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+
 <script>
+$(document).ready(function(){
+      $('.selectpicker').selectpicker();
+  });
   $(document).ready(function() {
 var data =  new DataTable('#expenses_listing_table', {
   "lengthMenu": [15, 50, 100],
@@ -433,7 +440,7 @@ var url = '{{ route("expenses-delete") }}';
      var   from_date=$('#from_date').val();
        var end_date = $('#to_date').val();
     var url = '{{ route("expenses-export") }}';
-      window.location.href=url+'?from_date='+from_date+'&to_date='+to_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
+      window.location.href=url+'?from_date='+from_date+'&to_date='+end_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
   });
   $('#expense-pdf').click(function(){
     console.log('test1');
@@ -444,7 +451,7 @@ var url = '{{ route("expenses-delete") }}';
      var   from_date=$('#from_date').val();
        var end_date = $('#to_date').val();
     var url = '{{ route("expenses-pdf") }}';
-      window.location.href=url+'?from_date='+from_date+'&to_date='+to_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
+      window.location.href=url+'?from_date='+from_date+'&to_date='+end_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
   });
 
     </script>

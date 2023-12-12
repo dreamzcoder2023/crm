@@ -444,7 +444,7 @@ var url = '{{ route("unpaid-delete") }}';
      var   from_date=$('#from_date').val();
        var end_date = $('#to_date').val();
     var url = '{{ route("unpaidexpenses-export") }}';
-      window.location.href=url+'?from_date='+from_date+'&to_date='+to_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
+      window.location.href=url+'?from_date='+from_date+'&to_date='+end_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
   });
   $('#unpaidexpense-pdf').click(function(){
     console.log('test1');
@@ -455,7 +455,7 @@ var url = '{{ route("unpaid-delete") }}';
      var   from_date=$('#from_date').val();
        var end_date = $('#to_date').val();
     var url = '{{ route("unpaidexpenses-pdf") }}';
-      window.location.href=url+'?from_date='+from_date+'&to_date='+to_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
+      window.location.href=url+'?from_date='+from_date+'&to_date='+end_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
   });
     </script>
 @endsection

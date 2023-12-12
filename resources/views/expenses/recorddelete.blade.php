@@ -420,7 +420,7 @@ var url = '{{ route("expenses-delete") }}';
      var   from_date=$('#from_date').val();
        var end_date = $('#to_date').val();
     var url = '{{ route("deleteexpenses-export") }}';
-      window.location.href=url+'?from_date='+from_date+'&to_date='+to_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
+      window.location.href=url+'?from_date='+from_date+'&to_date='+end_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
   });
   $('#expense-pdf').click(function(){
     console.log('test1');
@@ -431,7 +431,7 @@ var url = '{{ route("expenses-delete") }}';
      var   from_date=$('#from_date').val();
        var end_date = $('#to_date').val();
     var url = '{{ route("deleteexpenses-pdf") }}';
-      window.location.href=url+'?from_date='+from_date+'&to_date='+to_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
+      window.location.href=url+'?from_date='+from_date+'&to_date='+end_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
   });
     </script>
 @endsection

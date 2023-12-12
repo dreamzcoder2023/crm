@@ -19,7 +19,7 @@
   <div class="col-md-12">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('user-index')}}"><i class="bx me-1"></i> Back </a></li>
-      
+
     </ul>
   </div></div>
 <!-- Tabs navs -->
@@ -37,9 +37,9 @@
   <div class="col-xl">
     <div class="card mb-4" style="margin-top:30px;">
       <div class="card-header d-flex justify-content-between align-items-center">
-       
+
       </div>
-     
+
       <div class="card-body">
         <div class="row">
             <div class="col-6"><div class="mb-3">
@@ -58,32 +58,32 @@
           </div>
           <div class="mb-3">
             <label class="form-label" for="basic-default-email">Email</label>
-           
+
               <input  type="email" id="email" name="email" class="form-control" placeholder="Enter Email"  value=""/>
               <label id="email-error" class="error" for="basic-default-email">Email is required</label>
               <label id="email-invalid-error" class="error" for="basic-default-email">Email is invalid</label>
-            
+
           </div>
           <div class="mb-3">
             <label class="form-label" for="basic-default-email">Password</label>
-            
+
               <input  type="password" id="password" name="password" class="form-control" placeholder="Enter Password" value="" />
               <label id="password-error" class="error" for="basic-default-password">Password is required</label>
               <label id="password-invalid-error" class="error" for="basic-default-password">Password must be at least 8 characters long</label>
-            
+
           </div>
           <div class="mb-3">
             <label class="form-label" for="basic-default-email">Confirm Password</label>
-            
+
               <input  type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Enter Confirm Password" aria-label="john.doe" aria-describedby="basic-default-email2" />
               <label id="confirm-error" class="error" for="basic-default-confirm_password">Confirm Password is required</label>
               <label id="confirm-invalid-error" class="error" for="basic-default-password">Confirm Password must be at least 8 characters long</label>
               <label id="confirm-match-error" class="error" for="basic-default-password">Confirm password must match to Password</label>
-            
+
           </div></div>
             <div class="col-6"><div class="mb-3">
             <label class="form-label" for="basic-default-phone">Phone Number</label>
-            <input type="text" maxlength="10" name="phone" id="phone" class="form-control phone-mask" 
+            <input type="text" maxlength="10" name="phone" id="phone" class="form-control phone-mask"
             onkeypress="allowNumbersOnly(event)" placeholder="Enter Phone number" oninput="phoneunique(this.value)" />
     <label id="phone-error" class="error" for="basic-default-phone">Phone number is required</label>
     <input type="hidden" class="phone-unique-error" value="">
@@ -102,7 +102,7 @@
           <div class="mb-3">
           <label class="form-label" for="basic-default-phone">Profile Photo</label>
           <input type="file" name="image" id="image" class="form-control" placeholder="image" accept="image/*">
-            <label id="job_title-error" class="error" for="basic-default-job_title">Profile photo is required</label> 
+            <label id="job_title-error" class="error" for="basic-default-job_title">Profile photo is required</label>
           </div>
           <div class="mb-3">
             <label class="form-label" for="basic-default-phone">Roles</label>
@@ -120,9 +120,9 @@
         </div>
 
         </div>
-        
-          
-          
+
+
+
       </div>
     </div>
   </div>
@@ -135,7 +135,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $('.error').addClass('hide');
-    });      
+    });
       function allowNumbersOnly(e) {
     var code = (e.which) ? e.which : e.keyCode;
     if (code > 31 && (code < 48 || code > 57)) {
@@ -205,7 +205,7 @@
     }
     else{
       $('#password-error').addClass('hide');
-      $('#password-invalid-error').addClass('hide'); 
+      $('#password-invalid-error').addClass('hide');
       passwordname = true;
     }
   }
@@ -362,7 +362,7 @@
 //         console.log('mobile',mobileVal);
 //     $('#basic-default-role-error').show();
 //     }
-//     else{
+//     else{ 
 //     form.submit();
 //     }
 //   }
