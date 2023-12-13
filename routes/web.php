@@ -16,6 +16,8 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LabourController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -166,6 +168,11 @@ Route::get('/paymentexpense-pdf',[ReportsController::class,'payment_expense_pdf'
 
 // expenses ended
 // reports ended
+//labour details started
+Route::get('/labour', [LabourController::class, 'index'])->name('labour-index');
+Route::get('/labour/create',[LabourController::class, 'create'])->name('labour-create');
+Route::post('/labour/store', [LabourController::class, 'store'])->name('labour.store');
+//labour details ended
 });
 
 

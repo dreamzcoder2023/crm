@@ -24,7 +24,7 @@
     </li> -->
     <!--- header -->
 
-   
+
     {{-- main menu --}}
     <!--- dashboard -->
     <li class="menu-item {{(\Request::route()->getName() == 'dashboard') ? 'active open' : '' }}">
@@ -54,6 +54,16 @@
     </li>
     @endcan
     <!--- members -->
+    <!--- labour -->
+    @can('labour-list')
+    <li class="menu-item {{(\Request::route()->getName() == 'labour-index') ? 'active open' : '' }}">
+      <a href="{{route('labour-index')}}" class="menu-link" >
+        <img src="{{asset('assets/img/icons/labour-icon.jpg')}}" alt="slack" class="me-3" height="25" >
+        <div>Labour</div>
+      </a>
+    </li>
+    @endcan
+    <!--- labour -->
      <!--- category -->
      @can('category-list')
      <li class="menu-item {{(\Request::route()->getName() == 'category-index') ? 'active open' : '' }}">
@@ -121,7 +131,7 @@
         <div>Expenses</div>
       </a>
           <ul class="menu-sub">
-          
+
 @can('expenses-history')
         <li class="menu-item {{(\Request::route()->getName() == 'expenses-history') ? 'active open' : '' }}">
         <a href="{{route('expenses-history')}}" class="menu-link" ><img src="{{asset('assets/img/icons/capital.png')}}" alt="slack" class="me-3" height="20" >
@@ -141,8 +151,8 @@
       </ul>
 
     </li>
-   
-  
+
+
      @endcanany
     <!--- expenses -->
            <!--- reports -->
@@ -167,7 +177,7 @@
         @endcan
       </ul>
     </li>
- 
+
      @endcanany
     <!--- expenses -->
   </ul>

@@ -18,7 +18,7 @@ return new class extends Migration
                 $table->string('job_title');
                 $table->string('phone');
                 $table->integer('gender');
-                $table->integer('salary')->nullable();
+                $table->float('salary');
                 $table->string('government_image')->nullable();
                 $table->integer('advance_amt')->default(0);
                 $table->integer('salary_type')->default(0);

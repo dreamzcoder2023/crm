@@ -32,10 +32,16 @@
 
 @section('content')
 
-@if(session()->has('message'))
-    <div class="alert alert-success">
-        {{ session()->get('message') }}
-    </div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+@if (session()->has('message'))
+
+<script>
+    $(function() {
+      $('.success-msg').text("{{ session('message')}}");
+      $('#walletsuccess').removeClass('fade');
+      $('#walletsuccess').modal('show');
+    });
+</script>
 @endif
 @if(session()->has('msg'))
     <div class="alert alert-danger">
@@ -44,13 +50,13 @@
 @endif
 <div style="margin-top: 30px;">
 <h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Member </span>
+  <span class="text-muted fw-light">Labour </span>
 </h4>
 <div class="row" style="position:absolute; top:180px; right:50px ">
   <div class="col-md-12">
-    @can('user-create')
+    @can('labour-create')
     <ul class="nav nav-pills flex-column flex-md-row mb-3">
-      <li class="nav-item"><a class="nav-link active" href="{{route('user-create')}}"><i class="bx bx-user me-1"></i> Add Member</a></li>
+      <li class="nav-item"><a class="nav-link active" href="{{route('labour-create')}}"><i class="bx bx-user me-1"></i> Add Labour</a></li>
 
     </ul>
     @endcan
@@ -64,16 +70,11 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Profile</th>
           <th>Name</th>
           <th>Job Title</th>
-          <th>Email</th>
           <th>Phone</th>
-          @role('Admin')
-          <th>Wallet</th>
-          <th>Unpaid Amount</th>
-          @endrole
-          @canany(['user-view','user-edit','user-delete'])
+          <th>Advance Amount</th>
+          @canany(['labour-view','labour-edit','labour-delete'])
           <th>Action</th>
           @endcanany
         </tr>
@@ -83,26 +84,21 @@
         @foreach($users as $user)
        <tr>
         <td>{{$loop->index+1}}</td>
-        <td>@if($user->image != '' || $user->image != null) <img class="rounded float-left" src="public/images/{{ $user->image }}" width="30px"> @else <img class="rounded float-left" src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" width="30px">  @endif </td>
-        <td>{{$user->first_name}} {{$user->last_name}}</td>
+        <td>{{$user->name}}</td>
         <td>{{$user->job_title}}</td>
-        <td>{{$user->email}}</td>
         <td>{{$user->phone}}</td>
-        @role('Admin')
-        <td>{{$user->wallet}}</td>
-        <td>{{ App\Models\Expenses::where('user_id',$user->id)?->first()?->unpaid_amt }}</td>
-        @endrole
-        @canany(['user-view','user-edit','user-delete'])
+        <td>{{$user->advance_amt}}</td>
+        @canany(['labour-view','labour-edit','labour-delete'])
         <td>
-        @can(['user-view'])
-        <a  href="{{route('user-show',$user->id)}}" data-id="{{$user->id}}" class=""><i class="bi bi-eye" style="font-size:20px"></i></a>
+        @can(['labour-view'])
+        <a  href="" data-id="{{$user->id}}" class=""><i class="bi bi-eye" style="font-size:24px"></i></a>
         @endcan
-          @can(['user-edit'])
-        <a class="" @if($role->model_id == Auth::user()->id) href="{{ route('user-edit',$user->id) }}" @else disabled @endif><i class="fa fa-edit" style="font-size:20px"></i></a>
+          @can(['labour-edit'])
+        <a class=""  href="" ><i class="fa fa-edit" style="font-size:24px"></i></a>
         @endcan
-        @can('user-delete')
+        @can('labour-delete')
         <input type="hidden" value="{{$user->id}}" id="user_id">
-        <a data-toggle="modal" href="javascript:void(0)" data-id="{{$user->id}}" class="deleteUser"><i class="fa fa-trash-o" style="font-size:20px; color:red"></i> </a><br/>
+        <a data-toggle="modal" href="javascript:void(0)" data-id="{{$user->id}}" class="deleteUser"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
         @endcan
       </td>
       @endcanany
@@ -140,6 +136,21 @@
         </div>
       </div>
 
+    </div>
+  </div>
+  <div id="walletsuccess" class="modal fade" >
+    <div class="modal-dialog modal-confirm modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <center><h4 class="modal-title">Success</h4>	</center>
+        </div><hr>
+        <div class="modal-body">
+          <p class="text-center success-msg"></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success btn-block" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
     </div>
   </div>
 
