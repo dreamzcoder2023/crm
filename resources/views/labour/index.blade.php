@@ -73,6 +73,7 @@
           <th>Name</th>
           <th>Job Title</th>
           <th>Phone</th>
+          <th>Salary</th>
           <th>Advance Amount</th>
           @canany(['labour-view','labour-edit','labour-delete'])
           <th>Action</th>
@@ -87,6 +88,7 @@
         <td>{{$user->name}}</td>
         <td>{{$user->job_title}}</td>
         <td>{{$user->phone}}</td>
+        <td>{{ $user->salary }}</td>
         <td>{{$user->advance_amt}}</td>
         @canany(['labour-view','labour-edit','labour-delete'])
         <td>
