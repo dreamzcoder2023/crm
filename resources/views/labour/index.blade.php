@@ -28,7 +28,7 @@
 
 }
   </style>
-@section('title', 'Member')
+@section('title', 'Labour')
 
 @section('content')
 
@@ -75,7 +75,7 @@
           <th>Phone</th>
           <th>Salary</th>
           <th>Advance Amount</th>
-          @canany(['labour-view','labour-edit','labour-delete'])
+          @canany(['labour-edit','labour-delete'])
           <th>Action</th>
           @endcanany
         </tr>
@@ -88,15 +88,21 @@
         <td>{{$user->name}}</td>
         <td>{{$user->job_title}}</td>
         <td>{{$user->phone}}</td>
-        <td>{{ $user->salary }}</td>
+        <td>{{ $user->salary }}
+          <i id="click_salary" data-user="{{ $user->id }}" style="font-size:15px; color:red;cursor: pointer;" class="fa">
+            &#xf156;</i>
+
+
+
+        </td>
         <td>{{$user->advance_amt}}</td>
-        @canany(['labour-view','labour-edit','labour-delete'])
+        @canany(['labour-edit','labour-delete'])
         <td>
-        @can(['labour-view'])
+        {{-- @can(['labour-view'])
         <a  href="" data-id="{{$user->id}}" class=""><i class="bi bi-eye" style="font-size:24px"></i></a>
-        @endcan
+        @endcan --}}
           @can(['labour-edit'])
-        <a class=""  href="" ><i class="fa fa-edit" style="font-size:24px"></i></a>
+        <a class=""  href="{{ route('labour-edit',$user->id) }}" ><i class="fa fa-edit" style="font-size:24px"></i></a>
         @endcan
         @can('labour-delete')
         <input type="hidden" value="{{$user->id}}" id="user_id">
@@ -121,17 +127,17 @@
 
 
   <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
+  <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-sm">
 
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Confirmation</h4>
-        </div>
+        </div><hr>
         <div class="modal-body">
           <p style="text-align: center;">Are you sure want to delete this?</p>
-        </div>
+        </div><hr>
         <div class="modal-footer">
         <button type="button" class="btn btn-primary yes-delete" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-danger no-delete" data-dismiss="modal">No</button>
@@ -140,7 +146,7 @@
 
     </div>
   </div>
-  <div id="walletsuccess" class="modal fade" >
+  <div id="walletsuccess" class="modal fade"  data-backdrop="static" data-keyboard="false" >
     <div class="modal-dialog modal-confirm modal-sm">
       <div class="modal-content">
         <div class="modal-header">
@@ -158,6 +164,29 @@
 
 
 <!-- modal popup for delete role ended -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Salary Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+     <div class="loadingsalary"></div>
+      </div>
+      {{-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> --}}
+    </div>
+  </div>
+</div>
+<!-- modal popup for salary details -->
+
+
+<!-- modal popup for salary details -->
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
@@ -179,21 +208,28 @@ $("document").ready(function(){
     $("#user_listing_table").on("click", ".deleteUser", function(){
 
   userid = $(this).attr('data-id');
-  $("#myModal").removeClass('fade');
+
   $("#myModal").modal('show');
 });
 $('.no-delete').click(function(){
-  $("#myModal").addClass('fade');
+
   $("#myModal").modal('hide');
 });
 $('.yes-delete').click(function(){
 console.log('userid',userid);
 $("#myModal").modal('hide');
-var url = '{{ route("user-delete",":id",) }}';
+var url = '{{ route("labour-delete",":id",) }}';
       url1 = url.replace(':id', userid);
       window.location.href=url1;
 });
+$("#user_listing_table").on("click", "#click_salary", function(){
+  var user = $(this).attr('data-user');
+  console.log($(this).attr('data-user'));
+  $.ajax
+  $('#exampleModal').modal('show');
 });
+});
+
 </script>
 
 @endsection

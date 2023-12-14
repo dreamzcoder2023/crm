@@ -48,7 +48,7 @@
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label class="form-label" for="basic-default-fullname">Name</label>
-                                            <input type="text" id="first_name" name="first_name" class="form-control"
+                                            <input type="text" id="first_name" name="name" class="form-control"
                                                 id="basic-default-fullname" onkeydown="return /[a-z, ]/i.test(event.key)"
                                                 onblur="if (this.value == '') {this.value = '';}"
                                                 onfocus="if (this.value == '') {this.value = '';}"
@@ -90,7 +90,7 @@
                                     <div class="col-6">
 
                                         <div class="mb-3">
-                                            
+
                                             <label class="form-label" for="basic-default-phone">Job Title</label>
                                             <input type="text" value="" name="job_title" id="job_title"
                                                 class="form-control phone-mask" placeholder="Enter Job Title" />

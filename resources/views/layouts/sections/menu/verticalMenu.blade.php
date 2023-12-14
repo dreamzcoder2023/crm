@@ -54,6 +54,16 @@
     </li>
     @endcan
     <!--- members -->
+       <!--- labour role -->
+       @can('labour role-list')
+       <li class="menu-item {{(\Request::route()->getName() == 'labour-index') ? 'active open' : '' }}">
+         <a href="{{route('labour-index')}}" class="menu-link" >
+          <img src="{{asset('assets/img/icons/labour-job.png')}}" alt="slack" class="me-3" height="25" >
+           <div>Labour Role</div>
+         </a>
+       </li>
+       @endcan
+       <!--- labour -->
     <!--- labour -->
     @can('labour-list')
     <li class="menu-item {{(\Request::route()->getName() == 'labour-index') ? 'active open' : '' }}">

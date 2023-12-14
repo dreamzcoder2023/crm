@@ -172,6 +172,9 @@ Route::get('/paymentexpense-pdf',[ReportsController::class,'payment_expense_pdf'
 Route::get('/labour', [LabourController::class, 'index'])->name('labour-index');
 Route::get('/labour/create',[LabourController::class, 'create'])->name('labour-create');
 Route::post('/labour/store', [LabourController::class, 'store'])->name('labour.store');
+Route::get('/labour/edit/{id}',[LabourController::class, 'edit'])->name('labour-edit');
+Route::put('/labour/update/{id}', [LabourController::class, 'update'])->name('labour.update');
+Route::get('/labour/delete/{id}',[LabourController::class,'labourdelete'])->name('labour-delete');
 //labour details ended
 });
 
