@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-      Schema::create('labour_role', function (Blueprint $table) {
+      Schema::create('vendor_details', function (Blueprint $table) {
         $table->id();
         $table->string('name');
-        $table->string('salary')->nullable();
-        $table->integer('salary_type')->default(0);
+        $table->string('phone');
+        $table->string('address');
+        $table->string('advance_amt')->default(0);
         $table->timestamps();
         $table->softDeletes();
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+      Schema::dropIfExists('vendor_details');
     }
 };

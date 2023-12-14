@@ -74,6 +74,7 @@
           <th>Job Title</th>
           <th>Phone</th>
           <th>Salary</th>
+          <th>Labour Role</th>
           <th>Advance Amount</th>
           @canany(['labour-edit','labour-delete'])
           <th>Action</th>
@@ -95,6 +96,7 @@
 
 
         </td>
+        <td>{{App\Models\LabourRole::where('id',$user->labour_role)->pluck('name')->first()}}
         <td>{{$user->advance_amt}}</td>
         @canany(['labour-edit','labour-delete'])
         <td>

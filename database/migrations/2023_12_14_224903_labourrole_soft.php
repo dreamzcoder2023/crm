@@ -13,15 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-      Schema::create('labour_role', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('salary')->nullable();
-        $table->integer('salary_type')->default(0);
-        $table->timestamps();
-        $table->softDeletes();
+      Schema::table('labour_role', function(Blueprint $table)
+      {
+          $table->softDeletes();
 
-});
+      });
     }
 
     /**
@@ -31,6 +27,9 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+      Schema::table('labour_role', function(Blueprint $table)
+      {
+          $table->dropSoftDeletes();
+      });
     }
 };

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Labour;
+use App\Models\LabourRole;
 use App\Models\Salary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,8 +25,8 @@ class LabourController extends Controller
    */
   public function create()
   {
-
-      return view('labour.create');
+    $role = LabourRole::get();
+      return view('labour.create',['role' => $role]);
   }
 
   /**
@@ -72,7 +73,9 @@ class LabourController extends Controller
   {
       $id = $request->id;
      $user = Labour::where('id',$id)->first();
-      return view('labour.edit',["user"=>$user]);
+     $role = LabourRole::get();
+
+      return view('labour.edit',["user"=>$user,'role' => $role]);
   }
 
   /**
@@ -107,29 +110,12 @@ class LabourController extends Controller
       return redirect()->route('labour-index')->with('message','Labour details created successfully');
 
   }
-  public function jobupdate(Request $request, string $id)
+  public function salary_get(Request $request)
   {
-
-      // $input =$request->all();
-      // //print_r($input);exit;
-      //  $user = User::find($id);
-      // // print_r($request->file('government_image'));
-      //  if ($image =$request->file('government_image')) {
-
-      //     $destinationPath = 'public/images/';
-      //         $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-      //         $image->move($destinationPath, $profileImage);
-
-
-      //     $input['government_image'] = $profileImage;
-
-      // }
-
-      // $user->update($input);
-
-      // return redirect()->route('user-index')
-      //                 ->with('message','User updated successfully');
-
+      $id = $request->id;
+     $user = LabourRole::where('id',$id)->first();
+     
+      return response()->json($user);
   }
 
   /**

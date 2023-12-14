@@ -17,6 +17,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LabourController;
+use App\Http\Controllers\LabourRoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -175,14 +176,15 @@ Route::post('/labour/store', [LabourController::class, 'store'])->name('labour.s
 Route::get('/labour/edit/{id}',[LabourController::class, 'edit'])->name('labour-edit');
 Route::put('/labour/update/{id}', [LabourController::class, 'update'])->name('labour.update');
 Route::get('/labour/delete/{id}',[LabourController::class,'labourdelete'])->name('labour-delete');
+Route::get('/labour/salary',[LabourController::class,'salary_get'])->name('salary-get');
 //labour details ended
 //labour role started
-Route::get('/labour', [LabourController::class, 'index'])->name('labour-index');
-Route::get('/labour/create',[LabourController::class, 'create'])->name('labour-create');
-Route::post('/labour/store', [LabourController::class, 'store'])->name('labour.store');
-Route::get('/labour/edit/{id}',[LabourController::class, 'edit'])->name('labour-edit');
-Route::put('/labour/update/{id}', [LabourController::class, 'update'])->name('labour.update');
-Route::get('/labour/delete/{id}',[LabourController::class,'labourdelete'])->name('labour-delete');
+Route::get('/labour-role', [LabourRoleController::class, 'index'])->name('labourrole-index');
+Route::get('/labour-role/create',[LabourRoleController::class, 'create'])->name('labourrole-create');
+Route::post('/labour-role/store', [LabourRoleController::class, 'store'])->name('labourrole.store');
+Route::get('/labour-role/edit/{id}',[LabourRoleController::class, 'edit'])->name('labourrole-edit');
+Route::put('/labour-role/update/{id}', [LabourRoleController::class, 'update'])->name('labourrole.update');
+Route::get('/labour-role/delete/{id}',[LabourRoleController::class,'labourdelete'])->name('labourrole-delete');
 //labour role ended
 });
 

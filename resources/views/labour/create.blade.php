@@ -98,11 +98,21 @@
                                                 for="basic-default-job_title">Job title is required</label>
                                         </div>
                                         <div class="mb-3">
+                                          <label class="form-label" for="basic-default-phone">Labour Role</label>
+                                          <select class="form-control" name="labour_role" onchange="salary_details()" id="roles">
+                                          <option value="">Select roles </option>
+                                          @foreach($role as $role)
+                                          <option value="{{$role->id}}">{{$role->name}}</option>
+                                          @endforeach
+                                          </select>
+                                          <label id="roles-error" class="error" for="basic-default-role">Role is required</label>
+                                        </div>
+                                        <div class="mb-3">
                                           <label class="form-label" for="basic-default-phone">Salary</label>
-                                            <input type="text" onkeypress="allowNumbersOnly(event)" value="" name="salary" id="salary" class="form-control phone-mask" placeholder="Enter salary" />
+                                            <input type="text" onkeypress="allowNumbersOnly(event)" value="" name="salary" id="salary" class="form-control phone-mask" placeholder="Enter salary" readonly />
                                             <label id="salary-error" class="error" for="basic-default-job_title">Salary  is required</label>
                                           </div>
-                                          <div class="mb-3">
+                                          {{-- <div class="mb-3">
                                             <label class="form-label" for="basic-default-message">Salary Type</label><br>
                                             <input type="radio" class="salary_type" value="1" id="daily"
                                                 name="salary_type">
@@ -115,7 +125,7 @@
                                             <label class="form-label" for="monthly">Monthly</label><br />
                                             <label id="salary-type-error" class="error" for="basic-default-gender">Salary type is
                                                 required</label>
-                                        </div>
+                                        </div> --}}
 
 
                                         <center> <button type="submit" class="btn btn-primary"
@@ -158,18 +168,18 @@
             var gender = $('.gender:checked').length;
             var job_title = $('#job_title').val();
             var salary = $('#salary').val();
-            var salary_type = $('.salary_type:checked').length;
+            var roles = $('#roles').find(":selected").val();
             var fname = false,
                 phonename = false,
                 jobname = false,
                 gendername = false,
-                salaryname = false,salarytypename = false;
+                salaryname = false,rolename = false;
             console.log('first', first_name);
             console.log('phone', phone);
             console.log('job_title', job_title);
             console.log('gender', gender);
             console.log('salary', salary);
-            console.log('salarytype', salary_type);
+            console.log('rolename', rolename);
 
             if (first_name == "") {
                 $('#first-error').removeClass('hide');
@@ -196,12 +206,12 @@
                 $('#gender-error').addClass('hide');
                 gendername = true;
             }
-            if (salary_type < 1) {
-                $('#salary-type-error').removeClass('hide');
+            if (roles < 1) {
+                $('#roles-error').removeClass('hide');
             } else {
 
-                $('#salary-type-error').addClass('hide');
-                salarytypename = true;
+                $('#roles-error').addClass('hide');
+                rolename = true;
             }
             if (salary == '') {
                 $('#salary-error').removeClass('hide');
@@ -209,11 +219,25 @@
                 $('#salary-error').addClass('hide');
                 salaryname = true;
             }
-            if (fname == true && phonename == true && jobname == true && gendername == true && salarytypename == true && salaryname == true ) {
+            if (fname == true && phonename == true && jobname == true && gendername == true && rolename == true && salaryname == true ) {
                 document.getElementById("createMember").submit();
             }
         });
+function salary_details(){
+  var id = $('#roles :selected').val();
+  $.ajax({
+    type:"get",
+    url:"{{route('salary-get')}}",
+    data:{id:id},
+    dataType:'json',
+    success:function(html){
+      console.log(html);
+      $('#salary').val(html.salary);
+    }
 
+
+  });
+}
 
     </script>
 @endsection
