@@ -113,7 +113,7 @@ $navbarDetached = ($navbarDetached ?? '');
           <!-- <li class="nav-item lh-1 me-3">
             <a class="github-button" href="https://github.com/themeselection/sneat-html-laravel-admin-template-free" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star themeselection/sneat-html-laravel-admin-template-free on GitHub">Star</a>
           </li> -->
-          @canany(['expenses-create','labour-expenses-create',])
+          @canany(['expenses-create','labour expenses-create','vendor expenses-create'])
           <li class="nav-item lh-1 me-3 dropdown">
        <img src="{{asset('assets/img/icons/expense.png')}}" class="dropbtn" alt="slack" class="me-3" height="70" width="70" >
           <div class="dropdown-content">
@@ -223,9 +223,9 @@ $navbarDetached = ($navbarDetached ?? '');
   <!-- / Navbar -->
 <script>
 
-// var preloader = document.querySelector(".preloader");
-// window.onload=function(){
-//   preloader.style.display="none";
-// };
+var preloader = document.querySelector(".preloader");
+window.onload=function(){
+  preloader.style.display="none";
+};
 
 </script>

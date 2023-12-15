@@ -204,6 +204,7 @@ Route::post('/labour-expenses/store', [LabourExpensesController::class, 'store']
 Route::get('/labour-expenses/edit/{id}',[LabourExpensesController::class, 'edit'])->name('labour-expenses-edit');
 Route::put('/labour-expenses/update/{id}', [LabourExpensesController::class, 'update'])->name('labour-expenses.update');
 Route::get('/labour-expenses/delete/{id}',[LabourExpensesController::class,'labourdelete'])->name('labour-expenses-delete');
+Route::get('/labour-salary',[LabourExpensesController::class, 'labour_salary'])->name('labour-salary');
 //vendor ended
 //vendor started
 Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');
