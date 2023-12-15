@@ -1,3 +1,68 @@
+<style>
+  .dropbtn {
+
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    background-color: white;
+  }
+
+  .dropdown-content a:hover {background-color: #696cff;color:white}
+
+  .dropdown:hover .dropdown-content {display: block;}
+
+  .preloader {
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.2); /* 0.8 is the alpha channel for transparency */
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(15px); /* Add a blur effect for the glassy look */
+}
+.loader {
+  width: 15px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: l5 1s infinite linear alternate;
+}
+@keyframes l5 {
+    0%  {box-shadow: 20px 0 #000, -20px 0 #0002;background: #000 }
+    33% {box-shadow: 20px 0 #000, -20px 0 #0002;background: #0002}
+    66% {box-shadow: 20px 0 #0002,-20px 0 #000; background: #0002}
+    100%{box-shadow: 20px 0 #0002,-20px 0 #000; background: #000 }
+}
+  </style>
+
+  <div class="preloader">
+    <div class="loader"></div>
+  </div>
 @php
 $containerNav = $containerNav ?? 'container-fluid';
 $navbarDetached = ($navbarDetached ?? '');
@@ -48,10 +113,15 @@ $navbarDetached = ($navbarDetached ?? '');
           <!-- <li class="nav-item lh-1 me-3">
             <a class="github-button" href="https://github.com/themeselection/sneat-html-laravel-admin-template-free" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star themeselection/sneat-html-laravel-admin-template-free on GitHub">Star</a>
           </li> -->
-          @can('expenses-create')
-          <li class="nav-item lh-1 me-3">
-        <a href="{{route('expenses-create')}}" class="menu-link" ><img src="{{asset('assets/img/icons/expense.png')}}" alt="slack" class="me-3" height="40" width="40" >
-        </a></li>
+          @canany(['expenses-create','labour-expenses-create',])
+          <li class="nav-item lh-1 me-3 dropdown">
+       <img src="{{asset('assets/img/icons/expense.png')}}" class="dropbtn" alt="slack" class="me-3" height="70" width="70" >
+          <div class="dropdown-content">
+            <a href="{{ route('expenses-create') }}">Add Expenses</a>
+            <a href="{{ route('labour-expenses-create') }}">Add Labour Expenses</a>
+            <a href="{{ route('vendor-expenses-create') }}">Add Vendor Expenses</a>
+          </div>
+        </li>
         @endcan
           <!--- transfer started -->
           @can('transfer-create')          <li class="nav-item lh-1 me-3">
@@ -62,22 +132,22 @@ $navbarDetached = ($navbarDetached ?? '');
           <!-- <button type="button"  id="transfer-click"  class="btn btn-primary" style="background-color: #696cff;cursor:pointer;" ><span><i class="bi bi-currency-exchange fs-5 plh-0"></i></span>&nbsp;Transfer </button> -->
 
 
-          </li> 
+          </li>
           @endcan
           <!-- transfer ended -->
 
           <!-- wallet started --->
-          
+
           <li class="nav-item lh-1 me-3">
-          
+
                 <!-- <a href="{{route('expenses-create')}}" class="menu-link" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}
 
                 </a> -->
               <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary" style="background-color: #696cff;cursor:pointer;" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}</button>
-          
-           
-          </li> 
-          
+
+
+          </li>
+
           <!-- wallet ended -->
 
           <!-- User -->
@@ -151,3 +221,11 @@ $navbarDetached = ($navbarDetached ?? '');
     @endif
   </nav>
   <!-- / Navbar -->
+<script>
+
+// var preloader = document.querySelector(".preloader");
+// window.onload=function(){
+//   preloader.style.display="none";
+// };
+
+</script>

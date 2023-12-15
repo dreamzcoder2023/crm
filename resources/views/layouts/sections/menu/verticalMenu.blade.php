@@ -74,6 +74,16 @@
     </li>
     @endcan
     <!--- labour -->
+     <!--- vendor -->
+     @can('vendor-list')
+     <li class="menu-item {{(\Request::route()->getName() == 'vendor-index') ? 'active open' : '' }}">
+       <a href="{{route('vendor-index')}}" class="menu-link" >
+         <img src="{{asset('assets/img/icons/vendor.png')}}" alt="slack" class="me-3" height="25" >
+         <div>Vendor</div>
+       </a>
+     </li>
+     @endcan
+     <!--- vendor -->
      <!--- category -->
      @can('category-list')
      <li class="menu-item {{(\Request::route()->getName() == 'category-index') ? 'active open' : '' }}">

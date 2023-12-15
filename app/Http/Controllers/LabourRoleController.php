@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Labour;
 use App\Models\LabourRole;
 use Illuminate\Http\Request;
 
@@ -38,10 +39,17 @@ class LabourRoleController extends Controller
       $input =$request->all();
       //dd($input);
       $user = LabourRole::find($id);
+      $user->update($input);
+      $salary = Labour::where('labour_role',$user->id)->get();
+      //dd($salary);
+      foreach($salary as $labour){
+        $labour['salary'] = $user->salary;
+        $labour->update();
+      }
 
       // print_r($user);
       // exit;
-      $user->update($input);
+
       return redirect()->route('labourrole-index')->with('message','Labour Role details created successfully');
 
   }

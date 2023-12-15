@@ -17,7 +17,10 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LabourController;
+use App\Http\Controllers\LabourExpensesController;
 use App\Http\Controllers\LabourRoleController;
+use App\Http\Controllers\VendorController;
+use App\Http\Controllers\VendorExpensesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -186,6 +189,30 @@ Route::get('/labour-role/edit/{id}',[LabourRoleController::class, 'edit'])->name
 Route::put('/labour-role/update/{id}', [LabourRoleController::class, 'update'])->name('labourrole.update');
 Route::get('/labour-role/delete/{id}',[LabourRoleController::class,'labourdelete'])->name('labourrole-delete');
 //labour role ended
+//vendor started
+Route::get('/vendor', [VendorController::class, 'index'])->name('vendor-index');
+Route::get('/vendor/create',[VendorController::class, 'create'])->name('vendor-create');
+Route::post('/vendor/store', [VendorController::class, 'store'])->name('vendor.store');
+Route::get('/vendor/edit/{id}',[VendorController::class, 'edit'])->name('vendor-edit');
+Route::put('/vendor/update/{id}', [VendorController::class, 'update'])->name('vendor.update');
+Route::get('/vendor/delete/{id}',[VendorController::class,'labourdelete'])->name('vendor-delete');
+//vendor ended
+//labour expenses started
+Route::get('/labour-expenses', [LabourExpensesController::class, 'index'])->name('labour-expenses-index');
+Route::get('/labour-expenses/create',[LabourExpensesController::class, 'create'])->name('labour-expenses-create');
+Route::post('/labour-expenses/store', [LabourExpensesController::class, 'store'])->name('labour-expenses.store');
+Route::get('/labour-expenses/edit/{id}',[LabourExpensesController::class, 'edit'])->name('labour-expenses-edit');
+Route::put('/labour-expenses/update/{id}', [LabourExpensesController::class, 'update'])->name('labour-expenses.update');
+Route::get('/labour-expenses/delete/{id}',[LabourExpensesController::class,'labourdelete'])->name('labour-expenses-delete');
+//vendor ended
+//vendor started
+Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');
+Route::get('/vendor-expenses/create',[VendorExpensesController::class, 'create'])->name('vendor-expenses-create');
+Route::post('/vendor-expenses/store', [VendorExpensesController::class, 'store'])->name('vendor-expenses.store');
+Route::get('/vendor-expenses/edit/{id}',[VendorExpensesController::class, 'edit'])->name('vendor-expenses-edit');
+Route::put('/vendor-expenses/update/{id}', [VendorExpensesController::class, 'update'])->name('vendor-expenses.update');
+Route::get('/vendor-expenses/delete/{id}',[VendorExpensesController::class,'labourdelete'])->name('vendor-expenses-delete');
+//vendor ended
 });
 
 
