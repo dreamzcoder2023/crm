@@ -1,8 +1,20 @@
 @extends('layouts/contentNavbarLayout')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
 
 @section('title', 'Create Labour Expenses')
 
 @section('content')
+
+    <style>
+        .bootstrap-select {
+            max-width: 100%;
+            color: #697a8d;
+            border: solid 0.5px #697a8d !important;
+        }
+    </style>
     <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
 
     <!-- Basic Layout & Basic with Icons -->
@@ -23,27 +35,14 @@
                             <div class="col-6">
                                 <div class="mb-3 " id="here">
                                     <label class="form-label" for="basic-default-phone">Category Name</label>
-                                    <div> <select class="form-control" name="category_id" id="category_id"
-                                            style="width:90%">
+                                   <input type="hidden" name="category_id" value="{{ $category->id }}">
+                                    <div> <select class="form-control " name="category_id" id="category_id"
+                                            style="width:100%" disabled >
                                             <option value="">Select category </option>
-                                            @foreach ($category as $category)
-                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                            @endforeach
-                                        </select></div>
-                                    <span class="bi bi-plus d-flex justify-content-end"
-                                        style="margin-top: -35px;margin-bottom: 40px; font-size: 28; color: blueviolet;"
-                                        id="new_category_click"></span>
 
-                                    <span class="d-flex addcategory"
-                                        style="margin-top:-15px; cursor:pointer; display:none !important"
-                                        data-toggle="tooltip" data-placement="top" title="Add category"><input
-                                            type="text" class="form-control" style="width:70%" name="new_category"
-                                            id="new_category" placeholder="Enter category">
-                                        <p class="savecategory" style="cursor:pointer" data-toggle="tooltip"
-                                            data-placement="top" title="save"><img
-                                                src="{{ asset('assets/img/icons/save.png') }}" alt="slack" class="me-3"
-                                                height="40"></p>
-                                    </span>
+                                                <option value="{{ $category->id }}" {{ $category->name == 'salary' ? 'selected ' : '' }} readonly>{{ $category->name }}</option>
+
+                                        </select></div>
                                     <label id="showing_error_msg" class="error hide">Category name already exists.</label>
                                     <label id="showing_success_msg" class="success hide" style="color:green">Category added
                                         successfully.</label>
@@ -52,22 +51,26 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Project Name</label>
-                                    <select class="form-control" name="project_id" id="project_id">
+                                    <select class="form-control selectpicker" name="project_id" data-live-search="true" id="project_id">
                                         <option value="">Select project </option>
                                         @foreach ($project as $project)
                                             <option value="{{ $project->id }}">{{ $project->name }}</option>
                                         @endforeach
                                     </select>
+                                    <label id="project-error" class="error hide" for="basic-default-role">Project is
+                                      required</label>
                                 </div>
                                 <div class="mb-3">
-                                  <label class="form-label" for="basic-default-phone">Labour Name</label>
-                                  <select class="form-control" name="labour_id" id="labour_id">
-                                      <option value="">Select labour </option>
-                                      @foreach ($labours as $labour)
-                                          <option value="{{ $labour->id }}">{{ $labour->name }}</option>
-                                      @endforeach
-                                  </select>
-                              </div>
+                                    <label class="form-label" for="basic-default-phone">Labour Name</label>
+                                    <select class="form-control" name="labour_id" id="labour_id">
+                                        <option value="">Select labour </option>
+                                        @foreach ($labours as $labour)
+                                            <option value="{{ $labour->id }}">{{ $labour->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label id="labour-error" class="error hide" for="basic-default-role">Labour is
+                                      required</label>
+                                </div>
 
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-email">Salary</label>
@@ -75,7 +78,7 @@
                                     <input type="text" id="amount" name="amount" class="form-control"
                                         placeholder="Enter amount" oninput="amountcheck(this.value)"
                                         onkeypress="allowNumbersOnly(event)" />
-                                        <p class="advance_amt" style="color:blue"> </p>
+                                    <p class="advance_amt" style="color:blue"> </p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
                                     <input type="hidden" class="amount-check-error" value=""><br>
@@ -116,9 +119,9 @@
                                     <!-- <label id="paid_amt-error" class="error" for="basic-default-amt">Paid amount must be less than amount.</label> -->
                                 </div>
                                 <!-- <div class="mb-3">
-                <label class="form-label" for="basic-default-message">Unpaid Amount</label><br>
-                <input  type="text" class="form-control" value="" id="unpaid_amt" name="unpaid_amt" readonly>
-              </div> -->
+                    <label class="form-label" for="basic-default-message">Unpaid Amount</label><br>
+                    <input  type="text" class="form-control" value="" id="unpaid_amt" name="unpaid_amt" readonly>
+                  </div> -->
 
                                 <div class="mb-3">
                                     <label class="form-label" for="datetimepicker1">Date</label><br>
@@ -145,11 +148,24 @@
         </div>
         <!-- Basic with Icons -->
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            $('.selectpicker').selectpicker();
+        });
+   $(document).ready(function() {
             $('.error').addClass('hide');
             $('.success').addClass('hide');
             $('.addcategory').hide();
@@ -199,9 +215,9 @@
                 });
             }
         });
-       $('#labour_id').change(function(){
-        var id = $(this).val();
-        $.ajax({
+        $('#labour_id').change(function() {
+            var id = $(this).val();
+            $.ajax({
                 url: "{{ route('labour-salary') }}",
                 data: {
                     'id': id
@@ -211,15 +227,17 @@
                 success: function(result) {
                     console.log("result", result);
                     $('#amount').val(result.salary);
-                    $('.advance_amt').text('Advance Amount :' +result.advance_amt);
+                    $('.advance_amt').text('Advance Amount :' + result.advance_amt);
                     $('.advance_amt').removeClass('hide');
                 }
             });
 
-       });
+        });
         $('#createExpenses').submit(function(e) {
             e.preventDefault();
             var category = $('#category_id').find(":selected").val();
+            var project = $('#project_id').find(':selected').val();
+            var labour = $('#labour_id').find(':selected').val();
             var payment = $('#payment_mode').find(":selected").val();
             var amount = $('#amount').val();
             var test = $('.amount-check-error').val();
@@ -234,12 +252,26 @@
                 amountname = false,
                 pamtname = false,
                 paymentmode = false,
+                projectname = false,
+                labourname = false,
                 paidname = false;
             if (category.length < 1) {
                 $('#category-error').removeClass('hide');
             } else {
                 $('#category-error').addClass('hide');
                 clientname = true;
+            }
+            if (project.length < 1) {
+                $('#project-error').removeClass('hide');
+            } else {
+                $('#project-error').addClass('hide');
+                projectname = true;
+            }
+            if (labour.length < 1) {
+                $('#labour-error').removeClass('hide');
+            } else {
+                $('#labour-error').addClass('hide');
+                labourname = true;
             }
             if (payment.length < 1) {
                 $('#payment-error').removeClass('hide');
@@ -274,7 +306,7 @@
                 pamtname = true;
             }
 
-            if (clientname == true && amountname == true && (test == false || test == "false") && paymentmode ==
+            if (clientname == true && amountname == true && projectname == true && labourname == true && (test == false || test == "false") && paymentmode ==
                 true && paidname == true) {
                 document.getElementById("createExpenses").submit();
             }

@@ -13,27 +13,27 @@
   <div class="col-md-12">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('category-index')}}"><i class="bx me-1"></i> Back</a></li>
-      
+
     </ul>
   </div></div>
 <div class="row">
   <!-- Basic Layout -->
   <div class="col-xxl">
     <div class="card mb-4" style="top:30px">
-     
-      
+
+
       <div class="card-body">
         <form name="editCategory" action="{{route('category.update',$category->id)}}" method="post" >
             @csrf
             {{ method_field('PUT') }}
-            <input type="hidden" value="{{$category->id}} name="id">
+            <input type="hidden" value="{{$category->id}}" name="id">
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label" for="basic-default-name">Name</label>
             <div class="col-sm-10">
-              <input type="text" name="name" class="form-control" id="basic-default-name" placeholder="Enter category" value="{{$category->name}}" />
+              <input type="text" name="name" class="form-control" id="basic-default-name" {{ $category->name == "salary" ? "readonly" : '' }} placeholder="Enter category" value="{{$category->name}}" />
             </div>
           </div>
-         
+
          <div class="row justify-content-end">
             <div class="col-sm-10">
               <button type="submit" class="btn btn-primary">Update</button>
