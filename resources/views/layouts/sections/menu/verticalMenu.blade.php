@@ -182,7 +182,7 @@
                             </a>
                         </li>
                     @endcan
-                    @can('labour expenses-history')
+                    @can('labour expenses-list')
                         <li
                             class="menu-item labour_expense_history {{ \Request::route()->getName() == 'expenses-delete_record' ? 'active open' : '' }}">
                             <a href="#"  class="menu-link "><img
@@ -234,25 +234,24 @@
     </ul>
 
 </aside>
-<div class="modal fade" id="labour_total_popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Labour Weekly Salary Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<div class="modal fade" id="labour_total_popup" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-lg ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalToggleLabel">Labour Salary details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="labour_loadingsalary"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Open second modal</button>
+        </div>
       </div>
-      <div class="modal-body">
-     <div class="labour_loadingsalary"></div>
-      </div>
-      {{-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div> --}}
     </div>
   </div>
-</div>
+
+
 <script>
   $('.labour_expense_history').click(function(){
     $('.preloader').css('display','block');
