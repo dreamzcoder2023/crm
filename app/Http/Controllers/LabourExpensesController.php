@@ -20,59 +20,61 @@ class LabourExpensesController extends Controller
   {
     $currentYear = Carbon::now()->year;
     $startOfWeek = Carbon::createFromDate($currentYear, 1, 1)->startOfWeek();
-
     $endOfWeek = Carbon::createFromDate($currentYear, 12, 31)->endOfWeek();
-
     $weekStartDates = [];
-$currentDate = $startOfWeek->copy();
+    $start_labour_date = [];
+    $currentDate = $startOfWeek->copy();
 
-while ($currentDate->lte($endOfWeek)) {
-    $weekStartDates[] = $currentDate->copy();
-    $currentDate->addWeek();
-}
+    while ($currentDate->lte($endOfWeek)) {
+        $weekStartDates[] = $currentDate->copy();
+        $currentDate->addWeek();
+    }
 
-// Print or use the week start dates as needed
-foreach ($weekStartDates as $weekStartDate) {
-    echo $weekStartDate->format('Y-m-d') . ' - ' . $weekStartDate->copy()->endOfWeek(Carbon::SATURDAY)->format('Y-m-d') . '<br>';
-}
-//dd($weekStartDates);
+    foreach ($weekStartDates as $weekStartDate) {
+      $records = DB::table('expenses as w')->whereNotNull('labour_id')
+          ->select([
+              DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
+              DB::Raw('SUM(w.extra_amt) as advance_amt'),
+              DB::Raw("'{$weekStartDate->format('Y-m-d')}' as week_start_date"),
+              DB::Raw("'{$weekStartDate->copy()->endOfWeek(Carbon::SATURDAY)->format('Y-m-d')}' as week_end_date"),
+          ])
+          ->whereBetween('w.current_date', [$weekStartDate->format('Y-m-d'), $weekStartDate->copy()->endOfWeek(Carbon::SATURDAY)->format('Y-m-d')])
+          ->groupBy('week_start_date')
+          ->get();
 
-$labour = DB::table('expenses as w')
-    ->select([
-        DB::Raw('SUM(w.unpaid_amt) as Week_total'),
-        DB::Raw('YEAR(w.current_date) as Year'),
-        DB::Raw('WEEK(w.current_date) as Week'),
-        DB::Raw('MIN(w.current_date) as Week_start_date'),
-        DB::Raw('MAX(w.current_date) as Week_end_date'),
-    ])
-    ->whereBetween('w.current_date', [$startOfWeek, $endOfWeek])
-    ->groupBy('Year', 'Week')
-    ->orderBy('Year')
-    ->orderBy('Week')
-    ->get();
-    dd($labour);
+      $project = DB::table('expenses as w')->whereNotNull('w.labour_id')
+          ->select('p.*')
+          ->leftJoin('project_details as p', 'p.id', '=', 'w.project_id')
+          ->whereBetween('w.current_date', [$weekStartDate->format('Y-m-d'), $weekStartDate->copy()->endOfWeek(Carbon::SATURDAY)->format('Y-m-d')])
+          ->groupBy('project_id')
+          ->get();
 
-  //  // $labour = Expenses::whereBetween('current_date', [Carbon::now()->startOfWeek(Carbon::MONDAY), Carbon::now()->endOfWeek(Carbon::SATURDAY)])->get();
-     dd($labour);
-  exit;
-   $view = view('labour-expenses.index')->render();
-   return response()->json($view);
+      if (!$records->isEmpty()) {
+          $start_labour_date[] = ['week_data' => ['records' => $records, 'project' => $project]];
+      }
+  }
+
+    dd($start_labour_date);
+    //  // $labour = Expenses::whereBetween('current_date', [Carbon::now()->startOfWeek(Carbon::MONDAY), Carbon::now()->endOfWeek(Carbon::SATURDAY)])->get();
+
+    $view = view('labour-expenses.index',['start_labour_date' => $start_labour_date])->render();
+    return response()->json($view);
   }
 
   public function create(Request $request)
   {
-    $category = Category::where(['active_status' => 1, 'delete_status' => 0,'name' => 'salary'])->first();
+    $category = Category::where(['active_status' => 1, 'delete_status' => 0, 'name' => 'salary'])->first();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
     $labours = Labour::get();
-    return view('labour-expenses.create', ['category' => $category, 'project' => $project, 'payment' => $payment,'labours' => $labours]);
+    return view('labour-expenses.create', ['category' => $category, 'project' => $project, 'payment' => $payment, 'labours' => $labours]);
   }
   /**
    * Store a newly created resource in storage.
    */
   public function store(Request $request)
   {
-   // dd($request->all());
+    // dd($request->all());
     $user_id = Auth::user()->id;
     $input = $request->all();
     $input['user_id'] = $user_id;
@@ -106,8 +108,9 @@ $labour = DB::table('expenses as w')
     return redirect()->route('expenses-history')
       ->with('expenses-popup', 'open');
   }
-  public function labour_salary(Request $request){
-    $labour = Labour::where('id',$request->id)->select('salary','advance_amt')->first();
+  public function labour_salary(Request $request)
+  {
+    $labour = Labour::where('id', $request->id)->select('salary', 'advance_amt')->first();
     return response()->json($labour);
   }
 }

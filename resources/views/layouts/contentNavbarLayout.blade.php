@@ -12,7 +12,25 @@
   text-overflow: ellipsis; /* Add ellipsis for long text */
   overflow: hidden; /* Hide overflowing content */
 }
-
+.preloader {
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.2); /* 0.8 is the alpha channel for transparency */
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(15px); /* Add a blur effect for the glassy look */
+}
+.loader {
+  width: 15px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: l5 1s infinite linear alternate;
+}
 </style>
 @php
 /* Display elements */
