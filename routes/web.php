@@ -206,6 +206,7 @@ Route::put('/labour-expenses/update/{id}', [LabourExpensesController::class, 'up
 Route::get('/labour-expenses/delete/{id}',[LabourExpensesController::class,'labourdelete'])->name('labour-expenses-delete');
 Route::get('/labour-salary',[LabourExpensesController::class, 'labour_salary'])->name('labour-salary');
 Route::get('/labour-expenses-project',[LabourExpensesController::class, 'labour_expense_project'])->name('labour-expenses-project');
+Route::get('/labour-expenses-labour',[LabourExpensesController::class, 'labour_expenses_details'])->name('labour-expenses-labour');
 //vendor ended
 //vendor started
 Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');

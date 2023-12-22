@@ -264,11 +264,6 @@
       $('.preloader').css('display','none');
       $('#labour_total_popup').modal('show');
     }
-
-
   });
-
-
-
   });
 </script>

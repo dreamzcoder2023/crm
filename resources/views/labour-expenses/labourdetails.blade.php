@@ -50,7 +50,7 @@
 @endif
 <div style="margin-top: 30px;">
 <h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Project Details </span>
+  <span class="text-muted fw-light">Labour Weekly Details </span>
 </h4>
 </div>
 
@@ -61,7 +61,7 @@
     <table class="table" id="user_listing_table">
       <thead>
         <tr>
-          <th><input type="checkbox" id="select_all">Select All</th>
+          <th></th>
           <th>Name</th>
           <th>Salary</th>
           <th>Unpaid Amount</th>
@@ -72,7 +72,7 @@
 
         @foreach($labour as $labour)
        <tr>
-        <td><input type="checkbox" class="days" id="{{ $labour->labour_id }}" value="{{ $labour->labour_id }}"></td>
+        <td></td>
         <td><a style="text-decoration: none" href="javascript:void(0)" class="labour_details_weekly" style="cursor:pointer"
           data-start_week="{{ $start_date }}"
           data-end_week="{{ $end_date }}"
@@ -90,27 +90,7 @@
 <!--/ Basic Bootstrap Table -->
 
 
-<!-- modal popup for delete role ended -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Salary Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-     <div class="loadingsalary"></div>
-      </div>
-      {{-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div> --}}
-    </div>
-  </div>
-</div>
-<!-- modal popup for salary details -->
+
 
 
 <!-- modal popup for salary details -->
@@ -126,43 +106,7 @@ var data =  new DataTable('#user_listing_table', {
 });
 });
 
-    $('#select_all').on('click',function(){
-        if(this.checked){
-            $('.days').each(function(){
-                this.checked = true;
-            });
-        }else{
-             $('.days').each(function(){
-                this.checked = false;
-            });
-        }
-    });
-    $('.days').on('click',function(){
-        if($('.days:checked').length == $('.days').length){
-            $('#select_all').prop('checked',true);
-        }else{
-            $('#select_all').prop('checked',false);
-        }
-    });
-    $('.labour_details_weekly').click(function() {
-        var start_date = $(this).attr('data-start_week');
-        var end_date = $(this).attr('data-end_week');
-        var labour_id = $(this).attr('data-labour_id');
-        $('.preloader').css('display', 'block');
-        $.ajax({
-            type:"get",
-            url:"{{route('labour-expenses-labour')}}",
-            data:{start_date:start_date,end_date:end_date,labour_id:labour_id},
-            dataType:'json',
-            success:function(html){
-              console.log(html);
 
-              $('.loadingsalary').html(html);
-              $('.preloader').css('display','none');
-              $('#labour_total_popup').modal('show');
-            }
-          });
-    });
 </script>
 
 @endsection
