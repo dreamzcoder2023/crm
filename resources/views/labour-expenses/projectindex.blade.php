@@ -50,17 +50,9 @@
 @endif
 <div style="margin-top: 30px;">
 <h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Labour </span>
+  <span class="text-muted fw-light">Project Details </span>
 </h4>
-<div class="row" style="position:absolute; top:180px; right:50px ">
-  <div class="col-md-12">
-    @can('labour-create')
-    <ul class="nav nav-pills flex-column flex-md-row mb-3">
-      <li class="nav-item"><a class="nav-link active" href="{{route('labour-create')}}"><i class="bx bx-user me-1"></i> Add Labour</a></li>
-
-    </ul>
-    @endcan
-  </div></div></div>
+</div>
 
 <!-- Basic Bootstrap Table -->
 <div class="card" style="max-width: 1200px; margin: 40px auto; height:250px">
@@ -69,49 +61,22 @@
     <table class="table" id="user_listing_table">
       <thead>
         <tr>
-          <th>ID</th>
+          <th><input type="checkbox" id="select_all">Select All</th>
           <th>Name</th>
-          <th>Job Title</th>
-          <th>Phone</th>
           <th>Salary</th>
-          <th>Labour Role</th>
+          <th>Unpaid Amount</th>
           <th>Advance Amount</th>
-          @canany(['labour-edit','labour-delete'])
-          <th>Action</th>
-          @endcanany
         </tr>
       </thead>
       <tbody class="table-border-bottom-0">
 
-        @foreach($users as $user)
+        @foreach($labour as $labour)
        <tr>
-        <td>{{$loop->index+1}}</td>
-        <td>{{$user->name}}</td>
-        <td>{{$user->job_title}}</td>
-        <td>{{$user->phone}}</td>
-        <td>{{ $user->salary }}
-          <i id="click_salary" data-user="{{ $user->id }}" style="font-size:15px; color:red;cursor: pointer;" class="fa">
-            &#xf156;</i>
-
-
-
-        </td>
-        <td>{{App\Models\LabourRole::where('id',$user->labour_role)->pluck('name')->first()}}
-        <td>{{$user->advance_amt}}</td>
-        @canany(['labour-edit','labour-delete'])
-        <td>
-        {{-- @can(['labour-view'])
-        <a  href="" data-id="{{$user->id}}" class=""><i class="bi bi-eye" style="font-size:24px"></i></a>
-        @endcan --}}
-          @can(['labour-edit'])
-        <a class=""  href="{{ route('labour-edit',$user->id) }}" ><i class="fa fa-edit" style="font-size:24px"></i></a>
-        @endcan
-        @can('labour-delete')
-        <input type="hidden" value="{{$user->id}}" id="user_id">
-        <a data-toggle="modal" href="javascript:void(0)" data-id="{{$user->id}}" class="deleteUser"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
-        @endcan
-      </td>
-      @endcanany
+        <td><input type="checkbox" class="days" id="{{ $labour->labour_id }}" value="{{ $labour->labour_id }}"></td>
+        <td>{{$labour->labour_name}}</td>
+        <td>{{ $labour->amount }} </td>
+        <td>{{$labour->unpaid_amt}}
+        <td>{{$labour->advance_amt}}</td>
        </tr>
        @endforeach
 

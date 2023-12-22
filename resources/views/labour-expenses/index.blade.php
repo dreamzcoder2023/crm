@@ -95,9 +95,9 @@
         });
     });
     $('.projectunpaid').click(function() {
-        var start_date = $(this).attr(data-start_date);
-        var end_date = $(this).attr(data-end_date);
-        var project_id = $(this).attr(data-project_id);
+        var start_date = $(this).attr('data-start_week');
+        var end_date = $(this).attr('data-end_week');
+        var project_id = $(this).attr('data-project_id');
         $('.preloader').css('display', 'block');
         var url = '{{ route('labour-expenses-project') }}';
             window.location.href = url + '?project_id=' + project_id + '&start_date=' + start_date + '&end_date=' +end_date;

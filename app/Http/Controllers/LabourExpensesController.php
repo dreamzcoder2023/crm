@@ -119,13 +119,17 @@ $recordsData=[];
     return response()->json($labour);
   }
   public function labour_expense_project(Request $request){
-    $project = DB::table('expenses as e')->leftjoin('project_details as p','p.id','=','e.project_id')->where('e.project_id',$request->project_id)->whereBetween('e.current_date',[$request->start_date,$request->end_date])->groupBy('e.project_id')->select([ DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
-    DB::Raw('SUM(w.extra_amt) as advance_amt'),
-    DB::Raw('p.name as project_name')])->first();
-    $labour = Expenses::leftjoin('labour_details','labour_details.id','=','expenses.labour_id')->where('expenses.project_id',$request->project_id)->whereBetween('expenses.current_date',[$request->start_date,$request->end_date])->groupBy('e.project_id')->select([ DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
-    DB::Raw('SUM(w.extra_amt) as advance_amt'),
+    $project = DB::table('expenses as e')->leftjoin('project_details as p','p.id','=','e.project_id')->where('e.project_id',$request->project_id)->whereBetween('e.current_date',[$request->start_date,$request->end_date])->select([ DB::Raw('SUM(e.unpaid_amt) as unpaid_amt'),
+    DB::Raw('SUM(e.extra_amt) as advance_amt'),
+    DB::Raw('e.*'),
+    DB::Raw('p.name as project_name')])->groupBy('e.project_id')->first();
+
+    $labour = Expenses::leftjoin('labour_details','labour_details.id','=','expenses.labour_id')->where('expenses.project_id',$request->project_id)->whereNotNull('expenses.labour_id')->whereBetween('expenses.current_date',[$request->start_date,$request->end_date])->groupBy('expenses.labour_id')->select([ DB::Raw('SUM(expenses.unpaid_amt) as unpaid_amt'),
+    DB::Raw('SUM(expenses.extra_amt) as advance_amt'),
+    DB::Raw('expenses.*'),
     DB::Raw('labour_details.name as labour_name'),
     DB::Raw('labour_details.id as labour_id')])->get();
+
     return view('labour-expenses.projectindex',['project' => $project,'labour' => $labour]);
   }
 }
