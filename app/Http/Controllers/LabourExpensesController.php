@@ -144,22 +144,21 @@ class LabourExpensesController extends Controller
   }
   public function labour_expenses_details(Request $request)
   {
-
-
-    $weekDays = [];
-    $currentDate = Carbon::parse($request->start_date)->dayOfWeek;// Convert to Carbon instance
-    
-    $weekSummary = DB::table('expenses as w')
-        ->whereNotNull('labour_id')
-        ->select([
-            DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
-            DB::Raw('SUM(w.extra_amt) as advance_amt'),
-        ])
-        ->addSelect(DB::Raw("'" . implode("','", $weekDays) . "' as week_day")) // Include individual days in the result
-        ->whereBetween('w.current_date', [$request->start_date, $request->end_date])
-        ->groupBy('week_day')
-        ->get();
-    
-      dd($currentDate);
+    $weekSummary = DB::table('expenses as w')->leftjoin('labour_details as l','l.id','=','w.labour_id')
+    ->whereNotNull('w.labour_id')
+    ->select([
+        DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
+        DB::Raw('SUM(w.extra_amt) as advance_amt'),
+        DB::Raw("(SELECT DAYNAME(w.current_date)) as day_of_week"),
+        DB::Raw('l.name as labour_name'),
+        DB::Raw('w.amount as amount'),
+        DB::Raw('w.project_id'),
+    ])
+    ->whereBetween('w.current_date', [$request->start_date, $request->end_date])
+    ->groupBy('day_of_week') // Change the grouping to use the alias
+    ->get();
+     $view = view('labour-expenses.labourdetails',['labour' => $weekSummary,'start_date' =>$request->start_date,'end_date' => $request->end_date])->render();
+    // dd($view);
+     return response()->json($view);
   }
 }

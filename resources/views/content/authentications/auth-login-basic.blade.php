@@ -17,13 +17,13 @@
           <!-- Logo -->
           <div class="app-brand justify-content-center">
             <a href="{{url('/')}}" class="app-brand-link gap-2">
-              <!-- <span class="app-brand-logo demo">@include('_partials.macros',["width"=>25,"withbg"=>'#696cff'])</span>
+              <!-- <span class="app-brand-logo demo">@include('_partials.macros',["width"=>25,"withbg"=>'#0081b8'])</span>
               <span class="app-brand-text demo text-body fw-bolder">{{config('variables.templateName')}}</span>
 --> <p class="app-brand-text demo text-body fw-bolder">LOGIN</p>
-            </a> 
+            </a>
           </div>
           <!-- /Logo -->
-    
+
 
           <form id="formAuthentication" class="mb-3" action="{{url('/')}}" method="GET">
             <div class="mb-3">

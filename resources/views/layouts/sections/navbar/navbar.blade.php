@@ -29,7 +29,7 @@
     background-color: white;
   }
 
-  .dropdown-content a:hover {background-color: #696cff;color:white}
+  .dropdown-content a:hover {background-color: #0081b8;color:white}
 
   .dropdown:hover .dropdown-content {display: block;}
 
@@ -58,6 +58,16 @@
     66% {box-shadow: 20px 0 #0002,-20px 0 #000; background: #0002}
     100%{box-shadow: 20px 0 #0002,-20px 0 #000; background: #000 }
 }
+.dataTables_filter{
+  text-align: center !important;
+}
+.pagination{
+  justify-content: center !important;
+  margin-left:-50px !important;
+}
+div.dataTables_wrapper div.dataTables_length select {
+  width:60px !important;
+}
   </style>
 
   <div class="preloader">
@@ -82,7 +92,7 @@ $navbarDetached = ($navbarDetached ?? '');
       <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
         <a href="{{url('/')}}" class="app-brand-link gap-2">
           <!-- <span class="app-brand-logo demo">
-            @include('_partials.macros',["width"=>25,"withbg"=>'#696cff'])
+            @include('_partials.macros',["width"=>25,"withbg"=>'#0081b8'])
           </span>
           <span class="app-brand-text demo menu-text fw-bolder">{{config('variables.templateName')}}</span>
         </a> -->
@@ -129,7 +139,7 @@ $navbarDetached = ($navbarDetached ?? '');
               <a href="javascript:void(0)" id="transfer-click">
           <img src="{{asset('assets/img/icons/transfer.png')}}" alt="slack" class="me-3" height="30" ></a>
             </div>
-          <!-- <button type="button"  id="transfer-click"  class="btn btn-primary" style="background-color: #696cff;cursor:pointer;" ><span><i class="bi bi-currency-exchange fs-5 plh-0"></i></span>&nbsp;Transfer </button> -->
+          <!-- <button type="button"  id="transfer-click"  class="btn btn-primary" style="background-color: #0081b8;cursor:pointer;" ><span><i class="bi bi-currency-exchange fs-5 plh-0"></i></span>&nbsp;Transfer </button> -->
 
 
           </li>
@@ -143,7 +153,7 @@ $navbarDetached = ($navbarDetached ?? '');
                 <!-- <a href="{{route('expenses-create')}}" class="menu-link" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}
 
                 </a> -->
-              <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary" style="background-color: #696cff;cursor:pointer;" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}</button>
+              <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary" style="background-color: #0081b8;cursor:pointer;" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}</button>
 
 
           </li>
