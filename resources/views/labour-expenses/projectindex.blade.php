@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 <style>
     @media only screen and (max-width:320px) {
         .aa {
@@ -38,44 +38,51 @@
         border-radius: 0.5rem;
         width: 300px;
     }
-    .icon-shape{
-      display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    vertical-align: middle;
-    }
-    .bg-light-primary {
-    background-color:#b2d6e5 !important;
-}
-.icon-md {
-    width: 2.5rem;
-    height: 2.5rem;
-    line-height: 2.5rem;
-}
-.dataTables_filter{
-  text-align: center !important;
-}
-.pagination{
-  justify-content: center !important;
-  margin-left:-50px !important;
-}
-div.dataTables_wrapper div.dataTables_length select {
-  width:60px !important;
-}
 
-@media (max-width: 767px) {
-    .rows {
-        display: block !important;
-        margin-bottom:20px !important;
+    .icon-shape {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        vertical-align: middle;
     }
-    .cards{
-      margin-bottom:30px !important;
+
+    .bg-light-primary {
+        background-color: #b2d6e5 !important;
     }
-}
+
+    .icon-md {
+        width: 2.5rem;
+        height: 2.5rem;
+        line-height: 2.5rem;
+    }
+
+    .dataTables_filter {
+        text-align: center !important;
+    }
+
+    .pagination {
+        justify-content: center !important;
+        margin-left: -50px !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_length select {
+        width: 60px !important;
+    }
+
+    @media (max-width: 767px) {
+        .rows {
+            display: block !important;
+            margin-bottom: 20px !important;
+        }
+
+        .cards {
+            margin-bottom: 30px !important;
+        }
+    }
 </style>
 
-@section('title', 'Labour')
+@section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 
@@ -139,7 +146,7 @@ div.dataTables_wrapper div.dataTables_length select {
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold">{{ $project->unpaid_amt }}</h3>
+                        <h3 class="fw-bold">{{ $project->unpaid }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -177,7 +184,7 @@ div.dataTables_wrapper div.dataTables_length select {
 
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all" ></th>
+                        <th><input type="checkbox" id="select_all"></th>
                         <th>Name</th>
                         <th>Salary</th>
                         <th>Unpaid Amount</th>
@@ -189,7 +196,7 @@ div.dataTables_wrapper div.dataTables_length select {
                     @foreach ($labour as $labour)
                         <tr>
                             <td><input type="checkbox" name="labour_id[]" class="days" id="{{ $labour->labour_id }}"
-                                    value="{{ $labour->labour_id }}"></td>
+                                    {{ $labour->unpaid_amt <= 0 ? 'disabled' : '' }} value="{{ $labour->labour_id }}"></td>
                             <td><a style="text-decoration: none" href="javascript:void(0)" class="labour_details_weekly"
                                     style="cursor:pointer" data-start_week="{{ $start_date }}"
                                     data-end_week="{{ $end_date }}"
@@ -206,7 +213,8 @@ div.dataTables_wrapper div.dataTables_length select {
 
         </div>
     </div>
-    <button class="btn btn-primary" id="advance_submit" disabled>Submit</button>
+    <button class="btn btn-primary" id="advance_submit" data-start_week="{{ $start_date }}"
+        data-end_week="{{ $end_date }}" data-project_id = "{{ $project->project_id }}" disabled>Submit</button>
     <!--/ Basic Bootstrap Table -->
 
 
@@ -224,100 +232,108 @@ div.dataTables_wrapper div.dataTables_length select {
                 <div class="modal-body">
                     <div class="loadingsalary"></div>
 
+                </div>
             </div>
         </div>
-    </div>
-    <!-- modal popup for salary details -->
+        <!-- modal popup for salary details -->
 
 
-    <!-- modal popup for salary details -->
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            var data = new DataTable('#user_listing_table', {
-                "lengthMenu": [15, 25, 50, 100],
-                processing: true,
+        <!-- modal popup for salary details -->
+        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                var data = new DataTable('#user_listing_table', {
+                    "lengthMenu": [15, 25, 50, 100],
+                    processing: true,
 
+                });
             });
-        });
 
-        $('#select_all').on('click', function() {
-            if (this.checked) {
-                $('.days').each(function() {
-                    this.checked = true;
-                });
-                $('#advance_submit').prop('disabled',false);
-            } else {
-                $('.days').each(function() {
-                    this.checked = false;
-                });
-                $('#advance_submit').prop('disabled',true);
-            }
-        });
-        $('.days').on('click', function() {
-          console.log($('.days:checked').length);
-
-          if($('.days:checked').length != 0){
-            $('#advance_submit').prop('disabled',false);
-          }else{
-            $('#advance_submit').prop('disabled',true);
-          }
-            if ($('.days:checked').length == $('.days').length) {
-                $('#select_all').prop('checked', true);
-
-            } else {
-                $('#select_all').prop('checked', false);
-            }
-        });
-        $('.labour_details_weekly').click(function() {
-            var start_date = $(this).attr('data-start_week');
-            var end_date = $(this).attr('data-end_week');
-            var labour_id = $(this).attr('data-labour_id');
-            $('.preloader').css('display', 'block');
-            $.ajax({
-                type: "get",
-                url: "{{ route('labour-expenses-labour') }}",
-                data: {
-                    start_date: start_date,
-                    end_date: end_date,
-                    labour_id: labour_id
-                },
-                dataType: 'json',
-                success: function(html) {
-                    console.log(html);
-
-                    $('.loadingsalary').html(html);
-                    $('.preloader').css('display', 'none');
-                    $('#labour_weeklypopup').modal('show');
+            $('#select_all').on('click', function() {
+                if (this.checked) {
+                    $('.days').each(function() {
+                        this.checked = true;
+                    });
+                    $('#advance_submit').prop('disabled', false);
+                } else {
+                    $('.days').each(function() {
+                        this.checked = false;
+                    });
+                    $('#advance_submit').prop('disabled', true);
                 }
             });
-        });
-        $('#advance_submit').click(function(){
-          var val = [];
-        $('.days:checked').each(function(i){
-          val[i] = $(this).val();
-        });
-        console.log('val',val);
-        $.ajax({
-                type: "get",
-                url: "{{ route('labour-expenses-labour') }}",
-                data: {
-                    labour_id: val,
-                    end_date: end_date,
-                    labour_id: labour_id
-                },
-                dataType: 'json',
-                success: function(html) {
-                    console.log(html);
+            $('.days').on('click', function() {
+                console.log($('.days:checked').length);
 
-                    $('.loadingsalary').html(html);
-                    $('.preloader').css('display', 'none');
-                    $('#labour_weeklypopup').modal('show');
+                if ($('.days:checked').length != 0) {
+                    $('#advance_submit').prop('disabled', false);
+                } else {
+                    $('#advance_submit').prop('disabled', true);
+                }
+                if ($('.days:checked').length == $('.days').length) {
+                    $('#select_all').prop('checked', true);
+
+                } else {
+                    $('#select_all').prop('checked', false);
                 }
             });
-        });
-    </script>
+            $('.labour_details_weekly').click(function() {
+                var start_date = $(this).attr('data-start_week');
+                var end_date = $(this).attr('data-end_week');
+                var labour_id = $(this).attr('data-labour_id');
+                $('.preloader').css('display', 'block');
+                $.ajax({
 
-@endsection
+                    type: "get",
+                    url: "{{ route('labour-expenses-labour') }}",
+                    data: {
+                        start_date: start_date,
+                        end_date: end_date,
+                        labour_id: labour_id
+                    },
+                    dataType: 'json',
+                    success: function(html) {
+                        console.log(html);
+
+                        $('.loadingsalary').html(html);
+                        $('.preloader').css('display', 'none');
+                        $('#labour_weeklypopup').modal('show');
+                    }
+                });
+            });
+            $('#advance_submit').click(function() {
+                var val = [];
+                $('.days:checked').each(function(i) {
+                    val[i] = $(this).val();
+                });
+                var start_date = $(this).attr('data-start_week');
+                var end_date = $(this).attr('data-end_week');
+                var project_id = $(this).attr('data-project_id')
+                console.log('val', val);
+                $.ajax({
+                  headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    url: "{{ route('labour-expenses-store') }}",
+                    data: {
+                        labour_id: val,
+                        end_date: end_date,
+                        start_date: start_date,
+                        project_id: project_id
+                    },
+                    dataType: 'json',
+                    success: function(html) {
+                        console.log(html);
+
+                        // $('.loadingsalary').html(html);
+                        // $('.preloader').css('display', 'none');
+                        // $('#labour_weeklypopup').modal('show');
+                    }
+                });
+            });
+        </script>
+
+    @endsection

@@ -38,7 +38,7 @@
   </style>
 
 
-@section('title','Expenses')
+@section('title','List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 

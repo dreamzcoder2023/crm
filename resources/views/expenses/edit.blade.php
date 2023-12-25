@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Edit Expenses')
+@section('title', 'Edit | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -102,7 +102,7 @@
                         <div class="mb-3">
                             <label for="appt">Time:</label><br>
                             <input type="time" id="appt" class="form-control" name="time" value="<?php echo date("H:i", strtotime($expense->current_date)); ?>">
-                           
+
                         </div>
             </div>
 

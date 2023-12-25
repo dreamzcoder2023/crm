@@ -36,7 +36,7 @@ td, th {
   padding: 5px; /* Reduce cell padding */
 }
   </style>
-@section('title','Expenses')
+@section('title','Expenses | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 

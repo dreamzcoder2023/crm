@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Create Transfer')
+@section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <h4 class="fw-bold py-3 mb-4">
@@ -9,7 +9,7 @@
 <form name="transferSumbmit" action="{{route('transfer.store')}}" id="transferSubmit" method="post" >
             @csrf
   <div class="col-xl">
-    <div class="card mb-4" style="margin-top:30px;">     
+    <div class="card mb-4" style="margin-top:30px;">
       <div class="card-body">
         <div class="row">
         <div class="col-6">
@@ -23,10 +23,10 @@
             </select>
             <label id="member-error" class="error" for="basic-default-role">Member is required</label>
           </div>
- 
+
           <div class="mb-3">
             <label class="form-label" for="basic-default-email">Amount</label>
-           
+
               <input  type="text" onkeypress="allowNumbersOnly(event)" id="amount" name="amount" class="form-control" placeholder="Enter amount"  value="" oninput="amountcheck(this.value)"/>
               <label id="amount-error" class="error" for="basic-default-email">Amount is required</label>
               <input type="hidden" class="amount-check-error" value="">
@@ -44,7 +44,7 @@
             </div>
 </div>
 <div class="col-6">
-       
+
           <div class="mb-3">
             <label class="form-label" for="basic-default-phone">Description</label>
             <textarea type="text"  name="description" id="description" class="form-control phone-mask" style="height:28px"></textarea>
@@ -60,7 +60,7 @@
       <center>  <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Submit</button>
       <button type="reset" id="resetform" class="btn btn-danger" style="background-color: red; margin-top:20px;">Reset</button>
     </center>
-</div>   
+</div>
 </div>
       </div>
     </div>

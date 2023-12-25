@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Project Details')
+@section('title', 'Edit | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -13,7 +13,7 @@
   <div class="col-md-12">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('project-index')}}"><i class="bx me-1"></i> Back </a></li>
-      
+
     </ul>
   </div></div>
 
@@ -24,9 +24,9 @@
   <div class="col-xl">
     <div class="card mb-4" style="margin-top:30px;">
       <div class="card-header d-flex justify-content-between align-items-center">
-       
+
       </div>
-     
+
       <div class="card-body">
         <div class="row">
             <div class="col-6"><div class="mb-3">
@@ -47,13 +47,13 @@
             </select>
             <label id="client-error" class="error" for="basic-default-role">Client is required</label>
           </div>
-         
+
             <!-- <div class="mb-3">
             <label class="form-label" for="basic-default-company">Advanced Amount</label>
             <input type="text" id="advance_amt" name="advance_amt"  value="{{$project->advance_amt}}" class="form-control" id="basic-default-company" onkeydown="allowNumberOnly(this.event)" placeholder="Enter advanced amount" />
-             <label id="last-error" class="error" for="basic-default-last_name">last Name is required</label> 
+             <label id="last-error" class="error" for="basic-default-last_name">last Name is required</label>
           </div> -->
-       
+
           <!-- <div class="mb-3">
           <label class="form-label" for="basic-default-phone">Payment Mode</label>
             <select class="form-control" name="payment_mode" id="payment_mode">
@@ -88,9 +88,9 @@
         </div>
 
         </div>
-        
-          
-          
+
+
+
       </div>
     </div>
   </div>
@@ -114,7 +114,7 @@
     var client = $('#client_id').find(":selected").val();
     var amt = $('#advance_amt').val();
     var total = $('#total_amt').val();
-   
+
  var pname=false,pclient=false,ptotal=false,pamt=false;
     console.log('name',name);
     console.log('client',client);
@@ -137,7 +137,7 @@
       $('#total-error').addClass('hide');
       pamt = true;
       ptotal = true;
-      
+
     }
     else if((parseInt(amt) > parseInt(total))){
       console.log(amt,total);

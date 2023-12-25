@@ -3,10 +3,10 @@
     <!-- ! Hide app brand if navbar-full -->
     <div class="app-brand demo">
         <a href="{{ url('/') }}" class="app-brand-link">
-            <!-- <span class="app-brand-logo demo">
-        @include('_partials.macros', ['width' => 25, 'withbg' => '#0081b8'])
-      </span>
-      <span class="app-brand-text demo menu-text fw-bold ms-2">{{ config('variables.templateName') }}</span> -->
+            <span class="app-brand-logo demo">
+                <img src="{{ asset('assets/img/icons/logo12.png') }}" class="img-fluid" alt="Layout container"
+                    style="width: 20%;">
+            </span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-autod-block d-xl-none">
@@ -184,12 +184,53 @@
                     @endcan
                     @can('labour expenses-list')
                         <li
-                            class="menu-item labour_expense_history {{ \Request::route()->getName() == 'expenses-delete_record' ? 'active open' : '' }}">
-                            <a href="#"  class="menu-link "><img
-                                    src="{{ asset('assets/img/icons/capital.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div>Labour History</div>
+                            class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history' ? 'active open' : '' }}">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class="menu-icon tf-icons bi bi-currency-exchange"></i>
+                                <div>Labour Expenses</div>
                             </a>
+
+                            <ul class="menu-sub">
+                                @can('labour expenses-list')
+                                    <li
+                                        class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history' ? 'active open' : '' }}">
+                                        <a href="{{ route('labour-expenses-history') }}" class="menu-link"><img
+                                                src="{{ asset('assets/img/icons/labor-day.png') }}" alt="slack"
+                                                class="me-3" height="20">
+                                            <div>Labour History</div>
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('labour expenses-weekly history')
+                                    <li class="menu-item labour_expense_history">
+                                        <a href="#" class="menu-link"><img
+                                                src="{{ asset('assets/img/icons/labor-day.png') }}" alt="slack"
+                                                class="me-3" height="20">
+                                            <div>Weekly History</div>
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('labour expenses-labour advance amount')
+                                    <li
+                                        class="menu-item {{ \Request::route()->getName() == 'payment-summary' ? 'active open' : '' }}">
+                                        <a href="{{ route('payment-summary') }}" class="menu-link"><img
+                                                src="{{ asset('assets/img/icons/hand-money.jpg') }}" alt="slack"
+                                                class="me-3" height="20">
+                                            <div>Labour Advance Amount</div>
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('labour expenses-delete history')
+                                    <li
+                                        class="menu-item {{ \Request::route()->getName() == 'payment-summary' ? 'active open' : '' }}">
+                                        <a href="{{ route('payment-summary') }}" class="menu-link"><img
+                                                src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
+                                                height="20">
+                                            <div>Labour Deleted History</div>
+                                        </a>
+                                    </li>
+                                @endcan
+                            </ul>
                         </li>
                     @endcan
                 </ul>
@@ -234,36 +275,37 @@
     </ul>
 
 </aside>
-<div class="modal fade" id="labour_total_popup" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+<div class="modal fade" id="labour_total_popup" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-lg ">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalToggleLabel">Weekly Salary details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="labour_loadingsalary"></div>
-        </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Weekly Salary details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="labour_loadingsalary"></div>
+            </div>
 
-      </div>
+        </div>
     </div>
-  </div>
+</div>
 
 
 <script>
-  $('.labour_expense_history').click(function(){
-    $('.preloader').css('display','block');
-    $.ajax({
-    type:"get",
-    url:"{{route('labour-expenses-index')}}",
-    dataType:'json',
-    success:function(html){
-      console.log(html);
+    $('.labour_expense_history').click(function() {
+        $('.preloader').css('display', 'block');
+        $.ajax({
+            type: "get",
+            url: "{{ route('labour-expenses-index') }}",
+            dataType: 'json',
+            success: function(html) {
+                console.log(html);
 
-      $('.labour_loadingsalary').html(html);
-      $('.preloader').css('display','none');
-      $('#labour_total_popup').modal('show');
-    }
-  });
-  });
+                $('.labour_loadingsalary').html(html);
+                $('.preloader').css('display', 'none');
+                $('#labour_total_popup').modal('show');
+            }
+        });
+    });
 </script>

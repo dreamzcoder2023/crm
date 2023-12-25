@@ -28,7 +28,7 @@
 
 }
   </style>
-@section('title', 'Labour')
+@section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 

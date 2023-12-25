@@ -39,7 +39,7 @@ td, th {
 
   </style>
 
-@section('title', 'Tables - Basic Tables')
+@section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 
 @section('content')

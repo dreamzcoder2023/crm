@@ -207,6 +207,8 @@ Route::get('/labour-expenses/delete/{id}',[LabourExpensesController::class,'labo
 Route::get('/labour-salary',[LabourExpensesController::class, 'labour_salary'])->name('labour-salary');
 Route::get('/labour-expenses-project',[LabourExpensesController::class, 'labour_expense_project'])->name('labour-expenses-project');
 Route::get('/labour-expenses-labour',[LabourExpensesController::class, 'labour_expenses_details'])->name('labour-expenses-labour');
+Route::post('/labour-expenses-store', [LabourExpensesController::class, 'labour_expenses_store'])->name('labour-expenses-store');
+Route::get('/labour-expenses-history', [LabourExpensesController::class, 'labour_expenses_history'])->name('labour-expenses-history');
 //vendor ended
 //vendor started
 Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');

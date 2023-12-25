@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Edit Labour')
+@section('title', 'Edit | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
     <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -116,7 +116,7 @@
                                             <input type="text" onkeypress="allowNumbersOnly(event)" value="{{ $user->salary }}" name="salary" id="salary" class="form-control phone-mask" placeholder="Enter salary" readonly/>
                                             <label id="salary-error" class="error" for="basic-default-job_title">Salary  is required</label>
                                           </div>
-                                         
+
 
 
                                         <center> <button type="submit" class="btn btn-primary"

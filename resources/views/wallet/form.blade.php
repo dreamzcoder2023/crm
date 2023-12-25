@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Create Wallet')
+@section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <h4 class="fw-bold py-3 mb-4">
@@ -86,7 +86,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         // Initialize the datepicker
-  
+
 
         // Hide error messages initially
         $('.error').addClass('hide');

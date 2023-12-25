@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('Login') }}</title>
+    <link rel="icon" type="image/x-icon" href="http://127.0.0.1:8000/assets/img/icons/housefix-favicon.png" />
+    <title>{{ __('Login | HOUSE FIX - A DOCTOR FOR YOUR HOUSE') }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <style>

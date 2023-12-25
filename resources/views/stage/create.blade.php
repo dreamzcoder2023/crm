@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Create Stages')
+@section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -13,15 +13,15 @@
   <div class="col-md-12">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('stage-index')}}"><i class="bx me-1"></i> Back</a></li>
-      
+
     </ul>
   </div></div>
 <div class="row">
   <!-- Basic Layout -->
   <div class="col-xxl">
     <div class="card mb-4" style="top:30px">
-     
-      
+
+
       <div class="card-body">
         <form name="createStage" action="{{route('stage.store')}}" method="post" >
             @csrf
@@ -31,7 +31,7 @@
               <input type="text" name="name" class="form-control" id="basic-default-name" placeholder="Enter Stage Name" />
             </div>
           </div>
-         
+
          <div class="row justify-content-end">
             <div class="col-sm-10">
               <button type="submit" class="btn btn-primary">Save</button>

@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Create Client')
+@section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -13,7 +13,7 @@
   <div class="col-md-12">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('client-index')}}"><i class="bx me-1"></i> Back </a></li>
-      
+
     </ul>
   </div></div>
 
@@ -23,9 +23,9 @@
   <div class="col-xl">
     <div class="card mb-4" style="margin-top:30px;">
       <div class="card-header d-flex justify-content-between align-items-center">
-       
+
       </div>
-     
+
       <div class="card-body">
         <div class="row">
             <div class="col-6"><div class="mb-3">
@@ -44,13 +44,13 @@
           </div>
           <div class="mb-3">
             <label class="form-label" for="basic-default-email">Email</label>
-           
+
               <input  type="text" id="email" name="email" class="form-control" placeholder="Enter Email"  value=""/>
               <label id="email-error" class="error" for="basic-default-email">Email is required</label>
               <label id="email-invalid-error" class="error" for="basic-default-email">Email is invalid</label>
-            
+
           </div>
-   
+
 </div>
             <div class="col-6">
             <div class="mb-3">
@@ -76,9 +76,9 @@
         </div>
 
         </div>
-        
-          
-          
+
+
+
       </div>
     </div>
   </div>

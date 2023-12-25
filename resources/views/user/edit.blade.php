@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Edit Member')
+@section('title', 'Edit | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -12,7 +12,7 @@
   <div class="col-md-12">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('user-index')}}"><i class="bx me-1"></i> Back </a></li>
-      
+
     </ul>
   </div></div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -31,7 +31,7 @@
   <div class="col-xl">
     <div class="card mb-4" style="margin-top:30px;">
       <div class="card-header d-flex justify-content-between align-items-center">
-       
+
       </div>
       <div class="card-body">
         <div class="row">
@@ -59,15 +59,15 @@
           </div>
         <!--  <div class="mb-3">
             <label class="form-label" for="basic-default-email">Password</label>
-           
+
               <input  type="password"  value="{{$user->password}}" readonly id="password" name="password" class="form-control" placeholder="Enter Password" aria-label="john.doe" aria-describedby="basic-default-email2" />
               <label id="password-error" class="error" for="basic-default-password">Password is required</label>
               <label id="password-invalid-error" class="error" for="basic-default-password">Password must be at least 8 characters long</label>
-           
+
           </div>
           <div class="mb-3">
             <label class="form-label" for="basic-default-email">Confirm Password</label>
-           
+
               <input  type="password" id="confirm_password"  value="{{$user->confirm_password}}" readonly name="confirm_password" class="form-control" placeholder="Enter Confirm Password" aria-label="john.doe" aria-describedby="basic-default-email2" />
               <label id="confirm-error" class="error" for="basic-default-confirm_password">Confirm Password is required</label>
               <label id="confirm-invalid-error" class="error" for="basic-default-password">Confirm Password must be at least 8 characters long</label>
@@ -97,20 +97,20 @@
           <div class="mb-3">
           <label class="form-label" for="basic-default-phone">Profile Photo</label>
             <input type="file" name="image" id="image" class="form-control" accept="image/*" placeholder="image">
-        
+
             @if($user->image != '' || $user->image != null)
             <input type="hidden" id="image_status" name="image_status" value="{{ $user->image }}">
             <img src="{{url('public/images/'.$user->image)}}" width="50px" height="50px">
             @endif
-            <label id="job_title-error" class="error" for="basic-default-job_title">Profile photo is required</label> 
+            <label id="job_title-error" class="error" for="basic-default-job_title">Profile photo is required</label>
           </div>
           <div class="mb-3">
-         <?php //dd($modeluser); ?> 
+         <?php //dd($modeluser); ?>
             <label class="form-label" for="basic-default-phone">Roles</label>
             <select class="form-control" name="roles" id="roles">
             <option value="">Select roles </option>
             @foreach($role as $role)
-           
+
             <option value="{{$role->id}}" {{$role->id == $modeluser->role_id ? 'selected' : '' }}  >{{$role->name}}</option>
             @endforeach
             </select>
@@ -122,9 +122,9 @@
         </div>
 
         </div>
-        
-          
-          
+
+
+
       </div>
     </div>
   </div>
@@ -139,9 +139,9 @@
   <div class="col-xl">
     <div class="card mb-4" style="margin-top:30px;">
       <div class="card-header d-flex justify-content-between align-items-center">
-       
+
       </div>
-     
+
       <div class="card-body">
         <div class="row">
             <div class="col-6"><div class="mb-3">
@@ -155,8 +155,8 @@
             <input type="text" onkeypress="allowNumbersOnly(event)" value="{{$user->salary}}" name="salary" id="salary" class="form-control phone-mask" placeholder="Enter salary" />
             <label id="form2-salary-error" class="error" for="basic-default-job_title">Job title  is required</label>
           </div>
-          
-          
+
+
           </div>
             <div class="col-6"><div class="mb-3">
             <label class="form-label" for="datetimepicker1">Date of joining</label><br>
@@ -168,18 +168,18 @@
             <input type="hidden" name="government_image_status" value="{{ $user->government_image }}">
             <img src="{{url('public/images/'.$user->government_image)}}" width="30px">
             @endif
-            <label id="government_image-error" class="error" for="basic-default-job_title">Upload Government document is </label> 
+            <label id="government_image-error" class="error" for="basic-default-job_title">Upload Government document is </label>
           </div>
-       
-          
+
+
       <center>  <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Submit</button>
     </center>
         </div>
 
         </div>
-        
-          
-          
+
+
+
       </div>
     </div>
   </div>
@@ -193,7 +193,7 @@
     $(document).ready(function(){
         $('.error').addClass('hide');
     });
-    function phoneno(){          
+    function phoneno(){
             $('#phone').keypress(function(e) {
                 var a = [];
                 var k = e.which;
@@ -260,7 +260,7 @@
         emailname = true;
       }
     }
-  
+
     if(phone.length < 1){
       $('#phone-error').removeClass('hide');
     }
@@ -321,7 +321,7 @@
     var salary = $('#salary').val();
     var image_status = $('#government_image_status').val();
  var job_titlename=false,imagename=false,salaryname=false;
- 
+
     console.log('job_title',job_title);
     console.log('image',image);
     console.log('salary',salary);
@@ -343,11 +343,11 @@
     if (salary == "") {
       $('#form2-salary-error').removeClass('hide');
     } else  {
-     
+
         $('#form2-salary-error').addClass('hide');
         salaryname = true;
       }
-   
+
     if(salaryname == true && imagename == true && job_titlename == true ){
       document.getElementById("EditJobInfo").submit();
     }

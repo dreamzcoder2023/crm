@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-@section('title', 'Project Details')
+@section('title', 'View | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 <style>
  @media only screen and (max-width:320px){
     .aa{

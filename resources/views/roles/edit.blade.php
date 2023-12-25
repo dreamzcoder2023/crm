@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Edit Role')
+@section('title', 'Edit | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -69,7 +69,7 @@
         <h5>{{ $prefixData['heading'] }}</h5> <!-- Display the heading -->
         <div class="form-check col-12" >
             @foreach ($prefixData['permissions'] as $permissionData)
-        
+
             <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permissionData['name'] }}" {{in_array($permissionData['name'],$checked_role) ? 'checked' : ''}} id="flexCheckDefault{{ $loop->parent->index }}-{{ $loop->index }}">
             <label class="form-check-label" style="display:inline-flex; width:91px; margin-bottom:15px; font-weight:100;" for="flexCheckDefault{{ $loop->parent->index }}-{{ $loop->index }}">
                 {{ $permissionData['permissionName'] }}

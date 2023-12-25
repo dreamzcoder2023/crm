@@ -38,7 +38,7 @@ td, th {
 }
 
   </style>
-@section('title', 'Payment Expenses')
+@section('title', 'Report | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <div style="margin-top: 30px;">

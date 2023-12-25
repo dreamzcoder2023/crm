@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Create Expenses')
+@section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
@@ -13,8 +13,8 @@
   <!-- Basic Layout -->
   <div class="col-xxl">
     <div class="card mb-4" >
-     
-      
+
+
       <div class="card-body">
         <form name="createExpenses" id="createExpenses" action="{{route('expenses.store')}}" method="post" enctype="multipart/form-data" >
             @csrf
@@ -45,10 +45,10 @@
             @endforeach
             </select>
             </div>
-           
+
             <div class="mb-3">
             <label class="form-label" for="basic-default-email">amount</label>
-           
+
            <input  type="text" id="amount" name="amount" class="form-control" placeholder="Enter amount" oninput="amountcheck(this.value)"  value=""  onkeypress="allowNumbersOnly(event)" />
            <label id="amount-error" class="error" for="basic-default-email">Amount is required</label>
            <input type="hidden" class="amount-check-error" value=""><br>
@@ -68,11 +68,11 @@
             <label class="form-label" for="basic-default-phone">Image</label>
             <input type="file" name="image" class="form-control" accept="image/*" placeholder="image">
             </div>
-            
+
             </div>
             <div class="col-6">
-            
-            
+
+
             <div class="mb-3">
             <label class="form-label" for="basic-default-phone">Description</label>
             <textarea type="text"  name="description" id="description" class="form-control phone-mask" style="height:28px"></textarea>
@@ -87,7 +87,7 @@
             <label class="form-label" for="basic-default-message">Unpaid Amount</label><br>
             <input  type="text" class="form-control" value="" id="unpaid_amt" name="unpaid_amt" readonly>
           </div> -->
-          
+
           <div class="mb-3">
                             <label class="form-label" for="datetimepicker1">Date</label><br>
                             <input type="date" class="form-control" id="datetimepicker1" name="current_date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
@@ -97,9 +97,9 @@
                             <input type="time" id="appt" class="form-control" name="time" value="{{ Carbon\Carbon::now()->format('h:i:s') }}">
                         </div>
             </div>
- 
+
 </div>
-         
+
 <div class="row">
     <div class="col-sm-10 text-right" style="top:-40px">
         <button type="submit" class="btn btn-primary">Save</button>
@@ -151,9 +151,9 @@
             $('.addcategory').attr("style", "display: none !important");
             $('#showing_error_msg').addClass('hide');
             $('#showing_success_msg').removeClass('hide');
-        
+
             $( "#here" ).load(window.location.href + " #here" );
-            
+
           }
           if(result == 'false' || result == false){
             $('#showing_error_msg').removeClass('hide');
@@ -186,7 +186,7 @@
   console.log('category_id',category);
   console.log('amount',amount);
   console.log('paid',paid);
- 
+
   var clientname=false,amountname=false,pamtname=false,paymentmode=false,paidname=false;
   if(category.length < 1){
       $('#category-error').removeClass('hide');
@@ -217,7 +217,7 @@
   //     $('#paid_amt-error').addClass('hide');
   //     pamtname = true;
   //     amountname = true;
-      
+
   //   }
   //   else if(parseInt(paid) > parseInt(amount)){
   //     console.log(amount,paid);
@@ -229,7 +229,7 @@
       amountname = true;
       pamtname = true;
     }
-    
+
     if(clientname == true && amountname == true  &&(test == false || test == "false") && paymentmode == true && paidname == true){
       document.getElementById("createExpenses").submit();
     }
