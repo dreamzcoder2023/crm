@@ -212,8 +212,8 @@
                                 @endcan
                                 @can('labour expenses-labour advance amount')
                                     <li
-                                        class="menu-item {{ \Request::route()->getName() == 'payment-summary' ? 'active open' : '' }}">
-                                        <a href="{{ route('payment-summary') }}" class="menu-link"><img
+                                        class="menu-item {{ \Request::route()->getName() == 'labour-expenses-advance' ? 'active open' : '' }}">
+                                        <a href="{{ route('labour-expenses-advance') }}" class="menu-link"><img
                                                 src="{{ asset('assets/img/icons/hand-money.jpg') }}" alt="slack"
                                                 class="me-3" height="20">
                                             <div>Labour Advance Amount</div>

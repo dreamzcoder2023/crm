@@ -313,7 +313,7 @@
                 var project_id = $(this).attr('data-project_id')
                 console.log('val', val);
                 $.ajax({
-                  headers: {
+                    headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     type: "post",
@@ -327,13 +327,17 @@
                     dataType: 'json',
                     success: function(html) {
                         console.log(html);
-
-                        // $('.loadingsalary').html(html);
-                        // $('.preloader').css('display', 'none');
-                        // $('#labour_weeklypopup').modal('show');
+                        toastr.success('Unpaid Successfully', {
+                            timeOut: 1000,
+                            fadeOut: 1000,
+                            onHidden: function() {
+                                // Ensure the previous Toastr is fully removed before reloading
+                                toastr.clear();
                     }
                 });
+              }
             });
+          });
         </script>
 
     @endsection
