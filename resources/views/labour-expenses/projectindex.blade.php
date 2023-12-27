@@ -330,11 +330,8 @@
                         toastr.success('Unpaid Successfully', {
                             timeOut: 1000,
                             fadeOut: 1000,
-                            onHidden: function() {
-                                // Ensure the previous Toastr is fully removed before reloading
-                                toastr.clear();
-                    }
                 });
+                toastr.options.onHidden = function() {  location.reload(); }
               }
             });
           });

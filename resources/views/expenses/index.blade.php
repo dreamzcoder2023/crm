@@ -179,9 +179,9 @@
                             <th>Edited By</th>
                         @endrole
 
-                        @role('Admin')
+                       @canany(['expenses-delete','expenses-edit'])
                             <th>Action</th>
-                        @endrole
+                        @endcanany
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -217,7 +217,7 @@
                                 <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
                             @endrole
 
-
+                            @canany(['expenses-edit','expenses-delete'])
                             <td>
                                 @can('expenses-edit')
                                     <a class="" href="{{ route('expenses-edit', $expense->id) }}"><i class="fa fa-edit"
@@ -229,7 +229,7 @@
                                             style="font-size:24px; color:red"></i> </a><br />
                                 @endcan
                             </td>
-
+                            @endcanany
                         </tr>
                     @endforeach
 

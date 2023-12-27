@@ -1,8 +1,10 @@
 @extends('layouts/contentNavbarLayout')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
 
 
 
@@ -173,17 +175,14 @@
                         <th>Image</th>
                         <th>Payment Mode</th>
                         <th>Description</th>
-
-
-                        @role('Admin')
                             <th>Added By</th>
 
                             <th>Edited By</th>
-                        @endrole
-
-                        @role('Admin')
+                            <th>Advance <br/>Edited By</th>
+                            @canany(['labour expenses-delete','labour expenses-edit'])
                             <th>Action</th>
-                        @endrole
+                            @endcanany
+
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -215,24 +214,23 @@
                                 @endif</td>
                             <td>{{ $expense->payment_name }}</td>
                             <td>{{ $expense->description ? $expense->description : '--' }}</td>
-
-                            @role('Admin')
-                                <td>{{ $expense->first . '' . $expense->last }}</td>
-                                <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
-                            @endrole
-
-
+                                <td>{{ $expense->first }} {{ $expense->last }}</td>
+                                <td>{{ $expense->first_name }} {{  $expense->last_name }}</td>
+                                <td>{{ $expense->labour_first}} {{ $expense->labour_last }}</td>
+                                @canany(['labour expenses-delete','labour expenses-edit'])
                             <td>
-                                @can('expenses-edit')
+                              @can('labour expenses-edit')
                                     <a class="" href="{{ route('expenses-edit', $expense->id) }}"><i class="fa fa-edit"
                                             style="font-size:24px"></i></a>
-                                @endcan
-                                @can('expenses-delete')
+                              @endcan
+                              @can('labour expenses-delete')
                                     <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
                                         data-id="{{ $expense->id }}" class="deleteExpense"><i class="fa fa-trash-o"
-                                            style="font-size:24px; color:red"></i> </a><br />
-                                @endcan
+                                            style="font-size:24px; color:red"></i> </a>
+                              @endcan
+
                             </td>
+                            @endcanany
 
                         </tr>
                     @endforeach
@@ -318,17 +316,10 @@
 
     <!-- modal popup for delete role ended -->
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
+
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+
 
     <script>
         $(document).ready(function() {

@@ -31,6 +31,7 @@
                     <form name="createExpenses" id="createExpenses" action="{{ route('labour-expenses.store') }}"
                         method="post" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="user_id" id="user_id" value="{{Auth::user()->id}}">
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3 " id="here">
@@ -314,10 +315,11 @@
 
         function amountcheck(amount) {
             console.log(amount, "amount check");
+            var user_id = $('#user_id').val();
             $.ajax({
                 url: "{{ route('amount-check') }}",
                 data: {
-                    'amount': amount
+                    'amount': amount,'user_id' : user_id
                 },
                 type: 'GET',
                 dataType: 'json',

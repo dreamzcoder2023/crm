@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdvanceHistory;
 use App\Models\Category;
 use App\Models\Expenses;
 use App\Models\Labour;
@@ -217,13 +218,9 @@ class LabourExpensesController extends Controller
 
     $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
       ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-    if ($role != 1) {
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name');
-    } else {
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name');
-    }
+
+      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
     if ($from != '' ) {
       $expenses = $expenses->wheredate('current_date', '>=',$from);
       //   ->toSql();
@@ -272,12 +269,38 @@ class LabourExpensesController extends Controller
     return view('labour-expenses.labourindex',['users' => $users]);
   }
   public function advance_form($id){
-    $labour = Labour::find($id)->first();
+    $labour = Labour::find($id);
     $project = Expenses::where('labour_id',$id)->where('extra_amt','>',0)->leftjoin('project_details','project_details.id','=','expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
     return view('labour-expenses.advanceform',['labour' => $labour,'project' => $project]);
   }
   public function labour_project_amount(Request $request){
     $amount =  Expenses::where('labour_id',$request->labour_id)->where('extra_amt','>',0)->where('project_id',$request->project_id)->sum('extra_amt');
     return response()->json($amount);
+  }
+  public function labour_advance_store(Request $request){
+   // dd($request->all());
+    $project = Expenses::where(['labour_id' => $request->labour_id,'project_id' => $request->project_id ])->get();
+    $labour = Labour::where('id',$request->labour_id)->first();
+    $labour['advance_amt'] = abs($labour->advance_amt - $request->extra_amt);
+    $labour['date'] = $request->current_date . ' ' . $request->time;
+    $labour->update();
+    $amount = $request->extra_amt;
+    foreach($project as $project){
+
+      $amount = abs($amount-$project->extra_amt);
+      $input['labour_id'] = $request->labour_id;
+      $input['expense_id'] = $project->id;
+      $input['amount'] = $project->extra_amt;
+      AdvanceHistory::create($input);
+      if($request->extra_amt <= $project->extra_amt){
+        $project['extra_amt'] = $request->extra_amt - $project->extra_amt;
+      }
+      else{
+        $project['extra_amt'] = 0;
+      }
+      $project['is_advance'] = Auth::user()->id;
+      $project->update();
+    }
+   return redirect()->route('labour-expenses-advance')->with('popup','open');
   }
 }

@@ -18,6 +18,7 @@
       <div class="card-body">
         <form name="createExpenses" id="createExpenses" action="{{route('expenses.store')}}" method="post" enctype="multipart/form-data" >
             @csrf
+            <input type="hidden" name="user_id" id="user_id" value="{{Auth::user()->id}}">
           <div class="row">
             <div class="col-6">
             <div class="mb-3 " id="here">
@@ -235,10 +236,11 @@
     }
   });
   function amountcheck(amount){
+    var user_id = $('#user_id').val();
       console.log(amount,"amount check");
         $.ajax({
         url : "{{ route('amount-check') }}",
-        data : {'amount' : amount},
+        data : {'amount' : amount,'user_id' : user_id},
         type : 'GET',
         dataType : 'json',
         success : function(result){

@@ -212,6 +212,8 @@ Route::get('/labour-expenses-history', [LabourExpensesController::class, 'labour
 Route::get('/labour-expenses-advance', [LabourExpensesController::class, 'labour_advance'])->name('labour-expenses-advance');
 Route::get('/advanceform/{id}', [LabourExpensesController::class, 'advance_form'])->name('advanceform');
 Route::get('/labour_project_amount', [LabourExpensesController::class, 'labour_project_amount'])->name('labour_project_amount');
+Route::post('/labour-advance/store', [LabourExpensesController::class, 'labour_advance_store'])->name('labour-advance.store');
+
 //vendor ended
 //vendor started
 Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');

@@ -76,7 +76,9 @@ div.dataTables_wrapper div.dataTables_length select {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
+<link
+  href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css"
+  rel="stylesheet"  type='text/css'>
 <script>
   toastr.options = {
   "closeButton": false,
@@ -95,7 +97,7 @@ div.dataTables_wrapper div.dataTables_length select {
   "showMethod": "fadeIn",
   "hideMethod": "fadeOut"
 };
-toastr.options.onHidden = function() {  location.reload(); }
+
   </script>
 @php
 $containerNav = $containerNav ?? 'container-fluid';
@@ -151,12 +153,12 @@ $navbarDetached = ($navbarDetached ?? '');
           <li class="nav-item lh-1 me-3 dropdown">
        <img src="{{asset('assets/img/icons/expense.png')}}" class="dropbtn" alt="slack" class="me-3" height="70" width="70" >
           <div class="dropdown-content">
-            <a href="{{ route('expenses-create') }}">Add Expenses</a>
-            <a href="{{ route('labour-expenses-create') }}">Add Labour Expenses</a>
-            <a href="{{ route('vendor-expenses-create') }}">Add Vendor Expenses</a>
+          @can('expenses-create')  <a href="{{ route('expenses-create') }}">Add Expenses</a>@endcan
+          @can('labour expenses-create') <a href="{{ route('labour-expenses-create') }}">Add Labour Expenses</a> @endcan
+          @can('vendor expenses-create')  <a href="{{ route('vendor-expenses-create') }}">Add Vendor Expenses</a>@endcan
           </div>
         </li>
-        @endcan
+        @endcanany
           <!--- transfer started -->
           @can('transfer-create')          <li class="nav-item lh-1 me-3">
             <div>

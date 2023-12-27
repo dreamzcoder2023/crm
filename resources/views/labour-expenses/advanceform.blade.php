@@ -25,7 +25,7 @@
 
 
                 <div class="card-body">
-                    <form name="UnpaidSubmit" action="{{ route('unpaid.store') }}" id="UnpaidSubmit" method="post">
+                    <form name="UnpaidSubmit" action="{{ route('labour-advance.store') }}" id="UnpaidSubmit" method="post">
                         @csrf
                         <div class="col-xl">
                             <div class="card mb-4" style="margin-top:30px;">
@@ -36,12 +36,14 @@
                                             <label class="form-label" for="basic-default-email">Paid amount</label>
 
                                             <input type="text" onkeypress="allowNumbersOnly(event)" id="amount"
-                                                name="unpaid_amt" class="form-control" placeholder="Enter amount"
+                                                name="extra_amt" class="form-control" placeholder="Enter amount"
                                                 value="" />
-                                            <label id="amount-error" class="error" for="basic-default-email">Amount is
-                                                required</label>
+
+                                                <input type="hidden" name="advance_amt" id="advance_amt" value="{{ $labour->advance_amt }}">
                                             <p class="advance_amt" style="color:blue">Labour Total Advance Amount is
                                                 :{{ $labour->advance_amt }} </p>
+                                                <label id="amount-error" class="error" for="basic-default-email">Amount is
+                                                  required</label>
                                         </div>
 
                                         <div class="mb-3">
@@ -53,18 +55,22 @@
                                                     <option value="{{ $project->id }}">{{ $project->name }}</option>
                                                 @endforeach
                                             </select>
+                                            <input type="hidden" name="project_advance_amt" id="project_advance_amt" value="">
                                             <p class="project_advance_amt" style="color:blue"> </p>
+                                            <label id="project-error" class="error" for="basic-default-email">Project is
+                                              required</label>
+                                              <label id="advance-error" class="error" for="basic-default-email">Amount is insufficient</label>
                                         </div>
 
                                         <div class="mb-3">
                                             <label class="form-label" for="datetimepicker1">Date</label><br>
                                             <input type="date" class="form-control" id="datetimepicker1"
-                                                name="current_date" value="">
+                                                name="current_date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                                         </div>
                                         <div class="mb-3">
                                             <label for="appt">Time:</label><br>
                                             <input type="time" id="appt" class="form-control" name="time"
-                                                value="">
+                                                value="{{ Carbon\Carbon::now()->format('h:i:s') }}">
                                         </div>
                                         <center> <button type="submit" class="btn btn-primary"
                                                 style="margin-top: 20px;">Submit</button>
@@ -94,6 +100,7 @@
     <script>
         $(document).ready(function() {
             $('.error').addClass('hide');
+
         });
 
         function allowNumbersOnly(e) {
@@ -106,9 +113,16 @@
             e.preventDefault();
 
             var amount = $('#amount').val();
+            var project_id = $('#project_id :selected').val();
+            var advance_amt = $('#advance_amt').val();
+            var project_advance_amt = $('#project_advance_amt').val();
 
             console.log('amount', amount);
-            var amountname = false;
+            console.log('project id', project_id);
+            console.log('advance_amt', advance_amt);
+            console.log('project_advance_amt', project_advance_amt);
+
+            var amountname = false,projectname = false,advancename = false;
 
             if (amount == "") {
                 $('#amount-error').removeClass('hide');
@@ -116,7 +130,21 @@
                 $('#amount-error').addClass('hide');
                 amountname = true;
             }
-            if (amountname == true) {
+            if(project_id == ""){
+                 $('#project-error').removeClass('hide');
+            } else {
+                $('#project-error').addClass('hide');
+                projectname = true;
+            }
+            if(parseInt(advance_amt) < parseInt(amount) && parseInt(project_advance_amt) < parseInt(amount)){
+                 $('#advance-error').removeClass('hide');
+                 console.log('hi');
+            } else {
+                $('#advance-error').addClass('hide');
+                advancename = true;
+                console.log('else');
+            }
+            if (amountname == true && projectname == true &&  advancename == true) {
                 document.getElementById("UnpaidSubmit").submit();
             }
         });
@@ -133,6 +161,7 @@
                     dataType: 'json',
                     success: function(result) {
                         console.log("result", result);
+                        $('#project_advance_amt').val(result);
                         $('.project_advance_amt').text('Labour Project Advance Amount is :'+result);
                     }
                 });
