@@ -241,9 +241,9 @@ class ExpensesController extends Controller
     $wallet = User::where('id', $request->user_id)->first();
     $amount = $request->amount;
 
-    $response = false;
-    if (int($amount) < 0) {
-      $response = true;
+    $response = true;
+    if (($wallet->wallet > 0) && ($amount < $wallet->wallet)) {
+      $response = false;
     }
     return response()->json($response);
   }

@@ -303,4 +303,15 @@ class LabourExpensesController extends Controller
     }
    return redirect()->route('labour-expenses-advance')->with('popup','open');
   }
+  public function edit(Request $request){
+    $expense = Expenses::join('users', 'users.id', '=', 'expenses.user_id')->where('expenses.id', '=', $request->id)->select('expenses.*', 'users.wallet')->first();
+    $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
+    $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
+    $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
+    $datetime = explode(' ', $expense->current_date);
+    $current_date = $datetime[0];
+    $current_time = $datetime[1];
+    $labour = Labour::latest()->get();
+    return view('labour-expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time,'labour' => $labour]);
+  }
 }

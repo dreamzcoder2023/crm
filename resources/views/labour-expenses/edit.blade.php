@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
 
-@section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
+@section('title', 'Edit | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 
@@ -19,7 +19,7 @@
 
     <!-- Basic Layout & Basic with Icons -->
     <h4 class="fw-bold py-3 mb-4">
-        <span class="text-muted fw-light">Add Labour Expenses
+        <span class="text-muted fw-light">Edit Labour Expenses
     </h4>
     <div class="row">
         <!-- Basic Layout -->
@@ -28,10 +28,11 @@
 
 
                 <div class="card-body">
-                    <form name="createExpenses" id="createExpenses" action="{{ route('labour-expenses.store') }}"
+                    <form name="createExpenses" id="createExpenses" action="{{ route('labour-expenses.update') }}"
                         method="post" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="user_id" id="user_id" value="{{Auth::user()->id}}">
+                        {{method('PUT')}}
+                        <input type="hidden" name="user_id" id="user_id" value="{{$expense->user_id}}">
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3 " id="here">
@@ -55,7 +56,7 @@
                                     <select class="form-control selectpicker" name="project_id" data-live-search="true" id="project_id">
                                         <option value="">Select project </option>
                                         @foreach ($project as $project)
-                                            <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                            <option value="{{ $project->id }}" {{$expense->project_id  == $project->id ? 'selected' : ''}}>{{ $project->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="project-error" class="error hide" for="basic-default-role">Project is
@@ -66,7 +67,7 @@
                                     <select class="form-control" name="labour_id" id="labour_id">
                                         <option value="">Select labour </option>
                                         @foreach ($labours as $labour)
-                                            <option value="{{ $labour->id }}">{{ $labour->name }}</option>
+                                            <option value="{{ $labour->id }}" {{$expense->labour_id == $labour->id ? 'selected' : ''}}>{{ $labour->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="labour-error" class="error hide" for="basic-default-role">Labour is
@@ -78,7 +79,7 @@
 
                                     <input type="text" id="amount" name="amount" class="form-control"
                                         placeholder="Enter amount" oninput="amountcheck(this.value)"
-                                        onkeypress="allowNumbersOnly(event)" />
+                                        onkeypress="allowNumbersOnly(event)"  value="{{$expense->amount}}"/>
                                     <p class="advance_amt" style="color:blue"> </p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
@@ -91,7 +92,7 @@
                                     <select class="form-control" name="payment_mode" id="payment_mode">
                                         <option value="">Select payment </option>
                                         @foreach ($payment as $payment)
-                                            <option value="{{ $payment->id }}">{{ $payment->name }}</option>
+                                            <option value="{{ $payment->id }}" {{$expense->payment_id == $payment->id ? 'selected' : ''}}>{{ $payment->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="payment-error" class="error" for="basic-default-role">Payment mode is
@@ -330,7 +331,7 @@
              $('#amount-check-error').removeClass('hide');
           else
           $('#amount-check-error').addClass('hide');
-        
+
                 }
             });
         }

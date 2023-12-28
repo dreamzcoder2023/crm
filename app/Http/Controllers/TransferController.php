@@ -25,7 +25,7 @@ class TransferController extends Controller
 
       if($role == 1){
         $transfers = Transfer::join('users','users.id','=','transferdetails.member_id')->join('users as user_table','user_table.id','=','transferdetails.user_id')->join('payment','payment.id','=','transferdetails.payment_mode')->select('transferdetails.*','users.first_name','users.last_name','user_table.first_name as firstname','user_table.last_name as lastname','payment.name as payment_name');
-        
+
         if($from != '' && $to_date != ''){
           $transfers = $transfers->whereBetween('current_date', [$from,$to_date]);
 
@@ -75,19 +75,18 @@ class TransferController extends Controller
         $user->update();
         return redirect()->route('transfer-history')
         ->with('transfer-popup', 'open');
-    
+
     }
     public function insufficientamt(Request $request){
 
        $wallet = Auth::user()->wallet;
+      // $wallet = User::where('id', $request->user_id)->first();
        $amount = $request->amount;
-     $wallet_ful = $wallet - $amount;
-     $response = false;
-     if($wallet_ful < 0){
-        $response = true;
-     }
-       return response()->json($response);
 
-    }
-   
+       $response = true;
+       if (($wallet->wallet > 0) && ($amount < $wallet->wallet)) {
+         $response = false;
+       }
+       return response()->json($response);
+      }
 }

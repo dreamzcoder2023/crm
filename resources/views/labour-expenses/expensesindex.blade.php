@@ -199,7 +199,7 @@
                             <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                             <td>
                                 @if ($expense->unpaid_amt != 0)
-                                    <b><a href="{{ route('unpaidex-create', $expense->id) }}"
+                                    <b><a
                                         style="color:red">{{ $expense->unpaid_amt }}</a></b> @else<b>
                                         <p style="color:red">{{ $expense->unpaid_amt }}</p>
                                     </b>
@@ -220,7 +220,7 @@
                                 @canany(['labour expenses-delete','labour expenses-edit'])
                             <td>
                               @can('labour expenses-edit')
-                                    <a class="" href="{{ route('expenses-edit', $expense->id) }}"><i class="fa fa-edit"
+                                    <a class="" href="{{ route('labour-expenses-edit', $expense->id) }}"><i class="fa fa-edit"
                                             style="font-size:24px"></i></a>
                               @endcan
                               @can('labour expenses-delete')
