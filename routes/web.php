@@ -222,6 +222,7 @@ Route::post('/vendor-expenses/store', [VendorExpensesController::class, 'store']
 Route::get('/vendor-expenses/edit/{id}',[VendorExpensesController::class, 'edit'])->name('vendor-expenses-edit');
 Route::put('/vendor-expenses/update/{id}', [VendorExpensesController::class, 'update'])->name('vendor-expenses.update');
 Route::get('/vendor-expenses/delete/{id}',[VendorExpensesController::class,'labourdelete'])->name('vendor-expenses-delete');
+Route::get('/vendor-salary',[VendorExpensesController::class, 'vendor_salary'])->name('vendor-salary');
 //vendor ended
 });
 

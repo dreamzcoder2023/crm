@@ -246,7 +246,7 @@
     @endcanany
     @canany(['vendor expenses-list',])
     <li
-        class="menu-item  {{ \Request::route()->getName() == 'vendor-expenses-history' ? 'active open' : '' }}">
+        class="menu-item  {{ \Request::route()->getName() == 'vendor-expenses-index' ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <img
           src="{{ asset('assets/img/icons/vendor-expense.png') }}" alt="slack"
@@ -257,8 +257,8 @@
         <ul class="menu-sub">
             @can('vendor expenses-list')
                 <li
-                    class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history' ? 'active open' : '' }}">
-                    <a href="{{ route('labour-expenses-history') }}" class="menu-link"><img
+                    class="menu-item  {{ \Request::route()->getName() == 'vendor-expenses-index' ? 'active open' : '' }}">
+                    <a href="{{ route('vendor-expenses-index') }}" class="menu-link"><img
                             src="{{ asset('assets/img/icons/seller.png') }}" alt="slack"
                             class="me-3" height="20">
                         <div>Vendor History</div>
