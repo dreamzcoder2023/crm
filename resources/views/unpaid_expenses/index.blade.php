@@ -190,13 +190,10 @@
         <td>{{$expense->first_name.''.$expense->last_name}}</td>
         @endrole
 
-         @canany(['expenses-edit','expenses-delete'])
+         @canany(['expenses-unpaid edit'])
         <td>
-        @can('expenses-edit')
+        @can('expenses-unpaid edit')
         <a class="" href="{{ route('unpaid-create',$expense->id) }}"><i class="fa fa-edit" style="font-size:24px"></i></a>
-        @endcan
-       @can('expenses-delete')
-        <a data-toggle="modal" href="javascript:void(0)" data-user="{{$expense->user_id}}" data-id="{{$expense->id}}" class="deleteExpense"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
         @endcan
       </td>
       @endcanany

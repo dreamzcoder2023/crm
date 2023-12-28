@@ -69,11 +69,16 @@
             </div>
             <div class="mb-3">
             <label class="form-label" for="basic-default-phone">Image</label>
-            <input type="file" name="image" class="form-control" placeholder="image" accept="image/*">
+            <input type="file" name="image" class="form-control" placeholder="image" accept="application/pdf,image/*">
             @if($expense->image != '' || $expense->image != null)
             <input type="hidden" name="image_status" value="{{ $expense->image }}">
-            <img src="/public/images/{{ $expense->image }}" width="30px">
+            <?php $extension = explode('.',$expense->image); ?>
+            @if($extension[1] == 'pdf')
+            <embed src="{{ url('images/' . $expense->image) }}"/>
+              @else
+            <img src="{{ url('images/' . $expense->image) }}" width="30px">
             <span class="deleteImage" style=" cursor: pointer;" data-id="{{$expense->id}}"><img src="{{asset('assets/img/icons/cancel.png')}}" width="10px"/></span>
+            @endif
             @endif
             </div>
             </div>

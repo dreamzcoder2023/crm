@@ -98,7 +98,7 @@ class LabourExpensesController extends Controller
     $input['current_date'] = $request->current_date . ' ' . $request->time;
     $input['paid_amt'] = $request->paid_amt ? $request->paid_amt : 0;
     if ($image = $request->file('image')) {
-      $destinationPath = 'public/images/';
+      $destinationPath = public_Path('images'); 'public/images/';
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
@@ -112,8 +112,8 @@ class LabourExpensesController extends Controller
     $labour = Labour::find($request->labour_id);
     $labour['advance_amt'] = $labour->advance_amt + $extra_amt;
     $labour->update();
-    return redirect()->route('expenses-history')
-      ->with('expenses-popup', 'open');
+    return redirect()->route('labour-expenses-history')
+      ->with('expenses-popup', 'Labour Detail Added Successfully');
   }
   public function labour_salary(Request $request)
   {
@@ -305,13 +305,176 @@ class LabourExpensesController extends Controller
   }
   public function edit(Request $request){
     $expense = Expenses::join('users', 'users.id', '=', 'expenses.user_id')->where('expenses.id', '=', $request->id)->select('expenses.*', 'users.wallet')->first();
-    $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
+    $category = Category::where(['active_status' => 1, 'delete_status' => 0, 'name' => 'salary'])->first();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
     $datetime = explode(' ', $expense->current_date);
     $current_date = $datetime[0];
     $current_time = $datetime[1];
     $labour = Labour::latest()->get();
-    return view('labour-expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time,'labour' => $labour]);
+    return view('labour-expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time,'labours' => $labour]);
+  }
+  public function update(Request $request){
+    $user_id = Auth::user()->id;
+    $input = $request->all();
+    //dd($input);
+    $input['editedBy'] = $user_id;
+    $input['current_date'] = $request->current_date . ' ' . $request->time;
+
+
+
+    if ($image = $request->file('image')) {
+
+      $destinationPath = public_Path('images'); 'public/images/';
+      $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+      $image->move($destinationPath, $profileImage);
+
+
+      $input['image'] = $profileImage;
+    }
+    // else{
+    //   if($request->image_status == '' && $request->image_status == null){}
+    //     unset($input['image']);
+
+    // }
+
+    $expenses = Expenses::find($request->id);
+
+    $extra_amt = 0;
+    $unpaid_amt = 0;
+
+    if ($expenses->paid_amt < $request->paid_amt) {
+
+
+      $project = User::find($request->user_id);
+
+      $minus1 = $request->paid_amt - $expenses->paid_amt;
+      $minus = $project->wallet - $minus1;
+      $project['wallet'] = $minus;
+      $project->update();
+      $input['paid_amt'] = $expenses->paid_amt + $minus1;
+      if ($request->amount <= $request->paid_amt) {
+        $extra_amt = $request->paid_amt - $request->amount;
+      }
+      if ($request->paid_amt < $request->amount) {
+        $unpaid_amt = $request->amount - $request->paid_amt;
+      }
+    } else {
+
+
+      $project = User::find($request->user_id);
+
+      $minus1 = $expenses->paid_amt - $request->paid_amt;
+      $minus = $project->wallet + $minus1;
+      $project['wallet'] = $minus;
+
+      $project->update();
+      $input['paid_amt'] = $expenses->paid_amt - $minus1;
+      if ($request->amount <= $request->paid_amt) {
+        $extra_amt = $request->paid_amt - $request->amount;
+      }
+      if ($request->paid_amt < $request->amount) {
+        $unpaid_amt = $request->amount - $request->paid_amt;
+      }
+    }
+
+    // exit;
+    $input['extra_amt'] = $extra_amt;
+    $input['unpaid_amt'] =  $unpaid_amt;
+    // print_r($input);exit;
+    $expenses->update($input);
+    return redirect()->route('labour-expenses-history')
+      ->with('expenses-popup', 'Labour Detail Updated Successfully');
+  }
+  public function labourdelete(Request $request)
+  {
+    $expense = Expenses::find($request->id);
+    $expense['reason'] = $request->reason;
+    $expense->update();
+    $wallet = User::find($request->user);
+    $wallet['wallet'] = $wallet->wallet + $expense->paid_amt;
+    $wallet->update();
+    $expense->delete();
+    return redirect()->route('labour-expenses-history')
+    ->with('expenses-popup', 'Labour Detail Deleted Successfully');
+  }
+  public function delete_record(Request $request)
+  {
+    $category_filter = $request->category_id;
+    $project_filter = $request->project_id;
+    $user_filter = $request->user_id;
+    //$from1 = now()->format('Y-m-d');
+
+    // if($request->from_date != ''){
+    //   $from = $request->from_date.' '.'00:00:00';
+    // }
+    // else{
+    //   $from = $from1.' '.'00:00:00';
+    // }
+
+    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
+    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+
+
+    // print_r($from);
+    // print_r($to_date);
+    // exit;
+
+
+
+    $auth = Auth::user()->id;
+    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+
+    $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+      ->whereNotNull('expenses.labour_id')->leftjoin('labour_details as l','l.id','=','expenses.labour_id')->leftJoin('project_details', function ($join) {
+        $join->on('project_details.id', 'expenses.project_id')
+          ->where('expenses.project_id', '!=', null);
+      });
+
+
+    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
+      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
+    if ($from != '' ) {
+      $expenses = $expenses->wheredate('current_date', '>=',$from);
+      //   ->toSql();
+      //  // $bindings = $expenses->getBindings();
+      //   print_r($expenses);
+      //  exit;
+
+    }
+    if($to_date !=''){
+      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
+    }
+    if ($category_filter != 'undefined' && $category_filter != '') {
+      $expenses = $expenses->where('expenses.category_id', $category_filter);
+    }
+    if ($project_filter != 'undefined' && $project_filter != '') {
+      $expenses = $expenses->where('expenses.project_id', $project_filter);
+      //dd($expenses);exit;
+    }
+    if ($user_filter != 'undefined' && $user_filter != '') {
+      $expenses = $expenses->where('expenses.user_id', $user_filter);
+    }
+
+    //dd($expenses);
+    if ($request->amount != '' && $request->amount != 'undefined') {
+      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
+    }
+
+    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+
+
+
+    $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
+    $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
+    $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();
+
+    $sum = $expenses->sum('amount');
+    $paid_amt = $expenses->sum('paid_amt');
+    $unpaid_amt = $expenses->sum('unpaid_amt');
+    $advanced_amt = $expenses->sum('extra_amt');
+    return view('labour-expenses.labourdeletedrecord', ['expenses' => $expenses, 'category' => $category, 'category_filter' => $category_filter, 'from_date' => $request->from_date, 'to_date1' => $request->to_date, 'project' => $project, 'user' => $user, 'project_filter' => $project_filter, 'user_filter' => $user_filter, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
   }
 }

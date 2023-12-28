@@ -28,10 +28,10 @@
 
 
                 <div class="card-body">
-                    <form name="createExpenses" id="createExpenses" action="{{ route('labour-expenses.update') }}"
+                    <form name="createExpenses" id="createExpenses" action="{{ route('labour-expenses.update',$expense->id) }}"
                         method="post" enctype="multipart/form-data">
                         @csrf
-                        {{method('PUT')}}
+                        {{ method_field('PUT') }}
                         <input type="hidden" name="user_id" id="user_id" value="{{$expense->user_id}}">
                         <div class="row">
                             <div class="col-6">
@@ -92,7 +92,7 @@
                                     <select class="form-control" name="payment_mode" id="payment_mode">
                                         <option value="">Select payment </option>
                                         @foreach ($payment as $payment)
-                                            <option value="{{ $payment->id }}" {{$expense->payment_id == $payment->id ? 'selected' : ''}}>{{ $payment->name }}</option>
+                                            <option value="{{ $payment->id }}" {{$expense->payment_mode == $payment->id ? 'selected' : ''}}>{{ $payment->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="payment-error" class="error" for="basic-default-role">Payment mode is
@@ -100,8 +100,18 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Image</label>
-                                    <input type="file" name="image" class="form-control" accept="image/*"
+                                    <input type="file" name="image" class="form-control" accept="application/pdf,image/*"
                                         placeholder="image">
+                                        @if($expense->image != '' || $expense->image != null)
+                                        <input type="hidden" name="image_status" value="{{ $expense->image }}">
+                                        <?php $extension = explode('.',$expense->image); ?>
+                                        @if($extension[1] == 'pdf')
+                                        <embed src="{{ url('images/' . $expense->image) }}"/>
+                                          @else
+                                        <img src="{{ url('images/' . $expense->image) }}" width="30px">
+                                        <span class="deleteImage" style=" cursor: pointer;" data-id="{{$expense->id}}"><img src="{{asset('assets/img/icons/cancel.png')}}" width="10px"/></span>
+                                        @endif
+                                        @endif
                                 </div>
 
                             </div>
@@ -110,11 +120,11 @@
 
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Description</label>
-                                    <textarea type="text" name="description" id="description" class="form-control phone-mask" style="height:28px"></textarea>
+                                    <textarea type="text" name="description" id="description" class="form-control phone-mask" style="height:28px">{{ $expense->description }}</textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-message">Paid Amount</label><br>
-                                    <input type="text" class="form-control" value="" id="paid_amt"
+                                    <input type="text" class="form-control" id="paid_amt" value="{{ $expense->paid_amt }}"
                                         name="paid_amt" onkeypress="allowNumbersOnly(event)">
                                     <label id="paid-error" class="error" for="basic-default-amt">Paid amount is
                                         required.</label>
@@ -128,12 +138,12 @@
                                 <div class="mb-3">
                                     <label class="form-label" for="datetimepicker1">Date</label><br>
                                     <input type="date" class="form-control" id="datetimepicker1" name="current_date"
-                                        value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                                        value="{{ \Carbon\Carbon::parse($expense->current_date)->format('Y-m-d') }}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="appt">Time:</label><br>
                                     <input type="time" id="appt" class="form-control" name="time"
-                                        value="{{ Carbon\Carbon::now()->format('h:i:s') }}">
+                                        value="<?php echo date("H:i", strtotime($expense->current_date)); ?>">
                                 </div>
                             </div>
 

@@ -39,7 +39,7 @@ class LabourController extends Controller
      // dd($input);
       if ($image =$request->file('image')) {
 
-          $destinationPath = 'public/images/';
+          $destinationPath = public_Path('images'); 'public/images/';
               $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
               $image->move($destinationPath, $profileImage);
 
@@ -89,7 +89,7 @@ class LabourController extends Controller
       $user = Labour::find($id);
       if ($image =$request->file('image')) {
 
-          $destinationPath = 'public/images/';
+          $destinationPath = public_Path('images'); 'public/images/';
               $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
               $image->move($destinationPath, $profileImage);
 
@@ -114,7 +114,7 @@ class LabourController extends Controller
   {
       $id = $request->id;
      $user = LabourRole::where('id',$id)->first();
-     
+
       return response()->json($user);
   }
 

@@ -137,7 +137,7 @@ class ExpensesController extends Controller
     $input['current_date'] = $request->current_date . ' ' . $request->time;
     $input['paid_amt'] = $request->paid_amt ? $request->paid_amt : 0;
     if ($image = $request->file('image')) {
-      $destinationPath = 'public/images/';
+       $destinationPath = public_Path('images');
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
@@ -174,7 +174,7 @@ class ExpensesController extends Controller
 
     if ($image = $request->file('image')) {
 
-      $destinationPath = 'public/images/';
+      $destinationPath = public_Path('images'); 'public/images/';
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 

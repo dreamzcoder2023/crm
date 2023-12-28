@@ -196,7 +196,7 @@
                             <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                             <td>
                                 @if ($expense->image != '' || $expense->image != null)
-                                    <a href="{{ url('public/images/' . $expense->image) }}" target="_blank">View</a>
+                                    <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
                                 @else
                                     --
                                 @endif

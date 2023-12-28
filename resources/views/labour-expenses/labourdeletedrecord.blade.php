@@ -165,6 +165,7 @@
                         <th >Category <br/>Name</th>
                         <th>Project Name</th>
                         <th>Labour Name</th>
+                        <th>Reason</th>
                         <th>Amount</th>
                         <th>Paid</th>
                         <th>Unpaid</th>
@@ -176,9 +177,8 @@
 
                             <th>Edited By</th>
                             <th>Advance <br/>Edited By</th>
-                            @canany(['labour expenses-delete','labour expenses-edit'])
-                            <th>Action</th>
-                            @endcanany
+                            <th>Deleted Date</th>
+
 
                     </tr>
                 </thead>
@@ -192,6 +192,7 @@
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
                             <td>{{ $expense->labour_name  }}</td>
+                            <td>{{ $expense->reason }}</td>
                             <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                             <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                             <td>
@@ -214,21 +215,7 @@
                                 <td>{{ $expense->first }} {{ $expense->last }}</td>
                                 <td>{{ $expense->first_name }} {{  $expense->last_name }}</td>
                                 <td>{{ $expense->labour_first}} {{ $expense->labour_last }}</td>
-                                @canany(['labour expenses-delete','labour expenses-edit'])
-                            <td>
-                              @can('labour expenses-edit')
-                                    <a class="" href="{{ route('labour-expenses-edit', $expense->id) }}"><i class="fa fa-edit"
-                                            style="font-size:24px"></i></a>
-                              @endcan
-                              @can('labour expenses-delete')
-                              <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
-                                data-id="{{ $expense->id }}" class="deleteExpense"><i class="fa fa-trash-o"
-                                    style="font-size:24px; color:red"></i> </a><br />
-                              @endcan
-
-                            </td>
-                            @endcanany
-
+                                <td>{{ \Carbon\Carbon::parse($expense->deleted_at)->format('d-m-Y h:i A') }}</td>
                         </tr>
                     @endforeach
 

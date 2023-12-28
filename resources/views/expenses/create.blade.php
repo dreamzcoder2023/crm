@@ -67,7 +67,7 @@
             </div>
             <div class="mb-3">
             <label class="form-label" for="basic-default-phone">Image</label>
-            <input type="file" name="image" class="form-control" accept="image/*" placeholder="image">
+            <input type="file" name="image" class="form-control" accept="application/pdf,image/*" placeholder="image">
             </div>
 
             </div>
