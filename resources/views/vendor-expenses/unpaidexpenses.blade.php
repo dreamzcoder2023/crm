@@ -176,7 +176,7 @@
 
                             <th>Edited By</th>
                             <th>Advance <br/>Edited By</th>
-                            @canany(['vendor expenses-delete','vendor expenses-edit'])
+                            @canany(['vendor expenses-unpaid edit'])
                             <th>Action</th>
                             @endcanany
 
@@ -214,16 +214,11 @@
                                 <td>{{ $expense->first }} {{ $expense->last }}</td>
                                 <td>{{ $expense->first_name }} {{  $expense->last_name }}</td>
                                 <td>{{ $expense->labour_first}} {{ $expense->labour_last }}</td>
-                                @canany(['vendor expenses-delete','vendor expenses-edit'])
+                                @canany(['vendor expenses-unpaid edit'])
                             <td>
-                              @can('vendor expenses-edit')
-                                    <a class="" href="{{ route('vendor-expenses-edit', $expense->id) }}"><i class="fa fa-edit"
+                              @can('vendor expenses-unpaid edit')
+                                    <a class="" href="{{ route('vendor-expenses-unpaid-edit', $expense->id) }}"><i class="fa fa-edit"
                                             style="font-size:24px"></i></a>
-                              @endcan
-                              @can('vendor expenses-delete')
-                              <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
-                                data-id="{{ $expense->id }}" class="deleteExpense"><i class="fa fa-trash-o"
-                                    style="font-size:24px; color:red"></i> </a><br />
                               @endcan
 
                             </td>

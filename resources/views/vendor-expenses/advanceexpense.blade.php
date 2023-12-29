@@ -51,7 +51,7 @@
 @endif
 <div style="margin-top: 30px;">
 <h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Labour </span>
+  <span class="text-muted fw-light">Vendor </span>
 </h4>
 </div>
 
@@ -64,11 +64,10 @@
         <tr>
           <th>ID</th>
           <th>Name</th>
-          <th>Job Title</th>
-          <th>Salary</th>
-          <th>Labour Role</th>
+          <th>Address</th>
+          <th>Phone Number</th>
           <th>Advance Amount</th>
-          @can('labour expenses-labour advance amount edit')
+          @can('vendor expenses-vendor advance amount edit')
           <th>Action</th>
           @endcan
         </tr>
@@ -79,13 +78,12 @@
        <tr>
         <td>{{$loop->index+1}}</td>
         <td>{{$user->name}}</td>
-        <td>{{$user->job_title}}</td>
-        <td>{{ $user->salary }}</td>
-        <td>{{App\Models\LabourRole::where('id',$user->labour_role)->pluck('name')->first()}}
+        <td>{{$user->address}}</td>
+        <td>{{ $user->phone }}</td>
         <td>{{$user->advance_amt}}</td>
-        @can('labour expenses-labour advance amount edit')
+        @can('vendor expenses-vendor advance amount edit')
         <td>
-        <a class=""  href="{{ route('advanceform',$user->id) }}" ><i class="fa fa-edit" style="font-size:24px"></i></a>
+        <a class=""  href="{{ route('vendor-advanceform',$user->id) }}" ><i class="fa fa-edit" style="font-size:24px"></i></a>
         </td>
         @endcan
        </tr>

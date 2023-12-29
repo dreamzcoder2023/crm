@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
 
-@section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
+@section('title', 'Edit | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 
@@ -19,7 +19,7 @@
 
     <!-- Basic Layout & Basic with Icons -->
     <h4 class="fw-bold py-3 mb-4">
-        <span class="text-muted fw-light">Add Vendor Expenses
+        <span class="text-muted fw-light">Edit Labour Expenses
     </h4>
     <div class="row">
         <!-- Basic Layout -->
@@ -28,10 +28,11 @@
 
 
                 <div class="card-body">
-                    <form name="createExpenses" id="createExpenses" action="{{ route('vendor-expenses.store') }}"
+                    <form name="createExpenses" id="createExpenses" action="{{ route('vendor-expenses.update',$expense->id) }}"
                         method="post" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="user_id" id="user_id" value="{{Auth::user()->id}}">
+                        {{ method_field('PUT') }}
+                        <input type="hidden" name="user_id" id="user_id" value="{{$expense->user_id}}">
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3 " id="here">
@@ -41,7 +42,7 @@
                                             style="width:100%"  >
                                             <option value="">Select category </option>
                                             @foreach($category as $category)
-                                                <option value="{{ $category->id }}" >{{ $category->name }}</option>
+                                                <option value="{{ $category->id }}" {{ $category->id == $expense->category_id ? 'selected ' : '' }} >{{ $category->name }}</option>
                                                 @endforeach
                                         </select></div>
                                     <label id="showing_error_msg" class="error hide">Category name already exists.</label>
@@ -55,7 +56,7 @@
                                     <select class="form-control selectpicker" name="project_id" data-live-search="true" id="project_id">
                                         <option value="">Select project </option>
                                         @foreach ($project as $project)
-                                            <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                            <option value="{{ $project->id }}" {{$expense->project_id  == $project->id ? 'selected' : ''}}>{{ $project->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="project-error" class="error hide" for="basic-default-role">Project is
@@ -66,7 +67,7 @@
                                     <select class="form-control" name="vendor_id" id="vendor_id">
                                         <option value="">Select vendor </option>
                                         @foreach ($vendors as $vendor)
-                                            <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
+                                            <option value="{{ $vendor->id }}" {{$expense->vendor_id == $vendor->id ? 'selected' : ''}}>{{ $vendor->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="labour-error" class="error hide" for="basic-default-role">Vendor is
@@ -78,8 +79,9 @@
 
                                     <input type="text" id="amount" name="amount" class="form-control"
                                         placeholder="Enter amount" oninput="amountcheck(this.value)"
-                                        onkeypress="allowNumbersOnly(event)" />
-                                    <p class="advance_amt" style="color:blue"> </p>
+                                        onkeypress="allowNumbersOnly(event)"  value="{{$expense->amount}}"/>
+                                        <p style="color:blue">wallet balance : {{$expense->wallet}}</p>
+                                    <p class="advance_amt" style="color:blue">Advance Amount: {{ $expense->advance_amt }}</p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
                                     <input type="hidden" class="amount-check-error" value=""><br>
@@ -91,7 +93,7 @@
                                     <select class="form-control" name="payment_mode" id="payment_mode">
                                         <option value="">Select payment </option>
                                         @foreach ($payment as $payment)
-                                            <option value="{{ $payment->id }}">{{ $payment->name }}</option>
+                                            <option value="{{ $payment->id }}" {{$expense->payment_mode == $payment->id ? 'selected' : ''}}>{{ $payment->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="payment-error" class="error" for="basic-default-role">Payment mode is
@@ -101,6 +103,16 @@
                                     <label class="form-label" for="basic-default-phone">Image</label>
                                     <input type="file" name="image" class="form-control" accept="application/pdf,image/*"
                                         placeholder="image">
+                                        @if($expense->image != '' || $expense->image != null)
+                                        <input type="hidden" name="image_status" value="{{ $expense->image }}">
+                                        <?php $extension = explode('.',$expense->image); ?>
+                                        @if($extension[1] == 'pdf')
+                                        <embed src="{{ url('images/' . $expense->image) }}"/>
+                                          @else
+                                        <img src="{{ url('images/' . $expense->image) }}" width="30px">
+                                        <span class="deleteImage" style=" cursor: pointer;" data-id="{{$expense->id}}"><img src="{{asset('assets/img/icons/cancel.png')}}" width="10px"/></span>
+                                        @endif
+                                        @endif
                                 </div>
 
                             </div>
@@ -109,11 +121,11 @@
 
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Description</label>
-                                    <textarea type="text" name="description" id="description" class="form-control phone-mask" style="height:28px"></textarea>
+                                    <textarea type="text" name="description" id="description" class="form-control phone-mask" style="height:28px">{{ $expense->description }}</textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-message">Paid Amount</label><br>
-                                    <input type="text" class="form-control" value="" id="paid_amt"
+                                    <input type="text" class="form-control" id="paid_amt" value="{{ $expense->paid_amt }}"
                                         name="paid_amt" onkeypress="allowNumbersOnly(event)">
                                     <label id="paid-error" class="error" for="basic-default-amt">Paid amount is
                                         required.</label>
@@ -127,12 +139,12 @@
                                 <div class="mb-3">
                                     <label class="form-label" for="datetimepicker1">Date</label><br>
                                     <input type="date" class="form-control" id="datetimepicker1" name="current_date"
-                                        value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                                        value="{{ \Carbon\Carbon::parse($expense->current_date)->format('Y-m-d') }}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="appt">Time:</label><br>
                                     <input type="time" id="appt" class="form-control" name="time"
-                                        value="{{ Carbon\Carbon::now()->format('h:i:s') }}">
+                                        value="<?php echo date("H:i", strtotime($expense->current_date)); ?>">
                                 </div>
                             </div>
 
@@ -170,7 +182,7 @@
             $('.error').addClass('hide');
             $('.success').addClass('hide');
             $('.addcategory').hide();
-            $('.advance_amt').addClass('hide');
+
         });
 
         function allowNumbersOnly(e) {
@@ -227,9 +239,8 @@
                 dataType: 'json',
                 success: function(result) {
                     console.log("result", result);
-                    // $('#amount').val(result.salary);
-                     $('.advance_amt').text('Advance Amount :' + result.advance_amt);
-                     $('.advance_amt').removeClass('hide');
+                    $('.advance_amt').text('Advance Amount :' + result.advance_amt);
+                    $('.advance_amt').removeClass('hide');
                 }
             });
 

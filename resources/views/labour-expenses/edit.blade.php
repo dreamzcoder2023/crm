@@ -80,7 +80,8 @@
                                     <input type="text" id="amount" name="amount" class="form-control"
                                         placeholder="Enter amount" oninput="amountcheck(this.value)"
                                         onkeypress="allowNumbersOnly(event)"  value="{{$expense->amount}}"/>
-                                    <p class="advance_amt" style="color:blue"> </p>
+                                        <p style="color:blue">wallet balance : {{$expense->wallet}}</p>
+                                    <p class="advance_amt" style="color:blue">Advance Amount: {{ $expense->advance_amt }}</p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
                                     <input type="hidden" class="amount-check-error" value=""><br>
@@ -181,7 +182,7 @@
             $('.error').addClass('hide');
             $('.success').addClass('hide');
             $('.addcategory').hide();
-            $('.advance_amt').addClass('hide');
+
         });
 
         function allowNumbersOnly(e) {

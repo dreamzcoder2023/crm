@@ -214,6 +214,8 @@ Route::get('/advanceform/{id}', [LabourExpensesController::class, 'advance_form'
 Route::get('/labour_project_amount', [LabourExpensesController::class, 'labour_project_amount'])->name('labour_project_amount');
 Route::post('/labour-advance/store', [LabourExpensesController::class, 'labour_advance_store'])->name('labour-advance.store');
 Route::get('/labour-expenses-delete_record',[LabourExpensesController::class,'delete_record'])->name('labour-expenses-delete_record');
+Route::get('/labour-expenses-export',[LabourExpensesController::class,'labour_expense_export'])->name('labour-expenses-export');
+Route::get('/labour-expenses-pdf',[LabourExpensesController::class,'labour_expense_pdf'])->name('labour-expenses-pdf');
 //vendor ended
 //vendor started
 Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');
@@ -221,8 +223,16 @@ Route::get('/vendor-expenses/create',[VendorExpensesController::class, 'create']
 Route::post('/vendor-expenses/store', [VendorExpensesController::class, 'store'])->name('vendor-expenses.store');
 Route::get('/vendor-expenses/edit/{id}',[VendorExpensesController::class, 'edit'])->name('vendor-expenses-edit');
 Route::put('/vendor-expenses/update/{id}', [VendorExpensesController::class, 'update'])->name('vendor-expenses.update');
-Route::get('/vendor-expenses/delete/{id}',[VendorExpensesController::class,'labourdelete'])->name('vendor-expenses-delete');
+Route::get('/vendor-expenses/delete',[VendorExpensesController::class,'vendordelete'])->name('vendor-expenses-delete');
 Route::get('/vendor-salary',[VendorExpensesController::class, 'vendor_salary'])->name('vendor-salary');
+Route::get('/vendor-expenses-delete_record',[VendorExpensesController::class,'delete_record'])->name('vendor-expenses-delete_record');
+Route::get('/vendor-expenses-unpaid-history',[VendorExpensesController::class,'unpaid_expenses'])->name('vendor-expenses-unpaid-history');
+Route::get('/vendor-expenses-unpaid-edit/{id}',[VendorExpensesController::class,'unpaid_edit'])->name('vendor-expenses-unpaid-edit');
+Route::post('/vendor-expenses-unpaid-store',[VendorExpensesController::class,'unpaid_store'])->name('vendor-expenses-unpaid-store');
+Route::get('/vendor-expenses-advance-history',[VendorExpensesController::class,'advance_expenses'])->name('vendor-expenses-advance-history');
+Route::get('/vendor-advanceform/{id}', [VendorExpensesController::class, 'advance_form'])->name('vendor-advanceform');
+Route::post('/vendor-advance-store',[VendorExpensesController::class,'advance_store'])->name('vendor-advance.store');
+Route::get('/vendor_project_amount', [VendorExpensesController::class, 'vendor_project_amount'])->name('vendor_project_amount');
 //vendor ended
 });
 

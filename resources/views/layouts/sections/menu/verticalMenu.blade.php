@@ -265,32 +265,32 @@
                     </a>
                 </li>
             @endcan
-            @can('labour expenses-weekly history')
-                <li class="menu-item labour_expense_history">
-                    <a href="#" class="menu-link"><img
+            @can('vendor expenses-unpaid history')
+                <li class="menu-item ">
+                    <a href="{{ route('vendor-expenses-unpaid-history') }}" class="menu-link"><img
                             src="{{ asset('assets/img/icons/vendor-1.png') }}" alt="slack"
                             class="me-3" height="20">
                         <div>Vendor Unpaid History</div>
                     </a>
                 </li>
             @endcan
-            @can('labour expenses-labour advance amount')
+            @can('vendor expenses-vendor advance amount')
                 <li
-                    class="menu-item {{ \Request::route()->getName() == 'labour-expenses-advance' ? 'active open' : '' }}">
-                    <a href="{{ route('labour-expenses-advance') }}" class="menu-link"><img
+                    class="menu-item {{ \Request::route()->getName() == 'vendor-expenses-advance-history' ? 'active open' : '' }}">
+                    <a href="{{ route('vendor-expenses-advance-history') }}" class="menu-link"><img
                             src="{{ asset('assets/img/icons/vendor-2.png') }}" alt="slack"
                             class="me-3" height="20">
                         <div>Vendor Advance Amount</div>
                     </a>
                 </li>
             @endcan
-            @can('labour expenses-delete history')
+            @can('vendor expenses-deleted history')
                 <li
-                    class="menu-item {{ \Request::route()->getName() == 'labour-expenses-delete_record' ? 'active open' : '' }}">
-                    <a href="{{ route('labour-expenses-delete_record') }}" class="menu-link"><img
+                    class="menu-item {{ \Request::route()->getName() == 'vendor-expenses-delete_record' ? 'active open' : '' }}">
+                    <a href="{{ route('vendor-expenses-delete_record') }}" class="menu-link"><img
                             src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
                             height="20">
-                        <div>Labour Deleted History</div>
+                        <div>Vendor Deleted History</div>
                     </a>
                 </li>
             @endcan

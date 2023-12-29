@@ -189,8 +189,8 @@ class ExpensesController extends Controller
 
     $expenses = Expenses::find($request->id);
 
-    $extra_amt = 0;
-    $unpaid_amt = 0;
+    $extra_amt = $expenses->extra_amt;
+    $unpaid_amt = $expenses->unpaid_amt;
 
     if ($expenses->paid_amt < $request->paid_amt) {
 
@@ -202,10 +202,10 @@ class ExpensesController extends Controller
       $project['wallet'] = $minus;
       $project->update();
       $input['paid_amt'] = $expenses->paid_amt + $minus1;
-      if ($request->amount <= $request->paid_amt) {
+      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
         $extra_amt = $request->paid_amt - $request->amount;
       }
-      if ($request->paid_amt < $request->amount) {
+      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
         $unpaid_amt = $request->amount - $request->paid_amt;
       }
     } else {
@@ -219,10 +219,10 @@ class ExpensesController extends Controller
 
       $project->update();
       $input['paid_amt'] = $expenses->paid_amt - $minus1;
-      if ($request->amount <= $request->paid_amt) {
+      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
         $extra_amt = $request->paid_amt - $request->amount;
       }
-      if ($request->paid_amt < $request->amount) {
+      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
         $unpaid_amt = $request->amount - $request->paid_amt;
       }
     }
@@ -259,8 +259,7 @@ class ExpensesController extends Controller
   {
     $user_id = Auth::user()->id;
     $input = $request->all();
-    $extra_amt = 0;
-    $unpaid_amt = 0;
+
     $input['current_date'] = $request->current_date . ' ' . $request->time;
     $expenses_date = ExpensesUnpaidDate::create($input);
     // wallet minus
@@ -270,6 +269,8 @@ class ExpensesController extends Controller
     $user->update();
     // expense minus
     $expenses = Expenses::find($request->expense_id);
+    $extra_amt = 0;
+    $unpaid_amt = 0;
     $minus = $expenses->paid_amt + $request->unpaid_amt;
 
     $unpaid = $expenses->unpaid_amt - $request->unpaid_amt;
@@ -568,7 +569,7 @@ class ExpensesController extends Controller
 
     $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
     $customPaper = array(0, 0, 567.00, 283.80);
-    $pdf = PDF::loadView('expenses.deleteexpensepdf', compact('expenses'))->setPaper($customPaper, 'landscape');
+    $pdf = PDF::loadView('expenses.deleteexpensepdf', compact('expenses'));
 
     return $pdf->download('delete-expenses.pdf');
   }
