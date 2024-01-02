@@ -11,7 +11,7 @@ use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class LabourExpensesExport implements FromCollection, WithHeadings, WithMapping
+class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
 {
 
 
@@ -55,7 +55,7 @@ class LabourExpensesExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        $expenses = Expenses::whereNotNull('expenses.labour_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('labour_details as l','l.id','=','expenses.labour_id')
+        $expenses = Expenses::whereNotNull('expenses.vendor_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('vendor_details as l','l.id','=','expenses.vendor_id')
         ->leftJoin('project_details', function ($join) {
           $join->on('project_details.id', 'expenses.project_id')
             ->where('expenses.project_id', '!=', null);

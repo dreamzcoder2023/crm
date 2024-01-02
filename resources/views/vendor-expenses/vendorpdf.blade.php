@@ -19,21 +19,21 @@
         <tr>
           <th>ID</th>
           <th>Paid date</th>
-          <th style="width:30px">Category <br/> Name</th>
+          <th style="width:30px">Category Name</th>
           <th style="width:30px">Project Name</th>
+          <th>Labour Name</th>
           <th>Amount</th>
+
+
+          <th>Payment Mode</th>
+          <th style="width:30px">Description</th>
           <th>Paid</th>
           <th>Unpaid</th>
-          <th>Advanced Amount</th>
-          <th style="width:30px">Description</th>
-          <th>Payment Mode</th>
-
-
-          @role('Admin')
+          <th>Advanced <br/> Amount</th>
           <th>Added By</th>
 
           <th>Edited By</th>
-          @endrole
+          <th>Advance <br/>EditedBy</th>
 
 
         </tr>
@@ -46,17 +46,18 @@
         <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A')}}</td>
         <td style="width:30px">{{$expense->category_name ? $expense->category_name : '--'}}</td>
         <td style="width:30px">{{$expense->project_name ? $expense->project_name : '--'}}</td>
+        <td>{{ $expense->labour_name }}</td>
         <td>{{$expense->amount}}</td>
-        <td><span style="color: green;">{{$expense->paid_amt}}</td>
-          <td>@if($expense->unpaid_amt !=0)<a style="color:red">{{$expense->unpaid_amt}}</a> @else {{$expense->unpaid_amt}}@endif</td>
-          <td>{{$expense->extra_amt}}</td>
-          <td style="width:30px">{{$expense->description? $expense->description : '--'}}</td>
-        <td>{{$expense->payment_name}}</td>
 
-        @role('Admin')
+        <td>{{$expense->payment_name}}</td>
+        <td style="width:30px">{{$expense->description? $expense->description : '--'}}</td>
+        <td><span style="color: green;">{{$expense->paid_amt}}</td>
+        <td>@if($expense->unpaid_amt !=0)<a style="color:red">{{$expense->unpaid_amt}}</a> @else {{$expense->unpaid_amt}}@endif</td>
+        <td>{{$expense->extra_amt}}</td>
         <td>{{$expense->first.''.$expense->last}}</td>
         <td>{{$expense->first_name.''.$expense->last_name}}</td>
-        @endrole
+        <td>{{ $expense->labour_first.''.$expense->labour_last }}</td>
+
 
 
        </tr>

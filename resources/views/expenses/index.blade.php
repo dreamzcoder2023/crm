@@ -205,7 +205,7 @@
                                 @endif
                             </td>
                             <td><b><span style="color:#840eef;">{{ $expense->extra_amt }}</span></b></td>
-                            <td>{{ $expense->description ? $expense->description : '--' }}</td>
+                            <td style="width:30px">{{ $expense->description ? $expense->description : '--' }}</td>
 
                             <td>
                                 @if ($expense->image != '' || $expense->image != null)

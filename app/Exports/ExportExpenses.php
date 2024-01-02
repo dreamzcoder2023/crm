@@ -36,11 +36,13 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
             'Paid Date',
             'Project Name',
             'Amount',
-            'Payment Mode',
-            'Description',
             'Paid Amount',
             'Unpaid Amount',
             'Advanced Amount',
+            'Description',
+
+            'Payment Mode',
+
             'Added By',
             'Edited By',
 
@@ -51,11 +53,12 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         'Paid Date',
         'Project Name',
         'Amount',
-        'Payment Mode',
-        'Description',
         'Paid Amount',
         'Unpaid Amount',
         'Advanced Amount',
+        'Description',
+
+        'Payment Mode',
 
 
         ];
@@ -118,29 +121,35 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         if($this->role == 1){
         $fields = [
            $row->category_name,
+           $unpaid_amt1,
            $row->project_name,
            $row->amount,
-           $row->payment_name,
-           $row->description,
            $row->paid_amt,
            $row->unpaid_amt,
            $row->extra_amt,
+           $row->description,
+           $row->payment_name,
+
+
            $row->first.' '.$row->last,
            $row->first_name.' '.$row->last_name,
-           $unpaid_amt1
+
 
       ];
     }else{
         $fields = [
             $row->category_name,
+            $unpaid_amt1,
             $row->project_name,
             $row->amount,
-            $row->payment_name,
-            $row->description,
             $row->paid_amt,
             $row->unpaid_amt,
             $row->extra_amt,
-            $unpaid_amt1
+            $row->description,
+            $row->payment_name,
+
+
+
 
        ];
     }

@@ -105,7 +105,7 @@
                         </select>
                     </div>
                     <div class="col-2">
-                        <select class="form-group selectpicker" name="project_id" id="project_id">
+                        <select class="form-group selectpicker" name="project_id" id="project_id" data-live-search="true">
                             <option value="">Select Project</option>
                             @foreach ($project as $project)
                                 <option value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
@@ -115,7 +115,7 @@
                     </div>
                     @role('Admin')
                         <div class="col-2">
-                            <select class="form-group selectpicker" name="user_id" id="user_id">
+                            <select class="form-group selectpicker" name="user_id" id="user_id" data-live-search="true">
                                 <option value="">Select Member</option>
                                 @foreach ($user as $user)
                                     <option value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
@@ -136,7 +136,7 @@
                             value="{{ $to_date1 }}">
                     </div>
                     <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <a href="{{ route('expenses-history') }}" class="me-3">
+                        <a href="{{ route('vendor-expenses-index') }}" class="me-3">
                             <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
                                 width="30">
                         </a>
@@ -169,9 +169,10 @@
                         <th>Paid</th>
                         <th>Unpaid</th>
                         <th>Advanced <br/>Amount</th>
+                        <th>Description</th>
                         <th>Image</th>
                         <th>Payment Mode</th>
-                        <th>Description</th>
+
                             <th>Added By</th>
 
                             <th>Edited By</th>
@@ -187,7 +188,7 @@
                     @foreach ($expenses as $expense)
                         <tr>
                             <td>{{ $loop->index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br/> {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
 
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
@@ -203,14 +204,16 @@
                                 @endif
                             </td>
                             <td><b><span style="color:#840eef;">{{ $expense->extra_amt }}</span></b></td>
+                            <td>{{ $expense->description ? $expense->description : '--' }}</td>
                             <td>
                                 @if ($expense->image != '' || $expense->image != null)
                                     <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
                                 @else
                                     --
                                 @endif</td>
+
                             <td>{{ $expense->payment_name }}</td>
-                            <td>{{ $expense->description ? $expense->description : '--' }}</td>
+
                                 <td>{{ $expense->first }} {{ $expense->last }}</td>
                                 <td>{{ $expense->first_name }} {{  $expense->last_name }}</td>
                                 <td>{{ $expense->labour_first}} {{ $expense->labour_last }}</td>
@@ -475,7 +478,7 @@
                 console.log('category', category);
                 from_date = from_date;
                 end_date = to_date;
-                var url = '{{ route('expenses-history') }}';
+                var url = '{{ route('vendor-expenses-index') }}';
                 window.location.href = url + '?from_date=' + from_date + '&to_date=' + to_date + '&category_id=' +
                     category + '&project_id=' + project + '&user_id=' + user;
             }
@@ -489,7 +492,7 @@
 
             var from_date = $('#from_date').val();
             var end_date = $('#to_date').val();
-            var url = '{{ route('expenses-export') }}';
+            var url = '{{ route('vendor-expenses-export') }}';
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
@@ -501,7 +504,7 @@
 
             var from_date = $('#from_date').val();
             var end_date = $('#to_date').val();
-            var url = '{{ route('expenses-pdf') }}';
+            var url = '{{ route('vendor-expenses-pdf') }}';
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });

@@ -34,44 +34,75 @@
 </style>
 
 <div class="card">
-    <div class="table-responsive text-nowrap">
-        <table class="table" id="user_listing_table">
-            <thead>
-                <tr>
-                    <th>Week</th>
-                    <th>Unpaid Amount</th>
-                    <th>Advance Amount</th>
-                </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-                @foreach ($start_labour_date as $week_data)
-                    @foreach ($week_data['records'] as $record)
-                        <tr>
-                            <td>
-                                <a style="text-decoration: none" href="#project-row{{ $record->week_start_date }}"
-                                    role="button" data-bs-toggle="collapse" aria-expanded="false"
-                                    aria-controls="project-row{{ $record->week_start_date }}">
-                                    {{ $record->week_start_date }} - {{ $record->week_end_date }}</a>
-                            </td>
-                            <td>{{ $record->unpaid_amt }}</td>
-                            <td>{{ $record->advance_amt }}</td>
-                        </tr>
-                        @foreach ($week_data['project'] as $project)
-                            <tr id="project-row{{ $record->week_start_date }}" class="collapse">
-                                <td><a style="text-decoration: none" href="javascript:void(0)" class="projectunpaid" style="cursor:pointer"
-                                        data-start_week="{{ $record->week_start_date }}"
-                                        data-end_week="{{ $record->week_end_date }}"
-                                        data-project_id="{{ $project->project_id }}"> {{ $project->project_name }} </a>
-                                </td>
-                                <td>{{ $project->unpaid_amt }}</td>
-                                <td>{{ $project->advance_amt }}</td>
-                            </tr>
-                        @endforeach
-                    @endforeach
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+
+  <select class="form-control " name="year" id="year" >
+    <option value="">Select Year</option>
+    @for ($year=2020; $year<=date('Y'); $year++) {
+      <option value="{{ $year }}" {{ $year == $current_year ? 'selected' : '' }}>{{ $year }} </option>
+   }
+   @endfor
+</select>
+<div class="table-responsive text-nowrap">
+  <table class="table" id="user_listing_table">
+      <thead>
+          <tr>
+              <th>Week</th>
+              <th>Unpaid Amount</th>
+              <th>Advance Amount</th>
+          </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+          @if(count($start_labour_date) > 0 )
+              @foreach ($start_labour_date as $week_data)
+                  @foreach ($week_data['records'] as $record)
+                      <tr>
+                          <td>
+                              <a style="text-decoration: none" href="#project-row{{ $record->week_start_date }}"
+                                  role="button" data-bs-toggle="collapse" aria-expanded="false"
+                                  aria-controls="project-row{{ $record->week_start_date }}">
+                                  {{ $record->week_start_date }} - {{ $record->week_end_date }}</a>
+                          </td>
+                          <td>{{ $record->unpaid_amt }}</td>
+                          <td>{{ $record->advance_amt }}</td>
+                      </tr>
+                      <tr id="project-row{{ $record->week_start_date }}" class="collapse">
+                          <td colspan="3">
+                              <table class="table">
+                                  <thead>
+                                      <tr>
+                                          <th>Project</th>
+                                          <th>Unpaid Amount</th>
+                                          <th>Advance Amount</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      @foreach ($week_data['project'] as $project)
+                                          <tr>
+                                              <td>
+                                                  <a style="text-decoration: none" href="javascript:void(0)" class="projectunpaid" style="cursor:pointer"
+                                                      data-start_week="{{ $record->week_start_date }}"
+                                                      data-end_week="{{ $record->week_end_date }}"
+                                                      data-project_id="{{ $project->project_id }}"> {{ $project->project_name }} </a>
+                                              </td>
+                                              <td>{{ $project->unpaid_amt }}</td>
+                                              <td>{{ $project->advance_amt }}</td>
+                                          </tr>
+                                      @endforeach
+                                  </tbody>
+                              </table>
+                          </td>
+                      </tr>
+                  @endforeach
+              @endforeach
+          @else
+              <tr>
+                  <td colspan="3"> No record found. </td>
+              </tr>
+          @endif
+      </tbody>
+  </table>
+</div>
+
 </div>
 <!-- DataTables initialization -->
 <script>
@@ -101,5 +132,22 @@
         $('.preloader').css('display', 'block');
         var url = '{{ route('labour-expenses-project') }}';
             window.location.href = url + '?project_id=' + project_id + '&start_date=' + start_date + '&end_date=' +end_date;
+    });
+    $('#year').change(function(){
+      var year = $(this).val();
+      console.log('year',year);
+      $.ajax({
+            type: "get",
+            url: "{{ route('labour-expenses-index') }}",
+            data:{'year' : year},
+            dataType: 'json',
+            success: function(html) {
+                console.log(html);
+
+                $('.labour_loadingsalary').html(html);
+                $('.preloader').css('display', 'none');
+                $('#labour_total_popup').modal('show');
+            }
+        });
     });
 </script>

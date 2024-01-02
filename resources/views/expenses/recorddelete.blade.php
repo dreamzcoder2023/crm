@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+
 
 <style>
   @media only screen and (max-width:320px){
@@ -66,7 +68,7 @@ td, th {
         <div class="container text-center">
             <div class="row aa">
                 <div class="col">
-                    <select class="form-control" name="category_id" id="category_id">
+                    <select class="form-control selectpicker" name="category_id" id="category_id" data-live-search="true">
                         <option value="">Select category</option>
                         @foreach($category as $category)
                         <option value="{{$category->id}}"{{$category->id == $category_filter ? 'selected' : ''}}>{{$category->name}}</option>
@@ -74,7 +76,7 @@ td, th {
                     </select>
                 </div>
                 <div class="col">
-                    <select class="form-control" name="project_id" id="project_id">
+                    <select class="form-control selectpicker" name="project_id" id="project_id" data-live-search="true">
                         <option value="">Select Project</option>
                         @foreach($project as $project)
                         <option value="{{$project->id}}"{{$project->id == $project_filter ? 'selected' : ''}}>{{$project->name}}</option>
@@ -83,7 +85,7 @@ td, th {
                 </div>
                 @role('Admin')
                 <div class="col">
-                    <select class="form-control" name="user_id" id="user_id">
+                    <select class="form-control selectpicker" name="user_id" id="user_id" data-live-search="true">
                         <option value="">Select Member</option>
                         @foreach($user as $user)
                         <option value="{{$user->id}}"{{$user->id == $user_filter ? 'selected' : ''}}>{{$user->first_name}} {{$user->last_name}} - {{$user->name}}</option>
@@ -133,17 +135,18 @@ td, th {
         <tr>
           <th>ID</th>
           <th>Paid date</th>
-          <th>Category Name</th>
+          <th>Category <br/> Name</th>
           <th>Project Name</th>
           <th>Reason</th>
           <th>Amount</th>
-
-          <th>Image</th>
-          <th>Payment Mode</th>
-          <th>Description</th>
           <th>Paid</th>
           <th>Unpaid</th>
-          <th>Advanced Amount</th>
+          <th>Advanced <br/> Amount</th>
+          <th>Description</th>
+          <th>Image</th>
+          <th>Payment Mode</th>
+
+
           @role('Admin')
           <th>Added By</th>
 
@@ -159,18 +162,20 @@ td, th {
         @foreach($expenses as $expense)
        <tr>
         <td>{{ $loop->index+1}}</td>
- <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A')}}</td>
+ <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y')}} <br/>{{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }} </td>
 
         <td>{{$expense->category_name ? $expense->category_name : '--'}}</td>
         <td>{{$expense->project_name ? $expense->project_name : '--'}}</td>
         <td>{{$expense->reason}}</td>
         <td><b><span style="color:#ef6a0e">{{$expense->amount}}</span></b></td>
-        <td>@if($expense->image != '' || $expense->image != null) <img src="/public/images/{{ $expense->image }}" width="50px"> @endif</td>
-        <td>{{$expense->payment_name}}</td>
-        <td>{{$expense->description? $expense->description : '--'}}</td>
         <td><b><span style="color: green;">{{$expense->paid_amt}}</span></b></td>
         <td>@if($expense->unpaid_amt !=0)<b><a   style="color:red;text-decorative:none">{{$expense->unpaid_amt}}</a></b> @else<b> <p style="color:red">{{$expense->unpaid_amt}}</p></b>@endif</a>
         <td><b><span style="color:#840eef;">{{$expense->extra_amt}}</span></b></td>
+        <td>{{$expense->description? $expense->description : '--'}}</td>
+        <td>@if($expense->image != '' || $expense->image != null) <img src="/public/images/{{ $expense->image }}" width="50px"> @endif</td>
+        <td>{{$expense->payment_name}}</td>
+
+
         @role('Admin')
         <td>{{$expense->first.''.$expense->last}}</td>
         <td>{{$expense->first_name.''.$expense->last_name}}</td>
@@ -262,7 +267,12 @@ td, th {
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+
 <script>
+     $(document).ready(function() {
+            $('.selectpicker').selectpicker();
+        });
   $(document).ready(function() {
 var data =  new DataTable('#expenses_listing_table', {
   "lengthMenu": [15, 50, 100],
@@ -417,7 +427,7 @@ var url = '{{ route("expenses-delete") }}';
       var  project =$('#project_id').find(":selected").val();
       var  category =$('#category_id').find(":selected").val();
 
-     var   from_date=$('#from_date').val();
+     var from_date=$('#from_date').val();
        var end_date = $('#to_date').val();
     var url = '{{ route("deleteexpenses-export") }}';
       window.location.href=url+'?from_date='+from_date+'&to_date='+end_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;

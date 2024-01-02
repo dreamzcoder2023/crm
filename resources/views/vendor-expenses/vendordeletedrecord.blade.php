@@ -113,7 +113,7 @@
                             @endforeach
                         </select>
                     </div>
-                    @role('Admin')
+
                         <div class="col-2">
                             <select class="form-group selectpicker" name="user_id" id="user_id">
                                 <option value="">Select Member</option>
@@ -123,7 +123,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    @endrole
+
 
                     <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
                         <label>From</label>
@@ -136,7 +136,7 @@
                             value="{{ $to_date1 }}">
                     </div>
                     <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <a href="{{ route('expenses-history') }}" class="me-3">
+                        <a href="{{ route('vendor-expenses-delete_record') }}" class="me-3">
                             <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
                                 width="30">
                         </a>
@@ -191,7 +191,7 @@
 
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
-                            <td>{{ $expense->vendor_name  }}</td>
+                            <td>{{ $expense->labour_name  }}</td>
                             <td>{{ $expense->reason }}</td>
                             <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                             <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
@@ -462,7 +462,7 @@
                 console.log('category', category);
                 from_date = from_date;
                 end_date = to_date;
-                var url = '{{ route('expenses-history') }}';
+                var url = '{{ route('vendor-expenses-delete_record') }}';
                 window.location.href = url + '?from_date=' + from_date + '&to_date=' + to_date + '&category_id=' +
                     category + '&project_id=' + project + '&user_id=' + user;
             }
@@ -476,7 +476,7 @@
 
             var from_date = $('#from_date').val();
             var end_date = $('#to_date').val();
-            var url = '{{ route('expenses-export') }}';
+            var url = '{{ route('vendor-delete-expenses-export') }}';
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
@@ -488,7 +488,7 @@
 
             var from_date = $('#from_date').val();
             var end_date = $('#to_date').val();
-            var url = '{{ route('expenses-pdf') }}';
+            var url = '{{ route('vendor-delete-expenses-pdf') }}';
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });

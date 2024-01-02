@@ -37,11 +37,13 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
             'Project Name',
             'Reason',
             'Amount',
-            'Payment Mode',
-            'Description',
             'Paid Amount',
             'Unpaid Amount',
             'Advanced Amount',
+            'Description',
+            'Payment Mode',
+
+
             'Added By',
             'Edited By',
             "Deleted Date"
@@ -53,11 +55,12 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
         'Paid Date',
         'Project Name',
         'Amount',
-        'Payment Mode',
-        'Description',
         'Paid Amount',
         'Unpaid Amount',
         'Advanced Amount',
+        'Payment Mode',
+        'Description',
+
 
         ];
     }
@@ -115,11 +118,13 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
            $row->project_name,
            $row->reason,
            $row->amount,
-           $row->payment_name,
-           $row->description,
            $row->paid_amt,
            $row->unpaid_amt,
            $row->extra_amt,
+           $row->description,
+           $row->payment_name,
+
+
            $row->first.' '.$row->last,
            $row->first_name.' '.$row->last_name,
 
@@ -132,11 +137,12 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
             $unpaid_amt1,
             $row->project_name,
             $row->amount,
-            $row->payment_name,
-            $row->description,
             $row->paid_amt,
             $row->unpaid_amt,
             $row->extra_amt,
+            $row->payment_name,
+            $row->description,
+
 
        ];
     }

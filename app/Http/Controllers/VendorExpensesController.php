@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\VendorDeleteExpensesExport;
+use App\Exports\VendorExpensesExport;
 use App\Http\Controllers\Controller;
 use App\Models\AdvanceHistory;
 use App\Models\Category;
@@ -10,10 +12,12 @@ use App\Models\ExpensesUnpaidDate;
 use App\Models\Payment;
 use App\Models\ProjectDetails;
 use App\Models\User;
+use PDF;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class VendorExpensesController extends Controller
 {
@@ -75,7 +79,7 @@ class VendorExpensesController extends Controller
       //dd($expenses);exit;
     }
     if ($user_filter != 'undefined' && $user_filter != '') {
-      $expenses = $expenses->where('expenses.user_id', $user_filter);
+      $expenses = $expenses->where('expenses.vendor_id', $user_filter);
     }
 
     //dd($expenses);
@@ -89,7 +93,7 @@ class VendorExpensesController extends Controller
 
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
-    $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();
+    $user = Vendor::get();
 
     $sum = $expenses->sum('amount');
     $paid_amt = $expenses->sum('paid_amt');
@@ -302,7 +306,7 @@ class VendorExpensesController extends Controller
       //dd($expenses);exit;
     }
     if ($user_filter != 'undefined' && $user_filter != '') {
-      $expenses = $expenses->where('expenses.user_id', $user_filter);
+      $expenses = $expenses->where('expenses.vendor_id', $user_filter);
     }
 
     //dd($expenses);
@@ -316,7 +320,7 @@ class VendorExpensesController extends Controller
 
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
-    $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();
+    $user =Vendor::get();
 
     $sum = $expenses->sum('amount');
     $paid_amt = $expenses->sum('paid_amt');
@@ -481,5 +485,180 @@ class VendorExpensesController extends Controller
   public function vendor_project_amount(Request $request){
     $amount =  Expenses::where('vendor_id',$request->labour_id)->where('extra_amt','>',0)->where('project_id',$request->project_id)->sum('extra_amt');
     return response()->json($amount);
+  }
+  public function vendor_expense_pdf(Request $request){
+    $category_filter = $request->category_id;
+    $project_filter = $request->project_id;
+    $user_filter = $request->user_id;
+    //$from1 = now()->format('Y-m-d');
+
+    // if($request->from_date != ''){
+    //   $from = $request->from_date.' '.'00:00:00';
+    // }
+    // else{
+    //   $from = $from1.' '.'00:00:00';
+    // }
+
+    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
+    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+
+
+    // print_r($from);
+    // print_r($to_date);
+    // exit;
+
+
+
+    $auth = Auth::user()->id;
+    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+
+    $expenses = Expenses::whereNotNull('expenses.vendor_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('vendor_details as l', 'l.id', '=', 'expenses.vendor_id')
+      ->leftJoin('project_details', function ($join) {
+        $join->on('project_details.id', 'expenses.project_id')
+          ->where('expenses.project_id', '!=', null);
+      });
+
+
+    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
+
+    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
+    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
+    if ($from != '') {
+      $expenses = $expenses->wheredate('current_date', '>=', $from);
+      //   ->toSql();
+      //  // $bindings = $expenses->getBindings();
+      //   print_r($expenses);
+      //  exit;
+
+    }
+    if ($to_date != '') {
+      $expenses = $expenses->wheredate('current_date', '<=', $to_date);
+    }
+    if ($category_filter != 'undefined' && $category_filter != '') {
+      $expenses = $expenses->where('expenses.category_id', $category_filter);
+    }
+    if ($project_filter != 'undefined' && $project_filter != '') {
+      $expenses = $expenses->where('expenses.project_id', $project_filter);
+      //dd($expenses);exit;
+    }
+    if ($user_filter != 'undefined' && $user_filter != '') {
+      $expenses = $expenses->where('expenses.user_id', $user_filter);
+    }
+
+    //dd($expenses);
+    if ($request->amount != '' && $request->amount != 'undefined') {
+      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
+    }
+
+    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    $pdf = PDF::loadView('vendor-expense.vendorpdf', compact('expenses'));
+
+    return $pdf->download('vendor-expenses.pdf');
+  }
+  public function vendor_expense_export(Request $request)
+  {
+    $category_filter = $request->category_id;
+    $project_filter = $request->project_id;
+    $user_filter = $request->user_id;
+
+
+    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
+    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+
+
+
+
+    $auth = Auth::user()->id;
+    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+
+    return Excel::download((new VendorExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'vendor-expenses.xlsx');
+  }
+  public function vendor_delete_expense_pdf(Request $request){
+    $category_filter = $request->category_id;
+    $project_filter = $request->project_id;
+    $user_filter = $request->user_id;
+    //$from1 = now()->format('Y-m-d');
+
+    // if($request->from_date != ''){
+    //   $from = $request->from_date.' '.'00:00:00';
+    // }
+    // else{
+    //   $from = $from1.' '.'00:00:00';
+    // }
+
+    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
+    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+
+
+    // print_r($from);
+    // print_r($to_date);
+    // exit;
+
+
+
+    $auth = Auth::user()->id;
+    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+
+    $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+      ->whereNotNull('expenses.vendor_id')->leftjoin('vendor_details as l','l.id','=','expenses.labour_id')->leftJoin('project_details', function ($join) {
+        $join->on('project_details.id', 'expenses.project_id')
+          ->where('expenses.project_id', '!=', null);
+      });
+
+
+    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
+      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
+    if ($from != '' ) {
+      $expenses = $expenses->wheredate('current_date', '>=',$from);
+      //   ->toSql();
+      //  // $bindings = $expenses->getBindings();
+      //   print_r($expenses);
+      //  exit;
+
+    }
+    if($to_date !=''){
+      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
+    }
+    if ($category_filter != 'undefined' && $category_filter != '') {
+      $expenses = $expenses->where('expenses.category_id', $category_filter);
+    }
+    if ($project_filter != 'undefined' && $project_filter != '') {
+      $expenses = $expenses->where('expenses.project_id', $project_filter);
+      //dd($expenses);exit;
+    }
+    if ($user_filter != 'undefined' && $user_filter != '') {
+      $expenses = $expenses->where('expenses.vendor_id', $user_filter);
+    }
+
+    //dd($expenses);
+    if ($request->amount != '' && $request->amount != 'undefined') {
+      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
+    }
+
+    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+    $pdf = PDF::loadView('vendor-expenses.deletepdf', compact('expenses'));
+
+    return $pdf->download('vendor-delete-expenses.pdf');
+
+  }
+  public function vendor_delete_expense_export(Request $request){
+    $category_filter = $request->category_id;
+    $project_filter = $request->project_id;
+    $user_filter = $request->user_id;
+
+
+    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
+    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+
+
+
+
+    $auth = Auth::user()->id;
+    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+
+    return Excel::download((new VendorDeleteExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'vendor-delete-expenses.xlsx');
   }
 }

@@ -116,7 +116,7 @@
 
                         <div class="col-2">
                             <select class="form-group selectpicker" name="user_id" id="user_id" data-live-search="true">
-                                <option value="">Select Member</option>
+                                <option value="">Select Labour</option>
                                 @foreach ($user as $user)
                                     <option value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
                                         {{ $user->name }}</option>

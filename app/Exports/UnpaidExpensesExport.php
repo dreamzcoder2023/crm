@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
 {
-    
+
 
     public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role)
     {
@@ -26,7 +26,7 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         $this->auth = $auth;
 
         $this->role = $role;
-       
+
     }
 
     // Headings
@@ -34,30 +34,36 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         if($this->role == 1){
         return[
             'Category Name',
+            'Paid Date',
             'Project Name',
             'Amount',
-            'Payment Mode',
-            'Description',
             'Paid Amount',
             'Unpaid Amount',
             'Advanced Amount',
+            'Description',
+
+            'Payment Mode',
+
             'Added By',
             'Edited By',
-            'Paid Date'
+
 
         ];
     }else{
         return[
         'Category Name',
+        'Paid Date',
         'Project Name',
         'Amount',
-        'Payment Mode',
-        'Description',
         'Paid Amount',
         'Unpaid Amount',
         'Advanced Amount',
-       
-        'Paid Date'
+        'Description',
+        'Payment Mode',
+
+
+
+
         ];
     }
     }
@@ -73,8 +79,8 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
             $join->on('project_details.id', 'expenses.project_id')
                 ->where('expenses.project_id', '!=', null);
         });
-       
-       
+
+
         $expenses = $expenses->leftjoin('payment','payment.id','=','expenses.payment_mode')
         ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
         if($this->role != 1){
@@ -103,9 +109,9 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         if($this->user_filter != 'undefined' && $this->user_filter != ''){
           $expenses = $expenses->where('expenses.user_id',$this->user_filter);
         }
-    
 
-  $expenses = $expenses->orderBy('expenses.id','desc')->get(); 
+
+  $expenses = $expenses->orderBy('expenses.id','desc')->get();
 
 
 
@@ -118,30 +124,35 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         if($this->role == 1){
         $fields = [
            $row->category_name,
+           $unpaid_amt1,
            $row->project_name,
            $row->amount,
-           $row->payment_name,
-           $row->description,
            $row->paid_amt,
            $row->unpaid_amt,
            $row->extra_amt,
+           $row->description,
+           $row->payment_name,
+
+
            $row->first.' '.$row->last,
            $row->first_name.' '.$row->last_name,
-           $unpaid_amt1
-           
+
+
       ];
     }else{
         $fields = [
             $row->category_name,
+            $unpaid_amt1,
             $row->project_name,
             $row->amount,
-            $row->payment_name,
-            $row->description,
             $row->paid_amt,
             $row->unpaid_amt,
             $row->extra_amt,
-            $unpaid_amt1
-            
+            $row->description,
+            $row->payment_name,
+
+
+
        ];
     }
      return $fields;

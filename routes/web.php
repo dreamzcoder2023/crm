@@ -216,6 +216,8 @@ Route::post('/labour-advance/store', [LabourExpensesController::class, 'labour_a
 Route::get('/labour-expenses-delete_record',[LabourExpensesController::class,'delete_record'])->name('labour-expenses-delete_record');
 Route::get('/labour-expenses-export',[LabourExpensesController::class,'labour_expense_export'])->name('labour-expenses-export');
 Route::get('/labour-expenses-pdf',[LabourExpensesController::class,'labour_expense_pdf'])->name('labour-expenses-pdf');
+Route::get('/labour-delete-expenses-pdf',[LabourExpensesController::class,'labour_delete_expense_pdf'])->name('labour-delete-expenses-pdf');
+Route::get('/labour-delete-expenses-export',[LabourExpensesController::class,'labour_delete_expense_export'])->name('labour-delete-expenses-export');
 //vendor ended
 //vendor started
 Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');
@@ -233,6 +235,10 @@ Route::get('/vendor-expenses-advance-history',[VendorExpensesController::class,'
 Route::get('/vendor-advanceform/{id}', [VendorExpensesController::class, 'advance_form'])->name('vendor-advanceform');
 Route::post('/vendor-advance-store',[VendorExpensesController::class,'advance_store'])->name('vendor-advance.store');
 Route::get('/vendor_project_amount', [VendorExpensesController::class, 'vendor_project_amount'])->name('vendor_project_amount');
+Route::get('/vendor-expenses-pdf',[VendorExpensesController::class,'vendor_expense_pdf'])->name('vendor-expenses-pdf');
+Route::get('/vendor-expenses-export',[VendorExpensesController::class,'vendor_expense_export'])->name('vendor-expenses-export');
+Route::get('/vendor-delete-expenses-pdf',[VendorExpensesController::class,'vendor_delete_expense_pdf'])->name('vendor-delete-expenses-pdf');
+Route::get('/vendor-delete-expenses-export',[VendorExpensesController::class,'vendor_delete_expense_export'])->name('vendor-delete-expenses-export');
 //vendor ended
 });
 
