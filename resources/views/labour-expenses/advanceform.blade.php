@@ -39,13 +39,26 @@
                                                 name="extra_amt" class="form-control" placeholder="Enter amount"
                                                 value="" />
 
-                                                <input type="hidden" name="advance_amt" id="advance_amt" value="{{ $labour->advance_amt }}">
+                                            <input type="hidden" name="advance_amt" id="advance_amt"
+                                                value="{{ $labour->advance_amt }}">
                                             <p class="advance_amt" style="color:blue">Labour Total Advance Amount is
                                                 :{{ $labour->advance_amt }} </p>
-                                                <label id="amount-error" class="error" for="basic-default-email">Amount is
-                                                  required</label>
+                                            <label id="amount-error" class="error" for="basic-default-email">Amount is
+                                                required</label>
                                         </div>
-
+                                        <div class="mb-3">
+                                            <label class="form-label" for="basic-default-message">Amount
+                                                Deduction</label><br>
+                                            <input type="radio" class="gender" value="1" id="male"
+                                                name="gender">
+                                            <label class="form-label" for="male">Advance</label> &nbsp;
+                                            <input type="radio" class="gender" value="2" id="female"
+                                                name="gender">
+                                            <label class="form-label" for="female">Unpaid</label> <br />
+                                            <label id="gender-error" class="error" for="basic-default-email">Amount
+                                                deduction is
+                                                required</label>
+                                        </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="datetimepicker1">Project</label><br>
                                             <select class="form-control selectpicker" name="project_id"
@@ -55,23 +68,20 @@
                                                     <option value="{{ $project->id }}">{{ $project->name }}</option>
                                                 @endforeach
                                             </select>
-                                            <input type="hidden" name="project_advance_amt" id="project_advance_amt" value="">
-                                            <input type="hidden" name="project_unpaid_amt" id="project_unpaid_amt" value="">
+                                            <input type="hidden" name="project_advance_amt" id="project_advance_amt"
+                                                value="">
+                                            <input type="hidden" name="project_unpaid_amt" id="project_unpaid_amt"
+                                                value="">
                                             <p class="project_advance_amt" style="color:blue"> </p>
                                             <p class="project_unpaid_amt" style="color:blue"> </p>
                                             <label id="project-error" class="error" for="basic-default-email">Project is
-                                              required</label>
-                                              <label id="advance-error" class="error" for="basic-default-email">Amount is insufficient</label>
+                                                required</label>
+                                            <label id="advance-error" class="error" for="basic-default-email">Amount is
+                                                insufficient</label>
+                                                <label id="advance1-error" class="error" for="basic-default-email">Amount is
+                                                  insufficient</label>
                                         </div>
-                                        <div class="mb-3">
-                                          <label class="form-label" for="basic-default-message">Amount Deduction</label><br>
-                    <input  type="radio" class="gender" value="1"  id="male" name="gender">
-                    <label  class="form-label" for="male">Advance</label> &nbsp;
-                    <input type="radio" class="gender" value="2" id="female" name="gender">
-                    <label class="form-label" for="female">Unpaid</label> <br/>
-                    <label id="gender-error" class="error" for="basic-default-email">Amount deduction is
-                      required</label>
-                                      </div>
+
                                         <div class="mb-3">
                                             <label class="form-label" for="datetimepicker1">Date</label><br>
                                             <input type="date" class="form-control" id="datetimepicker1"
@@ -137,7 +147,10 @@
             console.log('project_advance_amt', project_advance_amt);
             console.log('project_unpaid_amt', project_unpaid_amt);
 
-            var amountname = false,projectname = false,advancename = false,unpaidname = false;
+            var amountname = false,
+                projectname = false,
+                advancename = false,
+                unpaidname = false;
 
             if (amount == "") {
                 $('#amount-error').removeClass('hide');
@@ -145,33 +158,38 @@
                 $('#amount-error').addClass('hide');
                 amountname = true;
             }
-            if(project_id == ""){
-                 $('#project-error').removeClass('hide');
+            if (project_id == "") {
+                $('#project-error').removeClass('hide');
             } else {
                 $('#project-error').addClass('hide');
                 projectname = true;
             }
-            if(gender == 0){
-              $('#gender-error').removeClass('hide');
+            if (gender == 0) {
+                $('#gender-error').removeClass('hide');
+            } else {
+                $('#gender-error').addClass('hide');
             }
-            else{
-              $('#gender-error').addClass('hide');
-            }
-            if(type == 1 && (parseInt(advance_amt) < parseInt(amount)) && (parseInt(amount) <= parseInt(project_advance_amt))){
-                 $('#advance-error').removeClass('hide');
-                 console.log('hi');
-            }
-            else {
+            if (type == 1  && parseInt(project_advance_amt) == 0) {
+                $('#advance-error').removeClass('hide');
+                console.log('hi');
+            }else if(type == 1 && parseInt(project_advance_amt) < parseInt(amount)){
+              $('#advance-error').removeClass('hide');
+                console.log('else if hi');
+
+            } else {
                 $('#advance-error').addClass('hide');
                 advancename = true;
 
                 console.log('else');
             }
-             if(type == 2 &&  parseInt(advance_amt) < parseInt(amount) && parseInt(project_unpaid_amt) < parseInt(amount)){
-              $('#advance-error').removeClass('hide');
-            }
-            else {
-                $('#advance-error').addClass('hide');
+            if (type == 2 && parseInt(project_unpaid_amt) == 0) {
+                $('#advance1-error').removeClass('hide');
+            }else if(type == 2 && parseInt(project_unpaid_amt) < parseInt(amount)){
+              $('#advance1-error').removeClass('hide');
+                console.log('else if hi');
+
+            } else {
+                $('#advance1-error').addClass('hide');
 
                 unpaidname = true;
                 console.log('else');
@@ -180,25 +198,27 @@
             //     document.getElementById("UnpaidSubmit").submit();
             // }
         });
-        $('#project_id').change(function(){
-          var project_id = $(this).val();
-          var labour_id = $('#labour_id').val();
-          $.ajax({
-                    url: "{{ route('labour_project_amount') }}",
-                    data: {
-                        'labour_id': labour_id,
-                        'project_id' : project_id
-                    },
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(result) {
-                        console.log("result", result);
-                        $('#project_advance_amt').val(result.advance);
-                        $('#project_unpaid_amt').val(result.unpaid_amt);
-                        $('.project_advance_amt').text('Labour Project Advance Amount is :'+result.advance);
-                        $('.project_unpaid_amt').text('Labour Project Unpaid Amount is :'+result.unpaid_amt);
-                    }
-                });
+        $('#project_id').change(function() {
+            var project_id = $(this).val();
+            var labour_id = $('#labour_id').val();
+            $.ajax({
+                url: "{{ route('labour_project_amount') }}",
+                data: {
+                    'labour_id': labour_id,
+                    'project_id': project_id
+                },
+                type: 'GET',
+                dataType: 'json',
+                success: function(result) {
+                    console.log("result", result);
+                    $('#project_advance_amt').val(result.advance);
+                    $('#project_unpaid_amt').val(result.unpaid_amt);
+                    $('.project_advance_amt').text('Labour Project Advance Amount is :' + result
+                        .advance);
+                    $('.project_unpaid_amt').text('Labour Project Unpaid Amount is :' + result
+                        .unpaid_amt);
+                }
+            });
         });
     </script>
 @endsection
