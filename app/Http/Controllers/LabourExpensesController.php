@@ -276,12 +276,19 @@ class LabourExpensesController extends Controller
   }
   public function advance_form($id){
     $labour = Labour::find($id);
-    $project = Expenses::where('labour_id',$id)->where('extra_amt','>',0)->leftjoin('project_details','project_details.id','=','expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
+    $project = Expenses::where('labour_id',$id)->where(function ($query) {
+      $query->where('extra_amt', '>', 0)
+            ->orWhere('unpaid_amt', '>', 0);
+  })->leftjoin('project_details','project_details.id','=','expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
     return view('labour-expenses.advanceform',['labour' => $labour,'project' => $project]);
   }
   public function labour_project_amount(Request $request){
-    $amount =  Expenses::where('labour_id',$request->labour_id)->where('extra_amt','>',0)->where('project_id',$request->project_id)->sum('extra_amt');
-    return response()->json($amount);
+    $amount =  Expenses::where('labour_id',$request->labour_id)->where('project_id',$request->project_id)->get();
+   // dd($amount);
+    $advance = $amount->sum('extra_amt');
+    $unpaid_amt = $amount->sum('unpaid_amt');
+   // dd($amount);
+    return response()->json(['advance' => $advance,'unpaid_amt' =>$unpaid_amt]);
   }
   public function labour_advance_store(Request $request){
    // dd($request->all());

@@ -56,12 +56,22 @@
                                                 @endforeach
                                             </select>
                                             <input type="hidden" name="project_advance_amt" id="project_advance_amt" value="">
+                                            <input type="hidden" name="project_unpaid_amt" id="project_unpaid_amt" value="">
                                             <p class="project_advance_amt" style="color:blue"> </p>
+                                            <p class="project_unpaid_amt" style="color:blue"> </p>
                                             <label id="project-error" class="error" for="basic-default-email">Project is
                                               required</label>
                                               <label id="advance-error" class="error" for="basic-default-email">Amount is insufficient</label>
                                         </div>
-
+                                        <div class="mb-3">
+                                          <label class="form-label" for="basic-default-message">Amount Deduction</label><br>
+                    <input  type="radio" class="gender" value="1"  id="male" name="gender">
+                    <label  class="form-label" for="male">Advance</label> &nbsp;
+                    <input type="radio" class="gender" value="2" id="female" name="gender">
+                    <label class="form-label" for="female">Unpaid</label> <br/>
+                    <label id="gender-error" class="error" for="basic-default-email">Amount deduction is
+                      required</label>
+                                      </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="datetimepicker1">Date</label><br>
                                             <input type="date" class="form-control" id="datetimepicker1"
@@ -116,13 +126,18 @@
             var project_id = $('#project_id :selected').val();
             var advance_amt = $('#advance_amt').val();
             var project_advance_amt = $('#project_advance_amt').val();
+            var project_unpaid_amt = $('#project_unpaid_amt').val();
+            var gender = $('.gender:checked').length;
+            var type = $('.gender:checked').val();
 
             console.log('amount', amount);
             console.log('project id', project_id);
             console.log('advance_amt', advance_amt);
+            console.log('gender', gender);
             console.log('project_advance_amt', project_advance_amt);
+            console.log('project_unpaid_amt', project_unpaid_amt);
 
-            var amountname = false,projectname = false,advancename = false;
+            var amountname = false,projectname = false,advancename = false,unpaidname = false;
 
             if (amount == "") {
                 $('#amount-error').removeClass('hide');
@@ -136,17 +151,34 @@
                 $('#project-error').addClass('hide');
                 projectname = true;
             }
-            if(parseInt(advance_amt) < parseInt(amount) && parseInt(project_advance_amt) < parseInt(amount)){
+            if(gender == 0){
+              $('#gender-error').removeClass('hide');
+            }
+            else{
+              $('#gender-error').addClass('hide');
+            }
+            if(type == 1 && (parseInt(advance_amt) < parseInt(amount)) && (parseInt(amount) <= parseInt(project_advance_amt))){
                  $('#advance-error').removeClass('hide');
                  console.log('hi');
-            } else {
+            }
+            else {
                 $('#advance-error').addClass('hide');
                 advancename = true;
+
                 console.log('else');
             }
-            if (amountname == true && projectname == true &&  advancename == true) {
-                document.getElementById("UnpaidSubmit").submit();
+             if(type == 2 &&  parseInt(advance_amt) < parseInt(amount) && parseInt(project_unpaid_amt) < parseInt(amount)){
+              $('#advance-error').removeClass('hide');
             }
+            else {
+                $('#advance-error').addClass('hide');
+
+                unpaidname = true;
+                console.log('else');
+            }
+            // if (amountname == true && projectname == true &&  advancename == true && unpaidname == true) {
+            //     document.getElementById("UnpaidSubmit").submit();
+            // }
         });
         $('#project_id').change(function(){
           var project_id = $(this).val();
@@ -161,8 +193,10 @@
                     dataType: 'json',
                     success: function(result) {
                         console.log("result", result);
-                        $('#project_advance_amt').val(result);
-                        $('.project_advance_amt').text('Labour Project Advance Amount is :'+result);
+                        $('#project_advance_amt').val(result.advance);
+                        $('#project_unpaid_amt').val(result.unpaid_amt);
+                        $('.project_advance_amt').text('Labour Project Advance Amount is :'+result.advance);
+                        $('.project_unpaid_amt').text('Labour Project Unpaid Amount is :'+result.unpaid_amt);
                     }
                 });
         });
