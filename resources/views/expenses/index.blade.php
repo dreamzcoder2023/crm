@@ -106,7 +106,7 @@
                         </select>
                     </div>
                     <div class="col-2">
-                        <select class="form-group selectpicker" name="project_id" id="project_id">
+                        <select class="form-group selectpicker" name="project_id" id="project_id" data-live-search="true">
                             <option value="">Select Project</option>
                             @foreach ($project as $project)
                                 <option value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
@@ -116,7 +116,7 @@
                     </div>
                     @role('Admin')
                         <div class="col-2">
-                            <select class="form-group selectpicker" name="user_id" id="user_id">
+                            <select class="form-group selectpicker" name="user_id" id="user_id" data-live-search="true">
                                 <option value="">Select Member</option>
                                 @foreach ($user as $user)
                                     <option value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
@@ -163,16 +163,17 @@
                     <tr>
                         <th>ID</th>
                         <th>Paid date</th>
-                        <th>Category Name</th>
+                        <th>Category <br/> Name</th>
                         <th>Project Name</th>
                         <th>Amount</th>
-
-                        <th>Image</th>
-                        <th>Payment Mode</th>
-                        <th>Description</th>
                         <th>Paid</th>
                         <th>Unpaid</th>
-                        <th>Advanced Amount</th>
+                        <th>Advanced <br/> Amount</th>
+                        <th style="width:30px">Description</th>
+                        <th>Image</th>
+                        <th>Payment Mode</th>
+
+
                         @role('Admin')
                             <th>Added By</th>
 
@@ -189,19 +190,11 @@
                     @foreach ($expenses as $expense)
                         <tr>
                             <td>{{ $loop->index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br/> {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
 
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
                             <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
-                            <td>
-                                @if ($expense->image != '' || $expense->image != null)
-                                    <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
-                                @else
-                                    --
-                                @endif
-                            <td>{{ $expense->payment_name }}</td>
-                            <td>{{ $expense->description ? $expense->description : '--' }}</td>
                             <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                             <td>
                                 @if ($expense->unpaid_amt != 0)
@@ -212,6 +205,16 @@
                                 @endif
                             </td>
                             <td><b><span style="color:#840eef;">{{ $expense->extra_amt }}</span></b></td>
+                            <td>{{ $expense->description ? $expense->description : '--' }}</td>
+
+                            <td>
+                                @if ($expense->image != '' || $expense->image != null)
+                                    <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
+                                @else
+                                    --
+                                @endif
+                            <td>{{ $expense->payment_name }}</td>
+
                             @role('Admin')
                                 <td>{{ $expense->first . '' . $expense->last }}</td>
                                 <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
