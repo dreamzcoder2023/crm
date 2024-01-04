@@ -7,7 +7,7 @@
 
     <!-- Basic Layout & Basic with Icons -->
     <h4 class="fw-bold py-3 mb-4">
-        <span class="text-muted fw-light">Advance Amount
+        <span class="text-muted fw-light">Advance Amount Deduction
     </h4>
     <div class="row" style="position:absolute; top:150px; right:50px ">
         <div class="col-md-12">
@@ -45,7 +45,19 @@
                                                 <label id="amount-error" class="error" for="basic-default-email">Amount is
                                                   required</label>
                                         </div>
-
+                                        <div class="mb-3">
+                                          <label class="form-label" for="basic-default-message">Amount
+                                              Deduction</label><br>
+                                          <input type="radio" class="gender" value="1" id="male"
+                                              name="gender">
+                                          <label class="form-label" for="male">Advance</label> &nbsp;
+                                          <input type="radio" class="gender" value="2" id="female"
+                                              name="gender">
+                                          <label class="form-label" for="female">Unpaid</label> <br />
+                                          <label id="gender-error" class="error" for="basic-default-email">Amount
+                                              deduction is
+                                              required</label>
+                                      </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="datetimepicker1">Project</label><br>
                                             <select class="form-control selectpicker" name="project_id"
@@ -55,11 +67,18 @@
                                                     <option value="{{ $project->id }}">{{ $project->name }}</option>
                                                 @endforeach
                                             </select>
-                                            <input type="hidden" name="project_advance_amt" id="project_advance_amt" value="">
-                                            <p class="project_advance_amt" style="color:blue"> </p>
-                                            <label id="project-error" class="error" for="basic-default-email">Project is
-                                              required</label>
-                                              <label id="advance-error" class="error" for="basic-default-email">Amount is insufficient</label>
+                                            <input type="hidden" name="project_advance_amt" id="project_advance_amt"
+                                            value="">
+                                        <input type="hidden" name="project_unpaid_amt" id="project_unpaid_amt"
+                                            value="">
+                                        <p class="project_advance_amt" style="color:blue"> </p>
+                                        <p class="project_unpaid_amt" style="color:blue"> </p>
+                                        <label id="project-error" class="error" for="basic-default-email">Project is
+                                            required</label>
+                                        <label id="advance-error" class="error" for="basic-default-email">Amount is
+                                            insufficient</label>
+                                            <label id="advance1-error" class="error" for="basic-default-email">Amount is
+                                              insufficient</label>
                                         </div>
 
                                         <div class="mb-3">
@@ -107,7 +126,7 @@
             var key = e.key;
             if (isNaN(key) || key === ' ' || key === null) {
                 e.preventDefault();
-            }
+           }
         }
         $('#UnpaidSubmit').submit(function(e) {
             e.preventDefault();
@@ -116,13 +135,20 @@
             var project_id = $('#project_id :selected').val();
             var advance_amt = $('#advance_amt').val();
             var project_advance_amt = $('#project_advance_amt').val();
+            var project_unpaid_amt = $('#project_unpaid_amt').val();
+            var gender = $('.gender:checked').length;
+            var type = $('.gender:checked').val();
 
             console.log('amount', amount);
             console.log('project id', project_id);
             console.log('advance_amt', advance_amt);
             console.log('project_advance_amt', project_advance_amt);
+            console.log('gender',gender);
 
-            var amountname = false,projectname = false,advancename = false;
+            var amountname = false,
+                projectname = false,
+                advancename = false,
+                unpaidname = false;
 
             if (amount == "") {
                 $('#amount-error').removeClass('hide');
@@ -130,23 +156,45 @@
                 $('#amount-error').addClass('hide');
                 amountname = true;
             }
-            if(project_id == ""){
-                 $('#project-error').removeClass('hide');
+            if (project_id == "") {
+                $('#project-error').removeClass('hide');
             } else {
                 $('#project-error').addClass('hide');
                 projectname = true;
             }
-            if(parseInt(advance_amt) < parseInt(amount) && parseInt(project_advance_amt) < parseInt(amount)){
-                 $('#advance-error').removeClass('hide');
-                 console.log('hi');
+            if (gender == 0) {
+                $('#gender-error').removeClass('hide');
+            } else {
+                $('#gender-error').addClass('hide');
+            }
+            if (type == 1  && parseInt(project_advance_amt) == 0) {
+                $('#advance-error').removeClass('hide');
+                console.log('hi');
+            }else if(type == 1 && (parseInt(advance_amt) < parseInt(amount)) && parseInt(project_advance_amt) < parseInt(amount)){
+              $('#advance-error').removeClass('hide');
+                console.log('else if hi');
+
             } else {
                 $('#advance-error').addClass('hide');
                 advancename = true;
+
                 console.log('else');
             }
-            if (amountname == true && projectname == true &&  advancename == true) {
-                document.getElementById("UnpaidSubmit").submit();
+            if (type == 2 && parseInt(project_unpaid_amt) == 0) {
+                $('#advance1-error').removeClass('hide');
+            }else if(type == 2  && parseInt(project_unpaid_amt) < parseInt(amount)){
+              $('#advance1-error').removeClass('hide');
+                console.log('else if hi');
+
+            } else {
+                $('#advance1-error').addClass('hide');
+
+                unpaidname = true;
+                console.log('else');
             }
+            // if (amountname == true && projectname == true &&  advancename == true) {
+            //     document.getElementById("UnpaidSubmit").submit();
+            // }
         });
         $('#project_id').change(function(){
           var project_id = $(this).val();
@@ -160,9 +208,13 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(result) {
-                        console.log("result", result);
-                        $('#project_advance_amt').val(result);
-                        $('.project_advance_amt').text('Vendor Project Advance Amount is :'+result);
+                      console.log("result", result);
+                    $('#project_advance_amt').val(result.advance);
+                    $('#project_unpaid_amt').val(result.unpaid_amt);
+                    $('.project_advance_amt').text('Labour Project Advance Amount is :' + result
+                        .advance);
+                    $('.project_unpaid_amt').text('Labour Project Unpaid Amount is :' + result
+                        .unpaid_amt);
                     }
                 });
         });

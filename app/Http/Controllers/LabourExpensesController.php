@@ -24,7 +24,7 @@ class LabourExpensesController extends Controller
 {
   public function index(Request $request)
   {
-   //
+    //
     $currentYear = $request->year ? $request->year : Carbon::now()->year;
 
     $startOfWeek = Carbon::createFromDate($currentYear, 1, 1)->startOfWeek();
@@ -70,7 +70,7 @@ class LabourExpensesController extends Controller
     // dd($recordsData);
     //  // $labour = Expenses::whereBetween('current_date', [Carbon::now()->startOfWeek(Carbon::MONDAY), Carbon::now()->endOfWeek(Carbon::SATURDAY)])->get();
 
-    $view = view('labour-expenses.index', ['start_labour_date' => $start_labour_date,'current_year' => $currentYear])->render();
+    $view = view('labour-expenses.index', ['start_labour_date' => $start_labour_date, 'current_year' => $currentYear])->render();
     return response()->json($view);
   }
 
@@ -134,7 +134,7 @@ class LabourExpensesController extends Controller
       DB::Raw('e.*'),
       DB::Raw('p.name as project_name')
     ])->groupBy('e.project_id')->first();
-//dd($project);
+    //dd($project);
     $labour = Expenses::leftJoin('labour_details', 'labour_details.id', '=', 'expenses.labour_id')
       ->where('expenses.project_id', $request->project_id)
       ->whereNotNull('expenses.labour_id')
@@ -152,30 +152,31 @@ class LabourExpensesController extends Controller
   }
   public function labour_expenses_details(Request $request)
   {
-    $weekSummary = DB::table('expenses as w')->leftjoin('labour_details as l','l.id','=','w.labour_id')
-    ->whereNotNull('w.labour_id')
-    ->select([
+    $weekSummary = DB::table('expenses as w')->leftjoin('labour_details as l', 'l.id', '=', 'w.labour_id')
+      ->whereNotNull('w.labour_id')
+      ->select([
         DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
         DB::Raw('SUM(w.extra_amt) as advance_amt'),
         DB::Raw("(SELECT DAYNAME(w.current_date)) as day_of_week"),
         DB::Raw('l.name as labour_name'),
         DB::Raw('w.amount as amount'),
         DB::Raw('w.project_id'),
-    ])
-    ->whereBetween('w.current_date', [$request->start_date, $request->end_date])
-    ->groupBy('day_of_week') // Change the grouping to use the alias
-    ->get();
-     $view = view('labour-expenses.labourdetails',['labour' => $weekSummary,'start_date' =>$request->start_date,'end_date' => $request->end_date])->render();
+      ])
+      ->whereBetween('w.current_date', [$request->start_date, $request->end_date])
+      ->groupBy('day_of_week') // Change the grouping to use the alias
+      ->get();
+    $view = view('labour-expenses.labourdetails', ['labour' => $weekSummary, 'start_date' => $request->start_date, 'end_date' => $request->end_date])->render();
     // dd($view);
-     return response()->json($view);
+    return response()->json($view);
   }
-  public function labour_expenses_store(Request $request){
+  public function labour_expenses_store(Request $request)
+  {
     //dd($request->all());
-    $labours='';
-    foreach($request->labour_id as $labour){
-      $labours = Expenses::where(['labour_id' => $labour,'project_id' => $request->project_id])->whereBetween('current_date',[$request->start_date,$request->end_date])->get();
-      foreach($labours as $labours){
-        if($labours->unpaid_amt > 0){
+    $labours = '';
+    foreach ($request->labour_id as $labour) {
+      $labours = Expenses::where(['labour_id' => $labour, 'project_id' => $request->project_id])->whereBetween('current_date', [$request->start_date, $request->end_date])->get();
+      foreach ($labours as $labours) {
+        if ($labours->unpaid_amt > 0) {
           $labours['paid_amt'] = $labours->unpaid_amt + $labours->paid_amt;
           $wallet = User::find(Auth::user()->id);
           $wallet['wallet'] = $wallet->wallet - $labours->unpaid_amt;
@@ -187,9 +188,9 @@ class LabourExpensesController extends Controller
       }
     }
     return response()->json($labours);
-
   }
-  public function labour_expenses_history(Request $request){
+  public function labour_expenses_history(Request $request)
+  {
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
@@ -215,7 +216,7 @@ class LabourExpensesController extends Controller
     $auth = Auth::user()->id;
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
-    $expenses = Expenses::whereNotNull('expenses.labour_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('labour_details as l','l.id','=','expenses.labour_id')
+    $expenses = Expenses::whereNotNull('expenses.labour_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('labour_details as l', 'l.id', '=', 'expenses.labour_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -225,18 +226,18 @@ class LabourExpensesController extends Controller
     $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
       ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
 
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
-    if ($from != '' ) {
-      $expenses = $expenses->wheredate('current_date', '>=',$from);
+    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
+    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as labour_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
+    if ($from != '') {
+      $expenses = $expenses->wheredate('current_date', '>=', $from);
       //   ->toSql();
       //  // $bindings = $expenses->getBindings();
       //   print_r($expenses);
       //  exit;
 
     }
-    if($to_date != ''){
-      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
+    if ($to_date != '') {
+      $expenses = $expenses->wheredate('current_date', '<=', $to_date);
     }
     if ($category_filter != 'undefined' && $category_filter != '') {
       $expenses = $expenses->where('expenses.category_id', $category_filter);
@@ -270,55 +271,68 @@ class LabourExpensesController extends Controller
 
     return view('labour-expenses.expensesindex', ['expenses' => $expenses, 'category' => $category, 'category_filter' => $category_filter, 'from_date' => $request->from_date, 'to_date1' => $request->to_date, 'project' => $project, 'user' => $user, 'project_filter' => $project_filter, 'user_filter' => $user_filter, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
   }
-  public function labour_advance(Request $request){
+  public function labour_advance(Request $request)
+  {
     $users = Labour::latest()->get();
-    return view('labour-expenses.labourindex',['users' => $users]);
+    return view('labour-expenses.labourindex', ['users' => $users]);
   }
-  public function advance_form($id){
+  public function advance_form($id)
+  {
     $labour = Labour::find($id);
-    $project = Expenses::where('labour_id',$id)->where(function ($query) {
+    $project = Expenses::where('labour_id', $id)->where(function ($query) {
       $query->where('extra_amt', '>', 0)
-            ->orWhere('unpaid_amt', '>', 0);
-  })->leftjoin('project_details','project_details.id','=','expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
-    return view('labour-expenses.advanceform',['labour' => $labour,'project' => $project]);
+        ->orWhere('unpaid_amt', '>', 0);
+    })->leftjoin('project_details', 'project_details.id', '=', 'expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
+    return view('labour-expenses.advanceform', ['labour' => $labour, 'project' => $project]);
   }
-  public function labour_project_amount(Request $request){
-    $amount =  Expenses::where('labour_id',$request->labour_id)->where('project_id',$request->project_id)->get();
-   // dd($amount);
+  public function labour_project_amount(Request $request)
+  {
+    $amount =  Expenses::where('labour_id', $request->labour_id)->where('project_id', $request->project_id)->get();
+    // dd($amount);
     $advance = $amount->sum('extra_amt');
     $unpaid_amt = $amount->sum('unpaid_amt');
-   // dd($amount);
-    return response()->json(['advance' => $advance,'unpaid_amt' =>$unpaid_amt]);
+    // dd($amount);
+    return response()->json(['advance' => $advance, 'unpaid_amt' => $unpaid_amt]);
   }
-  public function labour_advance_store(Request $request){
+  public function labour_advance_store(Request $request)
+  {
    // dd($request->all());
-    $project = Expenses::where(['labour_id' => $request->labour_id,'project_id' => $request->project_id ])->get();
-    $labour = Labour::where('id',$request->labour_id)->first();
+    $project = Expenses::where(['labour_id' => $request->labour_id, 'project_id' => $request->project_id])->get();
+    $labour = Labour::where('id', $request->labour_id)->first();
     $labour['advance_amt'] = abs($labour->advance_amt - $request->extra_amt);
-   // dd($labour);
-  //  $labour['date'] = $request->current_date . ' ' . $request->time;
+    // dd($labour);
+    //  $labour['date'] = $request->current_date . ' ' . $request->time;
     $labour->update();
     $amount = $request->extra_amt;
-    foreach($project as $project){
+    foreach ($project as $project) {
 
-      $amount = abs($amount-$project->extra_amt);
+      $amount = abs($amount - $project->extra_amt);
       $input['labour_id'] = $request->labour_id;
       $input['expense_id'] = $project->id;
       $input['amount'] = $project->extra_amt;
       AdvanceHistory::create($input);
-      if($request->extra_amt <= $project->extra_amt){
-        $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
+      if ($request->gender == 1) {
+        if ($request->extra_amt <= $project->extra_amt) {
+          $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
+        } else {
+          $project['extra_amt'] = 0;
+        }
       }
-      else{
-        $project['extra_amt'] = 0;
+      if($request->gender == 2){
+        if ($request->extra_amt <= $project->unpaid_amt) {
+          $project['unpaid_amt'] = abs($request->extra_amt - $project->unpaid_amt);
+        } else {
+          $project['unpaid_amt'] = 0;
+        }
       }
       $project['is_advance'] = Auth::user()->id;
       $project->update();
     }
-   return redirect()->route('labour-expenses-advance')->with('popup','open');
+    return redirect()->route('labour-expenses-advance')->with('popup', 'open');
   }
-  public function edit(Request $request){
-    $expense = Expenses::leftjoin('labour_details','labour_details.id','=','expenses.labour_id')->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('expenses.id', '=', $request->id)->select('expenses.*', 'users.wallet','labour_details.advance_amt')->first();
+  public function edit(Request $request)
+  {
+    $expense = Expenses::leftjoin('labour_details', 'labour_details.id', '=', 'expenses.labour_id')->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('expenses.id', '=', $request->id)->select('expenses.*', 'users.wallet', 'labour_details.advance_amt')->first();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0, 'name' => 'salary'])->first();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
@@ -326,9 +340,10 @@ class LabourExpensesController extends Controller
     $current_date = $datetime[0];
     $current_time = $datetime[1];
     $labour = Labour::latest()->get();
-    return view('labour-expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time,'labours' => $labour]);
+    return view('labour-expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time, 'labours' => $labour]);
   }
-  public function update(Request $request){
+  public function update(Request $request)
+  {
     $user_id = Auth::user()->id;
     $input = $request->all();
     //dd($input);
@@ -339,7 +354,8 @@ class LabourExpensesController extends Controller
 
     if ($image = $request->file('image')) {
 
-      $destinationPath = public_Path('images'); 'public/images/';
+      $destinationPath = public_Path('images');
+      'public/images/';
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
@@ -409,7 +425,7 @@ class LabourExpensesController extends Controller
     $wallet->update();
     $expense->delete();
     return redirect()->route('labour-expenses-history')
-    ->with('expenses-popup', 'Labour Detail Deleted Successfully');
+      ->with('expenses-popup', 'Labour Detail Deleted Successfully');
   }
   public function delete_record(Request $request)
   {
@@ -439,7 +455,7 @@ class LabourExpensesController extends Controller
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
-      ->whereNotNull('expenses.labour_id')->leftjoin('labour_details as l','l.id','=','expenses.labour_id')->leftJoin('project_details', function ($join) {
+      ->whereNotNull('expenses.labour_id')->leftjoin('labour_details as l', 'l.id', '=', 'expenses.labour_id')->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
       });
@@ -447,18 +463,18 @@ class LabourExpensesController extends Controller
 
     $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
       ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
-    if ($from != '' ) {
-      $expenses = $expenses->wheredate('current_date', '>=',$from);
+    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
+    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as labour_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
+    if ($from != '') {
+      $expenses = $expenses->wheredate('current_date', '>=', $from);
       //   ->toSql();
       //  // $bindings = $expenses->getBindings();
       //   print_r($expenses);
       //  exit;
 
     }
-    if($to_date !=''){
-      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
+    if ($to_date != '') {
+      $expenses = $expenses->wheredate('current_date', '<=', $to_date);
     }
     if ($category_filter != 'undefined' && $category_filter != '') {
       $expenses = $expenses->where('expenses.category_id', $category_filter);
@@ -482,7 +498,7 @@ class LabourExpensesController extends Controller
 
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
-    $user =Labour::get();
+    $user = Labour::get();
 
     $sum = $expenses->sum('amount');
     $paid_amt = $expenses->sum('paid_amt');
@@ -508,7 +524,8 @@ class LabourExpensesController extends Controller
 
     return Excel::download((new LabourExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'labour-expenses.xlsx');
   }
-  public function labour_expense_pdf(Request $request){
+  public function labour_expense_pdf(Request $request)
+  {
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
@@ -534,7 +551,7 @@ class LabourExpensesController extends Controller
     $auth = Auth::user()->id;
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
-    $expenses = Expenses::whereNotNull('expenses.labour_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('labour_details as l','l.id','=','expenses.labour_id')
+    $expenses = Expenses::whereNotNull('expenses.labour_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('labour_details as l', 'l.id', '=', 'expenses.labour_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -544,18 +561,18 @@ class LabourExpensesController extends Controller
     $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
       ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
 
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
-    if ($from != '' ) {
-      $expenses = $expenses->wheredate('current_date', '>=',$from);
+    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
+    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as labour_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
+    if ($from != '') {
+      $expenses = $expenses->wheredate('current_date', '>=', $from);
       //   ->toSql();
       //  // $bindings = $expenses->getBindings();
       //   print_r($expenses);
       //  exit;
 
     }
-    if($to_date != ''){
-      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
+    if ($to_date != '') {
+      $expenses = $expenses->wheredate('current_date', '<=', $to_date);
     }
     if ($category_filter != 'undefined' && $category_filter != '') {
       $expenses = $expenses->where('expenses.category_id', $category_filter);
@@ -578,9 +595,9 @@ class LabourExpensesController extends Controller
     $pdf = PDF::loadView('labour-expenses.expensepdf', compact('expenses'));
 
     return $pdf->download('labour-expenses.pdf');
-
   }
-  public function labour_delete_expense_pdf(Request $request){
+  public function labour_delete_expense_pdf(Request $request)
+  {
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
@@ -607,7 +624,7 @@ class LabourExpensesController extends Controller
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
-      ->whereNotNull('expenses.labour_id')->leftjoin('labour_details as l','l.id','=','expenses.labour_id')->leftJoin('project_details', function ($join) {
+      ->whereNotNull('expenses.labour_id')->leftjoin('labour_details as l', 'l.id', '=', 'expenses.labour_id')->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
       });
@@ -615,18 +632,18 @@ class LabourExpensesController extends Controller
 
     $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
       ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
-    if ($from != '' ) {
-      $expenses = $expenses->wheredate('current_date', '>=',$from);
+    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
+    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as labour_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
+    if ($from != '') {
+      $expenses = $expenses->wheredate('current_date', '>=', $from);
       //   ->toSql();
       //  // $bindings = $expenses->getBindings();
       //   print_r($expenses);
       //  exit;
 
     }
-    if($to_date !=''){
-      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
+    if ($to_date != '') {
+      $expenses = $expenses->wheredate('current_date', '<=', $to_date);
     }
     if ($category_filter != 'undefined' && $category_filter != '') {
       $expenses = $expenses->where('expenses.category_id', $category_filter);
@@ -648,9 +665,9 @@ class LabourExpensesController extends Controller
     $pdf = PDF::loadView('labour-expenses.deletepdf', compact('expenses'));
 
     return $pdf->download('labour-delete-expenses.pdf');
-
   }
-  public function labour_delete_expense_export(Request $request){
+  public function labour_delete_expense_export(Request $request)
+  {
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;

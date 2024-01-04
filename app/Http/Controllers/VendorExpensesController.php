@@ -452,11 +452,14 @@ class VendorExpensesController extends Controller
   }
   public function advance_form($id){
     $labour = Vendor::find($id);
-    $project = Expenses::where('vendor_id',$id)->where('extra_amt','>',0)->leftjoin('project_details','project_details.id','=','expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
+    $project = Expenses::where('vendor_id', $id)->where(function ($query) {
+      $query->where('extra_amt', '>', 0)
+        ->orWhere('unpaid_amt', '>', 0);
+    })->leftjoin('project_details', 'project_details.id', '=', 'expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
     return view('vendor-expenses.advanceform',['labour' => $labour,'project' => $project]);
   }
   public function advance_store(Request $request){
-     // dd($request->all());
+      dd($request->all());
      $project = Expenses::where(['vendor_id' => $request->labour_id,'project_id' => $request->project_id ])->get();
      $labour = Vendor::where('id',$request->labour_id)->first();
      $labour['advance_amt'] = abs($labour->advance_amt - $request->extra_amt);
@@ -483,8 +486,12 @@ class VendorExpensesController extends Controller
     return redirect()->route('vendor-expenses-advance-history')->with('popup','open');
   }
   public function vendor_project_amount(Request $request){
-    $amount =  Expenses::where('vendor_id',$request->labour_id)->where('extra_amt','>',0)->where('project_id',$request->project_id)->sum('extra_amt');
-    return response()->json($amount);
+    $amount =  Expenses::where('vendor_id', $request->labour_id)->where('project_id', $request->project_id)->get();
+    // dd($amount);
+    $advance = $amount->sum('extra_amt');
+    $unpaid_amt = $amount->sum('unpaid_amt');
+    // dd($amount);
+    return response()->json(['advance' => $advance, 'unpaid_amt' => $unpaid_amt]);
   }
   public function vendor_expense_pdf(Request $request){
     $category_filter = $request->category_id;

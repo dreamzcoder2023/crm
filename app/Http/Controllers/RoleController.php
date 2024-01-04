@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB as FacadesDB;
 
 class RoleController extends Controller
 {
-// permission list 
+// permission list
     function __construct()
     {
         //  $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
@@ -25,7 +25,7 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-      
+
         $roles = Role::orderBy('id','desc')->latest()->get();
         $user = FacadesDB::table('model_has_roles')->pluck('role_id')->toArray();
         return view('roles.index',compact('roles','user'));
@@ -46,7 +46,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $permission = Permission::whereIn('name',$request->permissions)->pluck('id');
-      
+
         $r1 = Role::where(['name' => $request->name])->first();
         if(!empty($r1)){
             return redirect()->route('roles.index')
@@ -76,6 +76,7 @@ class RoleController extends Controller
     public function edit(string $id)
     {
         $roles = Role::where('id',$id)->first();
+        
         $permissions = Permission::all();
         $access = FacadesDB::table('role_has_permissions')->where('role_id',$id)->pluck('permission_id')->toArray();
         $checked_role = Permission::whereIn('id',$access)->pluck('name')->toArray();
@@ -88,7 +89,7 @@ class RoleController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    { 
+    {
        // dd($request->all());
         $permission_name = Permission::whereIn('name',$request->permissions)->pluck('id');
         $r1 = Role::where(['name' => $request->name])->where('id','!=',$id)->first();

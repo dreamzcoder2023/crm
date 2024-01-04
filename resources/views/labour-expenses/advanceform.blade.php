@@ -7,7 +7,7 @@
 
     <!-- Basic Layout & Basic with Icons -->
     <h4 class="fw-bold py-3 mb-4">
-        <span class="text-muted fw-light">Advance Amount
+        <span class="text-muted fw-light">Advance Amount Deduction
     </h4>
     <div class="row" style="position:absolute; top:150px; right:50px ">
         <div class="col-md-12">
@@ -194,9 +194,9 @@
                 unpaidname = true;
                 console.log('else');
             }
-            // if (amountname == true && projectname == true &&  advancename == true && unpaidname == true) {
-            //     document.getElementById("UnpaidSubmit").submit();
-            // }
+             if (amountname == true && projectname == true &&  advancename == true && unpaidname == true) {
+                 document.getElementById("UnpaidSubmit").submit();
+             }
         });
         $('#project_id').change(function() {
             var project_id = $(this).val();

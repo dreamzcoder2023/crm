@@ -45,6 +45,9 @@
             margin-left:-135px ;
         }
     }
+    *{
+      font-family: 'Comic Sans MS', cursive;
+    }
     </style>
 </head>
 
