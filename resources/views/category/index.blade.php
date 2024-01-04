@@ -57,10 +57,10 @@
         </div>
     @endif
     <div style="margin-top: 30px;">
-        <h4 class="fw-bold py-3 mb-4">
-            <span class="text-muted fw-light">Category
+        <h4 class="fw-bold py-3 mb-4" style="margin-top:-49px;font-size:16px;color:black">
+            <span class="fw-light">Category
         </h4>
-        <div class="row" style="position:absolute; top:180px; right:50px ">
+        <div class="row" style="position:absolute; top:90px; right:50px ">
             <div class="col-md-12">
                 @can('category-create')
                     <ul class="nav nav-pills flex-column flex-md-row mb-3">
@@ -73,9 +73,9 @@
         </div>
     </div>
     <!-- Basic Bootstrap Table -->
-    <div class="card" style="max-width: 1200px; margin: 46px auto; height:356px">
+    <div class="card" style="max-width: 1200px; margin: 46px auto;top:-32px;">
         <!-- <h5 class="card-header">Table Basic</h5> -->
-        <div class="table-responsive text-nowrap">
+        <div class="table-responsive text-nowrap" style="width: 99%;">
             <table class="table" id="category_listing_table">
                 <thead>
                     <tr>

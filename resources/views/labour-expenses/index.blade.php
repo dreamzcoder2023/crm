@@ -35,13 +35,13 @@
 
 <div class="card">
 
-  <select class="form-control " name="year" id="year" >
+  <select class="form-control " name="year" id="year" style="width: 80px ;">
     <option value="">Select Year</option>
     @for ($year=2020; $year<=date('Y'); $year++) {
       <option value="{{ $year }}" {{ $year == $current_year ? 'selected' : '' }}>{{ $year }} </option>
    }
    @endfor
-</select>
+</select><br>
 <div class="table-responsive text-nowrap">
   <table class="table" id="user_listing_table">
       <thead>
@@ -96,7 +96,7 @@
               @endforeach
           @else
               <tr>
-                  <td colspan="3"> No record found. </td>
+                  <td colspan="3" style="text-align: center;"> No record found. </td>
               </tr>
           @endif
       </tbody>

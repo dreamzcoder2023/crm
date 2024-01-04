@@ -49,14 +49,14 @@
         {{ session()->get('msg') }}
     </div>
 @endif
-<div style="margin-top: 30px;">
-<h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Vendor </span>
+<div style="margin-top: -31px;">
+<h4 class="fw-bold py-3 mb-4" style="color: black;">
+  <span class="fw-light">Vendor </span>
 </h4>
 </div>
 
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 40px auto; height:250px">
+<div class="card" style="max-width: 1200px;top:-28px;">
   <!-- <h5 class="card-header">Table Basic</h5> -->
   <div class="table-responsive text-nowrap">
     <table class="table" id="user_listing_table">

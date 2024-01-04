@@ -15,7 +15,7 @@
     }
   }
   .dataTables_wrapper {
-    
+
     font-size: 13px;
     clear: both;
 
@@ -67,7 +67,7 @@ td, th {
 @endcan
 </div>
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 40px auto;margin-top:24px;">
+<div class="card" style="max-width: 1200px; margin: 40px auto;top:-32px;">
   <div class="table-responsive text-nowrap" style="width: 99%;">
     <table class="table" id="role_listing_table">
       <thead>

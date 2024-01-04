@@ -106,7 +106,7 @@ td, th {
     </div>
 </div>
 <!-- Basic Bootstrap Table -->
-<div class="card"  style="max-width: 1200px; margin: 40px auto; height:250px">
+<div class="card"  style="max-width: 1200px; top:10px; height:550px">
   <!-- <h5 class="card-header">Table Basic</h5> -->
   <div class="table-responsive text-nowrap">
     <table class="table" id="transfer_listing_table">
@@ -149,7 +149,7 @@ td, th {
 
 
 
-<p class='text-end' style="margin-top: 53px;
+<p class='text-end' style="margin-top:30px;
     margin-right: 249px;
     font-size: medium;"><b>Total Amount:</b>{{$role == 1 ? App\Models\Transfer::sum('amount') : App\Models\Transfer::where('user_id',Auth::user()->id)->sum('amount')}}
 <br/>&nbsp;</p>

@@ -40,15 +40,15 @@ td, th {
 @section('title', 'Report | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
-<div style="margin-top: 30px;">
-<h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Payment Summary </span>
+<div style="margin-top: -33px;">
+<h4 class="fw-bold py-3 mb-4" style="color:black;font-size:20px;">
+  <span class="fw-light">Payment Summary </span>
 </h4>
 </div>
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 22px auto; height:250px">
+<div class="card" style="max-width: 1200px; top:-21px; ">
   <!-- <h5 class="card-header">Table Basic</h5> -->
-  <div class="table-responsive text-nowrap">
+  <div class="table-responsive text-nowrap" style="width: 99%">
     <table class="table" id="payment_summary_listing_table">
       <thead>
         <tr>

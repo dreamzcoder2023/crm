@@ -90,62 +90,91 @@
         </div>
     @endif
 
-    <div class="card" style="margin-top: 10px;">
+    <div class="card" style="margin-top: -13px;">
         <div class="card-header">
             <div class="container justify-content-start">
                 <div class="row aa">
-                    <div class="col-4 col-lg-2">
-                        <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
-                            <option value="">Select category</option>
-                            @foreach ($category as $category)
-                                <option
-                                    value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
-                                    {{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <select class="form-group selectpicker" name="project_id" id="project_id">
-                            <option value="">Select Project</option>
-                            @foreach ($project as $project)
-                                <option value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
-                                    {{ $project->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                  <div class="col-2 col-lg-2">
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        style="border-color: black;">
+                        Filter
+                    </button>
+                </div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <select class="form-group selectpicker" name="category_id" id="category_id"
+                                            data-live-search="true">
+                                            <option value="">Select category</option>
+                                            @foreach ($category as $category)
+                                                <option
+                                                    value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
+                                                    {{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4"><select class="form-group selectpicker" name="project_id"
+                                            id="project_id" data-live-search="true">
+                                            <option value="">Select Project</option>
+                                            @foreach ($project as $project)
+                                                <option
+                                                    value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
+                                                    {{ $project->name }}</option>
+                                            @endforeach
+                                        </select></div>
+                                    @role('Admin') <div class="col-md-4"><select class="form-group selectpicker"
+                                                name="user_id" id="user_id" data-live-search="true">
+                                                <option value="">Select Member</option>
+                                                @foreach ($user as $user)
+                                                    <option
+                                                        value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
+                                                        {{ $user->first_name }} {{ $user->last_name }} -
+                                                        {{ $user->name }}</option>
+                                                @endforeach
+                                        </select></div> @endrole
+                                </div>
 
-                        <div class="col-2">
-                            <select class="form-group selectpicker" name="user_id" id="user_id">
-                                <option value="">Select Member</option>
-                                @foreach ($user as $user)
-                                    <option value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
-                                        {{ $user->first_name }} {{ $user->last_name }} - {{ $user->name }}</option>
-                                @endforeach
-                            </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                            </div>
                         </div>
+                    </div>
+                </div>
 
 
-                    <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
-                        <label>From</label>
+
+                <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
+                    <span> <label>From:&nbsp;</label>
                         <input type="date" class="form-control bb" id="from_date" name="from_date"
-                            value="{{ $from_date }}">
-                    </div>
-                    <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
-                        <label>To</label>
-                        <input type="date" class="form-control" id="to_date" name="to_date"
-                            value="{{ $to_date1 }}">
-                    </div>
+                            value="{{ $from_date }}" style="width: 144px;display:initial;"></span>
+                </div>
+                <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
+                    <label>To</label>
+                    <input type="date" class="form-control" id="to_date" name="to_date"
+                        value="{{ $to_date1 }}" style="width: 144px;display:initial;">
+                </div>
                     <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
                         <a href="{{ route('vendor-expenses-delete_record') }}" class="me-3">
                             <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
                                 width="30">
                         </a>
                     </div>
-                    <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <button type="button" class="btn btn-success" id="expense-export">Excel</button>
+                    <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
+                        <button type="button" class="btn btn-light" id="expense-export" style="border-color: black;">Excel</button>
                     </div>
                     <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <button type="button" class="btn btn-primary" id="expense-pdf">Pdf</button>
+                        <button type="button" class="btn btn-light" id="expense-pdf" style="border-color: black;">Pdf</button>
                     </div>
                 </div>
             </div>
@@ -154,9 +183,9 @@
 
 
     <!-- Basic Bootstrap Table -->
-    <div class="card " style="max-width: 1200px; margin: 22px auto; height:450px">
+    <div class="card " style="max-width: 1200px;top:13px; height:547px">
         <!-- <h5 class="card-header">Table Basic</h5> -->
-        <div class="table-responsive text-nowrap" style="padding:20px;">
+        <div class="table-responsive text-nowrap" style="padding:20px;width:99%;">
             <table class="table " id="expenses_listing_table">
                 <thead>
                     <tr>
@@ -226,7 +255,7 @@
 
     <!--/ Basic Bootstrap Table -->
 
-    <p class="text-end" style="margin-top: 53px; margin-right: 147px; font-size: medium;">
+    <p class="text-end" style="margin-top:32px; margin-right: 147px; font-size: medium;">
         <span class="d-inline"><b>Total Amount:</b> <b><span style="color:#ef6a0e">{{ $sum }}</span></b></span>
         <span class="d-inline ms-3"><b>Total Paid Amount:</b> <b><span
                     style="color: green;">{{ $paid_amt }}</span></b></span>

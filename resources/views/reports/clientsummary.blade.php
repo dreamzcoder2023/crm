@@ -42,52 +42,81 @@ td, th {
 
 @section('content')
 
-<div style="margin-top: 30px;">
-<h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Client Summary </span>
+<div style="margin-top:-32px;">
+<h4 class="fw-bold py-3 mb-4" style="color: black;font-size:20px;">
+  <span class="fw-light">Client Summary </span>
 </h4>
 </div>
-<div class="card">
+<div class="card" style="top:-33px;">
     <div class="card-header">
         <div class="container text-center">
             <div class="row aa">
 
-                <div class="col">
-                    <select class="form-control" name="project_id" id="project_id">
-                        <option value="">Select Project</option>
-                        @foreach($project as $project)
-                        <option value="{{$project->id}}"{{$project->id == $project_filter ? 'selected' : ''}}>{{$project->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                @role('Admin')
-                <div class="col">
-                    <select class="form-control" name="user_id" id="user_id">
-                        <option value="">Select Client</option>
-                        @foreach($user as $user)
-                        <option value="{{$user->id}}"{{$user->id == $user_filter ? 'selected' : ''}}>{{$user->first_name}} {{$user->last_name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                @endrole
+              <div class="col-2 col-lg-2">
+                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                    style="border-color: black;">
+                    Filter
+                </button>
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
 
-                <div class="col">
-                    <label >from</label>
+                                <div class="col-md-4"><select class="form-group selectpicker" name="project_id"
+                                        id="project_id" data-live-search="true">
+                                        <option value="">Select Project</option>
+                                        @foreach ($project as $project)
+                                            <option
+                                                value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
+                                                {{ $project->name }}</option>
+                                        @endforeach
+                                    </select></div>
+                                @role('Admin') <div class="col-md-4"><select class="form-group selectpicker"
+                                            name="user_id" id="user_id" data-live-search="true">
+                                            <option value="">Select Member</option>
+                                            @foreach ($user as $user)
+                                                <option
+                                                    value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
+                                                    {{ $user->first_name }} {{ $user->last_name }} -
+                                                    {{ $user->name }}</option>
+                                            @endforeach
+                                    </select></div> @endrole
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
+                <span> <label>From:&nbsp;</label>
                     <input type="date" class="form-control bb" id="from_date" name="from_date"
-                        value="{{$from_date}}"
-                       >
-                </div>
-                <div class="col">
-                    <label>to</label>
-                    <input type="date" class="form-control " id="to_date" name="to_date"
-                        value="{{$to_date1}}"
-                         >
-                </div>
+                        value="{{ $from_date }}" style="width: 144px;display:initial;"></span>
+            </div>
+            <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
+                <label>To</label>
+                <input type="date" class="form-control" id="to_date" name="to_date"
+                    value="{{ $to_date1 }}" style="width: 144px;display:initial;">
+            </div>
                 <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-success" id="clientsummary-export">Excel</button>
+                    <button type="button" class="btn btn-light" id="clientsummary-export" style="border-color: black;">Excel</button>
                 </div>
-                <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-primary" id="clientsummary-pdf">Pdf</button>
+                <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
+                    <button type="button" class="btn btn-light" id="clientsummary-pdf" style="border-color: black;">Pdf</button>
                 </div>
                 <div class="col">
                     <a href="{{route('client-summary')}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
@@ -98,7 +127,7 @@ td, th {
     </div>
 </div>
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 40px auto; height:250px">
+<div class="card" style="max-width: 1200px;top:-13px;">
   <!-- <h5 class="card-header">Table Basic</h5> -->
   <div class="table-responsive text-nowrap">
     <table class="table" id="client_summary_listing_table">
