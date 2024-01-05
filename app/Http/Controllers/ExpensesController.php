@@ -587,4 +587,17 @@ class ExpensesController extends Controller
 
     return Excel::download((new DeleteExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'delete-expenses.xlsx');
   }
+  public function expense_delete_all(Request $request){
+    //dd($request->id);
+    $expense_id = $request->id;
+    $expense = [];
+    foreach($expense_id as $id){
+      $expense = Expenses::where('id',$id)->first();
+      $wallet = User::where('id',$expense->user_id)->first();
+      $wallet['wallet'] = $wallet->wallet + $expense->paid_amt;
+      $wallet->update();
+      $expense->delete();
+    }
+    return response()->json($expense);
+  }
 }

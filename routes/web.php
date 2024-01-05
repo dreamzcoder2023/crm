@@ -149,6 +149,7 @@ Route::get('/expenses-pdf',[ExpensesController::class,'expense_pdf'])->name('exp
 Route::get('/expenses-delete_record',[ExpensesController::class,'delete_record'])->name('expenses-delete_record');
 Route::get('/deleteexpenses-export',[ExpensesController::class,'delete_expense_export'])->name('deleteexpenses-export');
 Route::get('/deleteexpenses-pdf',[ExpensesController::class,'delete_expense_pdf'])->name('deleteexpenses-pdf');
+Route::get('/expense-delete-all',[ExpensesController::class,'expense_delete_all'])->name('expense-delete-all');
 // expenses ended
 // unpaidexpenses start
 Route::get('/unpaid-history',[UnpaidExpensesController::class,'index'])->name('unpaid-history');
@@ -218,6 +219,8 @@ Route::get('/labour-expenses-export',[LabourExpensesController::class,'labour_ex
 Route::get('/labour-expenses-pdf',[LabourExpensesController::class,'labour_expense_pdf'])->name('labour-expenses-pdf');
 Route::get('/labour-delete-expenses-pdf',[LabourExpensesController::class,'labour_delete_expense_pdf'])->name('labour-delete-expenses-pdf');
 Route::get('/labour-delete-expenses-export',[LabourExpensesController::class,'labour_delete_expense_export'])->name('labour-delete-expenses-export');
+Route::get('/labour-total-records', [LabourExpensesController::class, 'labour_total_records'])->name('labour-total-records');
+
 //vendor ended
 //vendor started
 Route::get('/vendor-expenses', [VendorExpensesController::class, 'index'])->name('vendor-expenses-index');

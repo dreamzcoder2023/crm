@@ -184,7 +184,7 @@
 
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all"></th>
+                        <th><input type="checkbox" id="select_all" {{ $labour_disable == 0 ? 'disabled' : '' }}></th>
                         <th>Name</th>
                         <th>Salary</th>
                         <th>Unpaid Amount</th>
@@ -330,11 +330,14 @@
                         toastr.success('Unpaid Successfully', {
                             timeOut: 1000,
                             fadeOut: 1000,
+                        });
+                        setTimeout(function() {
+                            // Do something after 5 seconds
+                            location.reload(); //reload page
+                        }, 5000);
+                    }
                 });
-                toastr.options.onHidden = function() {  location.reload(); }
-              }
             });
-          });
         </script>
 
     @endsection

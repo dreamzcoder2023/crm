@@ -90,8 +90,8 @@
         <td>{{$user->job_title}}</td>
         <td>{{$user->phone}}</td>
         <td>{{ $user->salary }}
-          <i id="click_salary" data-user="{{ $user->id }}" style="font-size:15px; color:red;cursor: pointer;" class="fa">
-            &#xf156;</i>
+          {{-- <i id="click_salary" data-user="{{ $user->id }}" style="font-size:15px; color:red;cursor: pointer;" class="fa">
+            &#xf156;</i> --}}
 
 
 
