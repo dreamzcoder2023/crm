@@ -191,9 +191,45 @@ up -->
                   <span class="h3 font-bold mb-0 member-info" style="display: none;font-size:22px; font-weight:900">{{ $member }}</span>
               </div>
               <div class="col-auto">
+                <a class="dropdown-item" href="{{ route('user-index') }}">
                   <div class="icon icon-shape text-white text-lg rounded-circle" style="background-color:sandybrown;border:2px solid white;">
                       <i class="fas fa-users" style="color: #ffffff;"></i>
                   </div>
+                </a>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<script>
+  $(document).ready(function () {
+      // Toggle the display when the card is clicked
+      $('.card2').click(function (event) {
+          // Check if the clicked element is not the icon and not the col-auto element
+          if (!$(event.target).is('.icon') && !$(event.target).closest('.col-auto').length) {
+              $('.member-infoo').toggle();
+          }
+      });
+  });
+</script>
+
+
+<div class="col-xl-3 col-sm-6 col-12">
+  <div class="card card2 cards shadow border-0">
+      <div class="card-body">
+          <div class="row">
+              <div class="col">
+                  <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important; margin-top:10px; font-weight:600 !important;text-align:center;">Unpaid Amount</span>
+                  <span class="h3 font-bold mb-0 member-infoo" style="display: none;font-size:22px; font-weight:900;margin-left:50px;">{{ $unpaid_amt }}</span>
+              </div>
+              <div class="col-auto">
+                  <a class="dropdown-item" href="{{ route('expenses-history') }}">
+                      <div class="icon icon-shape  text-white text-lg rounded-circle" style="background-color:lightseagreen;border:2px solid white">
+                          <i class="fas fa-credit-card" style="color: #ffffff;"></i>
+                      </div>
+                  </a>
               </div>
           </div>
       </div>
@@ -203,39 +239,16 @@ up -->
 <script>
   $(document).ready(function () {
       // Toggle the display when the card is clicked
-      $('.card1').click(function () {
-          $('.member-info').toggle();
+      $('.card2').click(function (event) {
+          // Check if the clicked element is not the icon and not the col-auto element
+          if (!$(event.target).is('.icon') && !$(event.target).closest('.col-auto').length) {
+              $('.member-infoo').toggle();
+          }
       });
   });
 </script>
 
 
-  <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card card2 cards shadow border-0">
-      <div class="card-body">
-        <div class="row">
-          <div class="col">
-            <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important; margin-top:10px; font-weight:600 !important;text-align:center;">Unpaid Amount</span>
-            <span class="h3 font-bold mb-0 member-infoo" style="display: none;font-size:22px; font-weight:900;margin-left:50px;">{{ $unpaid_amt }}</span>
-          </div>
-          <div class="col-auto">
-            <div class="icon icon-shape  text-white text-lg rounded-circle" style="background-color:lightseagreen;border:2px solid white">
-              <i class="fas fa-credit-card" style="color: #ffffff;"></i>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-  <script>
-    $(document).ready(function () {
-        // Toggle the display when the card is clicked
-        $('.card2').click(function () {
-            $('.member-infoo').toggle();
-        });
-    });
-  </script>
   <div class="col-xl-3 col-sm-6 col-12">
     <div class="card card3 cards shadow border-0">
       <div class="card-body">
@@ -245,9 +258,11 @@ up -->
             <span class="h3 font-bold mb-0 member-infooo"  style="display: none;font-size:22px; font-weight:900;margin-left:50px;">{{ $wallet }}</span>
           </div>
           <div class="col-auto">
+            <a class="dropdown-item" href="{{ route('user-index') }}">
             <div class="icon icon-shape bg-warning text-white text-lg rounded-circle" style="border:2px solid white;">
               <i class="fas fa-wallet" style="color: #ffffff;"></i>
             </div>
+            </a>
           </div>
         </div>
 

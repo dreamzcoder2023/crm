@@ -46,16 +46,20 @@
         }
     }
     *{
-      font-family: 'Times New Roman', Times, serif;
+      font-family: 'Lato' !important;
       color:black;
     }
     body {
     /* other styles */
-    background-image: url('{{ asset('assets/img/backgrounds/WhatsApp Image 2024-01-05 at 1.18.27 PM.jpeg') }}');
-
-    background-size: cover; /* Adjust the size as needed */
+    background-image: url('{{ asset('assets/img/backgrounds/WhatsApp Image 2024-01-06 at 8.03.28 AM.jpeg') }}');
+    background-size: contain; /* Adjust the size as needed */
+    background-repeat: no-repeat; /* Prevent the background from repeating */
+    background-position: center; /* Center the background image */
+    /* background-color: #333; */
+    /* style=" background-color:rgb(227 252 255) !important; " */
     /* other styles */
 }
+
 
     </style>
 </head>

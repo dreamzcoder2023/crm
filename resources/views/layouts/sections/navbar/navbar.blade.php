@@ -106,7 +106,7 @@ $navbarDetached = ($navbarDetached ?? '');
 @endphp
 <!-- Navbar -->
 @if(isset($navbarDetached) && $navbarDetached == 'navbar-detached')
-<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar" style=" background-color:rgb(227 252 255) !important; ">
+<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar" style="  background-image: url('{{ asset('assets/img/backgrounds/WhatsApp Image 2024-01-06 at 8.03.27 AM.jpeg') }}'); background-size:cover;background ">
   @endif
   @if(isset($navbarDetached) && $navbarDetached == '')
   <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
