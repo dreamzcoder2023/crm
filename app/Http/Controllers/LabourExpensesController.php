@@ -148,7 +148,9 @@ class LabourExpensesController extends Controller
         DB::Raw('labour_details.name as labour_name'),
         DB::Raw('labour_details.id as labour_id'),
       ])->get();
-    return view('labour-expenses.projectindex', ['project' => $project, 'labour' => $labour, 'start_date' => $request->start_date, 'end_date' => $request->end_date]);
+      $labour_disable = $labour->where('unpaid_amt','>',0)->count();
+     // dd($labour_disable);
+    return view('labour-expenses.projectindex', ['project' => $project, 'labour' => $labour, 'start_date' => $request->start_date, 'end_date' => $request->end_date,'labour_disable' => $labour_disable]);
   }
   public function labour_expenses_details(Request $request)
   {
@@ -683,5 +685,11 @@ class LabourExpensesController extends Controller
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
     return Excel::download((new LabourDeleteExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'labour-delete-expenses.xlsx');
+  }
+  public function labour_total_records(Request $request){
+    $labours = Expenses::where('labour_id',$request->labour_id)->leftjoin('project_details','project_details.id','=','expenses.project_id')->select('expenses.*','project_details.name as project_name')->get();
+   // dd($labours);
+    $view = view('labour-expenses.labourtotalexpenses',['labours' =>$labours])->render();
+    return response()->json($view);
   }
 }
