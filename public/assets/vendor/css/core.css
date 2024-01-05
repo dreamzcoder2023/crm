@@ -14121,11 +14121,13 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
   .layout-menu-fixed .layout-menu,
   .layout-menu-fixed-offcanvas .layout-menu {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
+    top: 20;
+    bottom: 20;
+    left: 10;
+    border-radius:20px;
     margin-right: 0 !important;
     margin-left: 0 !important;
+    /* background-color: sandal; */
   }
   .layout-menu-fixed:not(.layout-menu-collapsed) .layout-page,
   .layout-menu-fixed-offcanvas:not(.layout-menu-collapsed) .layout-page {

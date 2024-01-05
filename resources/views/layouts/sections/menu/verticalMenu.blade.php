@@ -1,11 +1,31 @@
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+<style>
+a{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none !important;
+}
+.dark{
+    font-weight: 900;
+}
+.dark:hover{
+    color:darkcyan;
+    text-decoration: none !important;
+}
+/* CSS for changing color on hover */
+
+
+
+
+</style>
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style=" background-color:rgb(227 252 255) !important; ">
 
   <!-- ! Hide app brand if navbar-full -->
   <div class="app-brand demo">
       <a href="{{ url('/') }}" class="app-brand-link">
           <span class="app-brand-logo demo">
               <img src="{{ asset('assets/img/icons/logo12.png') }}" class="img-fluid" alt="Layout container"
-                  style="width: 20%;">
+                  style="width: 120px;margin-left:35px;margin-top:-1px;">
           </span>
       </a>
 
@@ -28,8 +48,8 @@
       <!--- dashboard -->
       <li class="menu-item {{ \Request::route()->getName() == 'dashboard' ? 'active open' : '' }}">
           <a href="{{ route('dashboard') }}" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-home-circle"></i>
-              <div>Dashboard</div>
+              <i class="menu-icon tf-icons bx bx-home-circle "></i>
+              <div class="dark">Dashboard</div>
           </a>
       </li>
       <!--- dashboard -->
@@ -40,9 +60,9 @@
           <li class="menu-item ">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <img
-                src="{{ asset('assets/img/icons/amountexpenses.png') }}" alt="slack" class="me-3"
+                src="{{ asset('assets/img/icons/amountexpenses.png') }}" alt="slack" class="me-3 dark"
                 height="20">
-                  <div>Category Added</div>
+                  <div class="dark">Category Added</div>
               </a>
               <ul class="menu-sub">
 
@@ -50,7 +70,7 @@
                 <li class="menu-item {{ \Request::route()->getName() == 'roles.index' ? 'active open' : '' }}">
                     <a href="{{ route('roles.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons bx bx-user-circle"></i>
-                        <div>Roles</div>
+                        <div class="dark">Roles</div>
                     </a>
                 </li>
             @endcan
@@ -58,7 +78,7 @@
             <li class="menu-item {{ \Request::route()->getName() == 'user-index' ? 'active open' : '' }}">
                 <a href="{{ route('user-index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-user-circle"></i>
-                    <div>Members</div>
+                    <div class="dark">Members</div>
                 </a>
             </li>
         @endcan
@@ -66,7 +86,7 @@
         <li class="menu-item {{ \Request::route()->getName() == 'labourrole-index' ? 'active open' : '' }}">
             <a href="{{ route('labourrole-index') }}" class="menu-link">
                 <img src="{{ asset('assets/img/icons/labour-job.png') }}" alt="slack" class="me-3" height="25">
-                <div>Labour Role</div>
+                <div class="dark">Labour Role</div>
             </a>
         </li>
     @endcan
@@ -75,7 +95,7 @@
         <a href="{{ route('labour-index') }}" class="menu-link">
             <img src="{{ asset('assets/img/icons/labour-icon.jpg') }}" alt="slack" class="me-3"
                 height="25">
-            <div>Labour</div>
+            <div class="dark">Labour</div>
         </a>
     </li>
 @endcan
@@ -85,7 +105,7 @@
     <li class="menu-item {{ \Request::route()->getName() == 'vendor-index' ? 'active open' : '' }}">
         <a href="{{ route('vendor-index') }}" class="menu-link">
             <img src="{{ asset('assets/img/icons/vendor.png') }}" alt="slack" class="me-3" height="25">
-            <div>Vendor</div>
+            <div class="dark">Vendor</div>
         </a>
     </li>
 @endcan
@@ -95,7 +115,7 @@
     <li class="menu-item {{ \Request::route()->getName() == 'category-index' ? 'active open' : '' }}">
         <a href="{{ route('category-index') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bxs-category"></i>
-            <div>Category</div>
+            <div class="dark">Category</div>
         </a>
     </li>
 @endcan
@@ -105,7 +125,7 @@
     <li class="menu-item {{ \Request::route()->getName() == 'payment-index' ? 'active open' : '' }}">
         <a href="{{ route('payment-index') }}" class="menu-link">
             <i class="menu-icon tf-icons bi bi-cash"></i>
-            <div>Payment</div>
+            <div class="dark">Payment</div>
         </a>
     </li>
 @endcan
@@ -115,7 +135,7 @@
     <li class="menu-item {{ \Request::route()->getName() == 'client-index' ? 'active open' : '' }}">
         <a href="{{ route('client-index') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-user-circle"></i>
-            <div>Client Details</div>
+            <div class="dark">Client Details</div>
         </a>
     </li>
 @endcan
@@ -125,7 +145,7 @@
     <li class="menu-item {{ \Request::route()->getName() == 'project-index' ? 'active open' : '' }}">
         <a href="{{ route('project-index') }}" class="menu-link">
             <i class="menu-icon tf-icons bi bi-tools"></i>
-            <div>Project Details</div>
+            <div class="dark">Project Details</div>
         </a>
     </li>
 @endcan
@@ -134,7 +154,7 @@
         <a href="{{ route('stage-index') }}" class="menu-link">
             <img src="{{ asset('assets/img/icons/project-management.png') }}" alt="slack" class="me-3"
                 height="20">
-            <div>Stages</div>
+            <div class="dark">Stages</div>
         </a>
     </li>
 @endcan
@@ -152,7 +172,7 @@
                   <img src="{{ asset('assets/img/icons/transfer-history.png') }}" alt="slack" class="me-3"
                       height="20">
                   <!-- <i class="menu-icon tf-icons bi bi-currency-exchange"></i> -->
-                  <div>Transfer History</div>
+                  <div class="dark">Transfer History</div>
               </a>
           </li>
       @endcan
@@ -164,7 +184,7 @@
                 <img
                 src="{{ asset('assets/img/icons/amountexpenses.png') }}" alt="slack" class="me-3"
                 height="20">
-                  <div>Expenses</div>
+                  <div class="dark">Expenses</div>
               </a>
               <ul class="menu-sub">
 
@@ -173,7 +193,7 @@
                           <a href="{{ route('expenses-history') }}" class="menu-link"><img
                                   src="{{ asset('assets/img/icons/icons8-activity-history-50.png') }}" alt="slack" class="me-3"
                                   height="20">
-                              <div>Expenses History</div>
+                              <div class="dark">Expenses History</div>
                           </a>
                       </li>
                   @endcan
@@ -182,7 +202,7 @@
                           <a href="{{ route('unpaid-history') }}" class="menu-link"><img
                                   src="{{ asset('assets/img/icons/icons8-payment-history-30.png') }}" alt="slack" class="me-3"
                                   height="20">
-                              <div>Unpaid History</div>
+                              <div class="dark">Unpaid History</div>
                           </a>
                       </li>
                   @endcan
@@ -192,7 +212,7 @@
                           <a href="{{ route('expenses-delete_record') }}" class="menu-link"><img
                                   src="{{ asset('assets/img/icons/capital.png') }}" alt="slack" class="me-3"
                                   height="20">
-                              <div>Deleted History</div>
+                              <div class="dark">Deleted History</div>
                           </a>
                       </li>
                   @endcan
@@ -210,7 +230,7 @@
             <img
             src="{{ asset('assets/img/icons/labour-cost.png') }}" alt="slack"
             class="me-3" height="20">
-              <div>Labour Expenses</div>
+              <div class="dark">Labour Expenses</div>
           </a>
 
           <ul class="menu-sub">
@@ -220,7 +240,7 @@
                       <a href="{{ route('labour-expenses-history') }}" class="menu-link"><img
                               src="{{ asset('assets/img/icons/labor-day.png') }}" alt="slack"
                               class="me-3" height="20">
-                          <div>Labour History</div>
+                          <div class="dark">Labour History</div>
                       </a>
                   </li>
               @endcan
@@ -229,7 +249,7 @@
                       <a href="#" class="menu-link"><img
                               src="{{ asset('assets/img/icons/weekly-labour.png') }}" alt="slack"
                               class="me-3" height="20">
-                          <div>Weekly History</div>
+                          <div class="dark">Weekly History</div>
                       </a>
                   </li>
               @endcan
@@ -239,7 +259,7 @@
                       <a href="{{ route('labour-expenses-advance') }}" class="menu-link"><img
                               src="{{ asset('assets/img/icons/hand-money.jpg') }}" alt="slack"
                               class="me-3" height="20">
-                          <div>Labour Advance Amount</div>
+                          <div class="dark">Labour Advance Amount</div>
                       </a>
                   </li>
               @endcan
@@ -249,7 +269,7 @@
                       <a href="{{ route('labour-expenses-delete_record') }}" class="menu-link"><img
                               src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
                               height="20">
-                          <div>Labour Deleted History</div>
+                          <div class="dark">Labour Deleted History</div>
                       </a>
                   </li>
               @endcan
@@ -263,7 +283,7 @@
         <img
         src="{{ asset('assets/img/icons/vendor-expense.png') }}" alt="slack"
         class="me-3" height="20">
-          <div>Vendor Expenses</div>
+          <div class="dark">Vendor Expenses</div>
       </a>
 
       <ul class="menu-sub">
@@ -273,7 +293,7 @@
                   <a href="{{ route('vendor-expenses-index') }}" class="menu-link"><img
                           src="{{ asset('assets/img/icons/seller.png') }}" alt="slack"
                           class="me-3" height="20">
-                      <div>Vendor History</div>
+                      <div class="dark">Vendor History</div>
                   </a>
               </li>
           @endcan
@@ -282,7 +302,7 @@
                   <a href="{{ route('vendor-expenses-unpaid-history') }}" class="menu-link"><img
                           src="{{ asset('assets/img/icons/vendor-1.png') }}" alt="slack"
                           class="me-3" height="20">
-                      <div>Vendor Unpaid History</div>
+                      <div class="dark">Vendor Unpaid History</div>
                   </a>
               </li>
           @endcan
@@ -292,7 +312,7 @@
                   <a href="{{ route('vendor-expenses-advance-history') }}" class="menu-link"><img
                           src="{{ asset('assets/img/icons/vendor-2.png') }}" alt="slack"
                           class="me-3" height="20">
-                      <div>Vendor Advance Amount</div>
+                      <div class="dark">Vendor Advance Amount</div>
                   </a>
               </li>
           @endcan
@@ -302,7 +322,7 @@
                   <a href="{{ route('vendor-expenses-delete_record') }}" class="menu-link"><img
                           src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
                           height="20">
-                      <div>Vendor Deleted History</div>
+                      <div class="dark">Vendor Deleted History</div>
                   </a>
               </li>
           @endcan
@@ -316,7 +336,7 @@
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                   <img src="{{ asset('assets/img/icons/reports.png') }}" alt="slack" class="me-3"
                       height="20">
-                  <div>Reports</div>
+                  <div class="dark">Reports</div>
               </a>
               <ul class="menu-sub">
                   @can('client-summary')
@@ -324,7 +344,7 @@
                           <a href="{{ route('client-summary') }}" class="menu-link"><img
                                   src="{{ asset('assets/img/icons/client.png') }}" alt="slack" class="me-3"
                                   height="20">
-                              <div>Client Summary</div>
+                              <div class="dark">Client Summary</div>
                           </a>
                       </li>
                   @endcan
@@ -333,7 +353,7 @@
                           <a href="{{ route('payment-summary') }}" class="menu-link"><img
                                   src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
                                   height="20">
-                              <div>Payment Summary</div>
+                              <div class="dark">Payment Summary</div>
                           </a>
                       </li>
                   @endcan

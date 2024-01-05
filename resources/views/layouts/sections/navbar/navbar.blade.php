@@ -106,7 +106,7 @@ $navbarDetached = ($navbarDetached ?? '');
 @endphp
 <!-- Navbar -->
 @if(isset($navbarDetached) && $navbarDetached == 'navbar-detached')
-<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar">
+<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar" style=" background-color:rgb(227 252 255) !important; ">
   @endif
   @if(isset($navbarDetached) && $navbarDetached == '')
   <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
@@ -179,8 +179,15 @@ $navbarDetached = ($navbarDetached ?? '');
                 <!-- <a href="{{route('expenses-create')}}" class="menu-link" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}
 
                 </a> -->
-              <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary" style="background-color: #0081b8;cursor:pointer;" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}</button>
-
+              <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary card4" style="background-color: #0081b8;cursor:pointer;" ><span style="margin-left: -7px;"><i class="bi bi-wallet fs-5 plh-0" style="color: white; font-weight:800"></i></span>&nbsp; <b class="member-infoooo" style="display: none"> {{Auth::user()->wallet}} </b></button>
+              <script>
+                $(document).ready(function () {
+                    // Toggle the display when the card is clicked
+                    $('.card4').click(function () {
+                        $('.member-infoooo').toggle();
+                    });
+                });
+              </script>
 
           </li>
 

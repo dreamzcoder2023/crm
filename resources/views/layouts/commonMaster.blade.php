@@ -46,8 +46,17 @@
         }
     }
     *{
-      font-family: 'Comic Sans MS', cursive;
+      font-family: 'Times New Roman', Times, serif;
+      color:black;
     }
+    body {
+    /* other styles */
+    background-image: url('{{ asset('assets/img/backgrounds/WhatsApp Image 2024-01-05 at 1.18.27 PM.jpeg') }}');
+
+    background-size: cover; /* Adjust the size as needed */
+    /* other styles */
+}
+
     </style>
 </head>
 
