@@ -119,9 +119,9 @@ class VendorExpensesController extends Controller
     $extra_amt = 0;
     $unpaid_amt = 0;
     if ($request->amount < $request->paid_amt) {
-      $extra_amt = $request->paid_amt - $request->amount;
+      $extra_amt = abs($request->paid_amt - $request->amount);
     } else {
-      $unpaid_amt = $request->amount - $request->paid_amt;
+      $unpaid_amt = abs($request->amount - $request->paid_amt);
     }
     $input['extra_amt'] = $extra_amt;
     $input['unpaid_amt'] = $unpaid_amt;
@@ -137,11 +137,11 @@ class VendorExpensesController extends Controller
     }
     $expenses = Expenses::create($input);
     $project = User::find($user_id);
-    $minus = $project->wallet - $request->paid_amt;
+    $minus = abs($project->wallet - $request->paid_amt);
     $project['wallet'] = $minus;
     $project->update();
     $labour = Vendor::find($request->vendor_id);
-    $labour['advance_amt'] = $labour->advance_amt + $extra_amt;
+    $labour['advance_amt'] = abs($labour->advance_amt + $extra_amt);
     $labour->update();
     return redirect()->route('vendor-expenses-index')
       ->with('expenses-popup', 'Vendor Expenses Added Successfully');
@@ -199,33 +199,33 @@ class VendorExpensesController extends Controller
 
       $project = User::find($request->user_id);
 
-      $minus1 = $request->paid_amt - $expenses->paid_amt;
-      $minus = $project->wallet - $minus1;
+      $minus1 = abs($request->paid_amt - $expenses->paid_amt);
+      $minus = abs($project->wallet - $minus1);
       $project['wallet'] = $minus;
       $project->update();
-      $input['paid_amt'] = $expenses->paid_amt + $minus1;
+      $input['paid_amt'] = abs($expenses->paid_amt + $minus1);
       if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-        $extra_amt = $request->paid_amt - $request->amount;
+        $extra_amt = abs($request->paid_amt - $request->amount);
       }
       if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-        $unpaid_amt = $request->amount - $request->paid_amt;
+        $unpaid_amt = abs($request->amount - $request->paid_amt);
       }
     } else {
 
 
       $project = User::find($request->user_id);
 
-      $minus1 = $expenses->paid_amt - $request->paid_amt;
-      $minus = $project->wallet + $minus1;
+      $minus1 = abs($expenses->paid_amt - $request->paid_amt);
+      $minus =abs($project->wallet + $minus1);
       $project['wallet'] = $minus;
 
       $project->update();
-      $input['paid_amt'] = $expenses->paid_amt - $minus1;
+      $input['paid_amt'] = abs($expenses->paid_amt - $minus1);
       if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-        $extra_amt = $request->paid_amt - $request->amount;
+        $extra_amt = abs($request->paid_amt - $request->amount);
       }
       if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-        $unpaid_amt = $request->amount - $request->paid_amt;
+        $unpaid_amt = abs($request->amount - $request->paid_amt);
       }
     }
 
@@ -416,6 +416,7 @@ class VendorExpensesController extends Controller
    return view('vendor-expenses.unpaidform',['unpaid' => $unpaid,'current_date' => $current_date,'current_time' => $current_time]);
   }
   public function unpaid_store(Request $request){
+
     $user_id = Auth::user()->id;
     $input = $request->all();
     $extra_amt = 0;
@@ -424,26 +425,28 @@ class VendorExpensesController extends Controller
     $expenses_date = ExpensesUnpaidDate::create($input);
     // wallet minus
     $user = User::find($user_id);
-    $minus = $user->wallet - $request->unpaid_amt;
+    $minus = abs($user->wallet - $request->unpaid_amt);
     $user['wallet'] = $minus;
     $user->update();
     // expense minus
-    $expenses = Expenses::find($request->expense_id);
-    $minus = $expenses->paid_amt + $request->unpaid_amt;
+    $expenses = Expenses::where('id',$request->expense_id)->first();
 
-    $unpaid = $expenses->unpaid_amt - $request->unpaid_amt;
-    $expenses['paid_amt'] = $minus;
-    if($request->amount <= $request->paid_amt){
-      $extra_amt = $minus - $expenses->amount;
+
+    $unpaid = abs($expenses->unpaid_amt - $request->unpaid_amt);
+    $expenses['paid_amt'] = abs($expenses->paid_amt + $request->unpaid_amt);
+
+    if($expenses->amount <= $request->unpaid_amt){
+      $extra_amt = abs($request->unpaid_amt  - $expenses->amount);
 
     }
-    if($request->paid_amt < $request->amount){
-      $unpaid_amt = $request->amount - $request->paid_amt;
+    if($request->unpaid_amt < $expenses->amount){
+      $unpaid_amt = abs($expenses->amount - $expenses->paid_amt);
     }
     $expenses['extra_amt'] = $extra_amt;
     $expenses['unpaid_amt'] = $unpaid_amt;
+    //dd($expenses);
     $expenses->update();
-    return redirect()->route('vendor-expenses-index')
+    return redirect()->route('vendor-expenses-unpaid-history')
     ->with('expenses-popup', 'Vendor Unpaid Amount Updated Successfully');
   }
   public function advance_expenses(Request $request){
@@ -459,7 +462,7 @@ class VendorExpensesController extends Controller
     return view('vendor-expenses.advanceform',['labour' => $labour,'project' => $project]);
   }
   public function advance_store(Request $request){
-      dd($request->all());
+      //dd($request->all());
      $project = Expenses::where(['vendor_id' => $request->labour_id,'project_id' => $request->project_id ])->get();
      $labour = Vendor::where('id',$request->labour_id)->first();
      $labour['advance_amt'] = abs($labour->advance_amt - $request->extra_amt);

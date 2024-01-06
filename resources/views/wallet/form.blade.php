@@ -48,6 +48,15 @@
                             </select>
                             <label id="payment-error" class="error hide" for="payment_mode">Payment mode is required</label>
                         </div>
+                        <div class="mb-3">
+                          <label class="form-label" for="basic-default-message">Type</label><br>
+                          <input  type="radio" class="gender" value="0" id="male" name="transfer_type">
+                          <label  class="form-label" for="male">Add</label> &nbsp;
+                          <input type="radio" class="gender" value="1" id="female" name="transfer_type">
+                          <label class="form-label" for="female">Subtract</label> &nbsp;
+                          <br/>
+                          <label id="gender-error" class="error" for="basic-default-gender">Type  is required</label>
+                        </div>
                     </div>
                     <div class="col-6">
                         <div class="mb-3">

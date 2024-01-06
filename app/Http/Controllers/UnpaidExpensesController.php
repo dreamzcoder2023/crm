@@ -117,6 +117,7 @@ if($request->amount != '' && $request->amount != 'undefined'){
      return view('unpaid_expenses.form',['unpaid' => $unpaid,'current_date' => $current_date,'current_time' => $current_time]);
     }
     public function unpaid_store(Request $request){
+
       $user_id = Auth::user()->id;
       $input = $request->all();
       $extra_amt = 0;
@@ -125,24 +126,26 @@ if($request->amount != '' && $request->amount != 'undefined'){
       $expenses_date = ExpensesUnpaidDate::create($input);
       // wallet minus
       $user = User::find($user_id);
-      $minus = $user->wallet - $request->unpaid_amt;
+      $minus = abs($user->wallet - $request->unpaid_amt);
       $user['wallet'] = $minus;
       $user->update();
       // expense minus
-      $expenses = Expenses::find($request->expense_id);
-      $minus = $expenses->paid_amt + $request->unpaid_amt;
+      $expenses = Expenses::where('id',$request->expense_id)->first();
 
-      $unpaid = $expenses->unpaid_amt - $request->unpaid_amt;
-      $expenses['paid_amt'] = $minus;
-      if($request->amount <= $request->paid_amt){
-        $extra_amt = $minus - $expenses->amount;
+
+      $unpaid = abs($expenses->unpaid_amt - $request->unpaid_amt);
+      $expenses['paid_amt'] = abs($expenses->paid_amt + $request->unpaid_amt);
+
+      if($expenses->amount <= $request->unpaid_amt){
+        $extra_amt = abs($request->unpaid_amt  - $expenses->amount);
 
       }
-      if($request->paid_amt < $request->amount){
-        $unpaid_amt = $request->amount - $request->paid_amt;
+      if($request->unpaid_amt < $expenses->amount){
+        $unpaid_amt = abs($expenses->amount - $expenses->paid_amt);
       }
       $expenses['extra_amt'] = $extra_amt;
       $expenses['unpaid_amt'] = $unpaid_amt;
+      //dd($expenses);
       $expenses->update();
       return redirect()->route('unpaid-history')
       ->with('expenses-popup', 'open');

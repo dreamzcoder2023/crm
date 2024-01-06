@@ -111,7 +111,7 @@ up -->
             <form action="{{ route('checking.store') }}" method="POST">
               @csrf
               <div class="icon icon-shape submit-icon text-white text-lg rounded-circle" style="background-color:darkcyan;border:2px solid white">
-                <i class="bi bi-box-arrow-in-right"></i>
+                <i class="bi bi-box-arrow-in-right" style="color:white" ></i>
               </div>
             </form>
 
@@ -136,7 +136,7 @@ up -->
             <form action="{{ route('checking.store') }}" method="POST">
               @csrf
               <div class="icon icon-shape submit-icon text-white text-lg rounded-circle" style="background-color:darkcyan;border:2px solid white">
-                <i class="bi bi-box-arrow-in-right"></i>
+                <i class="bi bi-box-arrow-in-right" style="color:white"></i>
               </div>
             </form>
 
@@ -290,28 +290,7 @@ up -->
   </script>
 </div>
 
-<div class="row " style="margin-top:40px;">
-  <div class="col-12 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
-          <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
-            <div class="card-title">
-              <h5 class="text-nowrap mb-2">Profile Report</h5>
-              <span class="badge bg-label-warning rounded-pill">Year 2021</span>
-            </div>
-            <div class="mt-sm-auto">
-              <small class="text-success text-nowrap fw-semibold"><i class='bx bx-chevron-up'></i>
-                68.2%</small>
-              <h3 class="mb-0">$84,686k</h3>
-            </div>
-          </div>
-          <div id="profileReportChart"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
 </div>
 </div>
 
@@ -337,7 +316,7 @@ up -->
             <i class="bx bx-dots-vertical-rounded"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
-            <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+            <a class="dropdown-item" href="{{  }}">View More</a>
             <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
             <a class="dropdown-item" href="javascript:void(0);">Share</a>
           </div>
@@ -380,8 +359,8 @@ up -->
               </div>
             </div>
           </li>
-          
-          
+
+
         </ul>
       </div>
     </div>

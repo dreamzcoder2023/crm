@@ -121,6 +121,7 @@ Route::get('/project/delete/{id}',[ProjectDetailsController::class,'projectdelet
 Route::get('/project/view/{id}', [ProjectDetailsController::class, 'view'])->name('project-view');
 // project details routes ended
 // wallet routes started
+Route::get('/wallet-history',[WalletController::class,'index'])->name('wallet-history');
 Route::get('/wallet-create',[WalletController::class,'create'])->name('wallet-create');
 Route::post('/wallet/store',[WalletController::class,'store'])->name('wallet.store');
 // wallet routes ended

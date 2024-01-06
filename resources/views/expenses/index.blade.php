@@ -1,9 +1,9 @@
 @extends('layouts/contentNavbarLayout')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 <style>
@@ -572,7 +572,7 @@
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
-        $('#expense_id').on('click', function() {
+        $('.expense_id').on('click', function() {
             if ($(this).is(':checked')) {
                 $('.deleteAllExpense').removeClass('disabled');
             } else {
@@ -593,6 +593,7 @@
             $('.expense_id:checked').each(function(i) {
                 val[i] = $(this).val();
             });
+            $('.preloader').css('display', 'block');
             $.ajax({
                 type: "get",
                 url: "{{ route('expense-delete-all') }}",
@@ -602,10 +603,13 @@
                 dataType: 'json',
                 success: function(html) {
                     console.log(html);
+                    $('.preloader').css('display', 'none');
+                    $('#deleteAllModal').modal('hide');
                     toastr.success('Deleted Successfully', {
                         timeOut: 1000,
                         fadeOut: 1000,
                     });
+
                     setTimeout(function() {
                         // Do something after 5 seconds
                         location.reload(); //reload page

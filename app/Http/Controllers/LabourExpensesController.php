@@ -94,9 +94,9 @@ class LabourExpensesController extends Controller
     $extra_amt = 0;
     $unpaid_amt = 0;
     if ($request->amount < $request->paid_amt) {
-      $extra_amt = $request->paid_amt - $request->amount;
+      $extra_amt = abs($request->paid_amt - $request->amount);
     } else {
-      $unpaid_amt = $request->amount - $request->paid_amt;
+      $unpaid_amt = abs($request->amount - $request->paid_amt);
     }
     $input['extra_amt'] = $extra_amt;
     $input['unpaid_amt'] = $unpaid_amt;
@@ -112,11 +112,11 @@ class LabourExpensesController extends Controller
     }
     $expenses = Expenses::create($input);
     $project = User::find($user_id);
-    $minus = $project->wallet - $request->paid_amt;
+    $minus = abs($project->wallet - $request->paid_amt);
     $project['wallet'] = $minus;
     $project->update();
     $labour = Labour::find($request->labour_id);
-    $labour['advance_amt'] = $labour->advance_amt + $extra_amt;
+    $labour['advance_amt'] = abs($labour->advance_amt + $extra_amt);
     $labour->update();
     return redirect()->route('labour-expenses-history')
       ->with('expenses-popup', 'Labour Detail Added Successfully');
@@ -179,9 +179,9 @@ class LabourExpensesController extends Controller
       $labours = Expenses::where(['labour_id' => $labour, 'project_id' => $request->project_id])->whereBetween('current_date', [$request->start_date, $request->end_date])->get();
       foreach ($labours as $labours) {
         if ($labours->unpaid_amt > 0) {
-          $labours['paid_amt'] = $labours->unpaid_amt + $labours->paid_amt;
+          $labours['paid_amt'] = abs($labours->unpaid_amt + $labours->paid_amt);
           $wallet = User::find(Auth::user()->id);
-          $wallet['wallet'] = $wallet->wallet - $labours->unpaid_amt;
+          $wallet['wallet'] = abs($wallet->wallet - $labours->unpaid_amt);
           $wallet->update();
           $labours['unpaid_amt'] = 0;
 
@@ -379,33 +379,33 @@ class LabourExpensesController extends Controller
 
       $project = User::find($request->user_id);
 
-      $minus1 = $request->paid_amt - $expenses->paid_amt;
-      $minus = $project->wallet - $minus1;
+      $minus1 = abs($request->paid_amt - $expenses->paid_amt);
+      $minus = abs($project->wallet - $minus1);
       $project['wallet'] = $minus;
       $project->update();
-      $input['paid_amt'] = $expenses->paid_amt + $minus1;
+      $input['paid_amt'] = abs($expenses->paid_amt + $minus1);
       if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-        $extra_amt = $request->paid_amt - $request->amount;
+        $extra_amt = abs($request->paid_amt - $request->amount);
       }
       if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-        $unpaid_amt = $request->amount - $request->paid_amt;
+        $unpaid_amt = abs($request->amount - $request->paid_amt);
       }
     } else {
 
 
       $project = User::find($request->user_id);
 
-      $minus1 = $expenses->paid_amt - $request->paid_amt;
+      $minus1 = abs($expenses->paid_amt - $request->paid_amt);
       $minus = $project->wallet + $minus1;
       $project['wallet'] = $minus;
 
       $project->update();
       $input['paid_amt'] = $expenses->paid_amt - $minus1;
       if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-        $extra_amt = $request->paid_amt - $request->amount;
+        $extra_amt = abs($request->paid_amt - $request->amount);
       }
       if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-        $unpaid_amt = $request->amount - $request->paid_amt;
+        $unpaid_amt = abs($request->amount - $request->paid_amt);
       }
     }
 

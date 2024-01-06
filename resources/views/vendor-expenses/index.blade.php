@@ -61,6 +61,11 @@
         padding: 5px;
         /* Reduce cell padding */
     }
+    a.disabled {
+        pointer-events: none;
+        cursor: default;
+        opacity: 0.5;
+    }
 </style>
 @section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -189,7 +194,8 @@
             <table class="table " id="expenses_listing_table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
+                          class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a></th>
                         <th>Paid date</th>
                         <th >Category <br/>Name</th>
                         <th>Project Name</th>
@@ -216,7 +222,8 @@
 
                     @foreach ($expenses as $expense)
                         <tr>
-                            <td>{{ $loop->index + 1 }}</td>
+                            <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
+                              value="{{ $expense->id }}"></td>
                             <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br/> {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
 
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
@@ -344,7 +351,28 @@
     </div>
 
     <!-- modal popup for delete role ended -->
+ <!--- delete all confirmation -->
+ <div class="modal fade" id="deleteAllModal" role="dialog">
+  <div class="modal-dialog modal-sm">
 
+      <!-- Modal content-->
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Confirmation</h4>
+
+          </div>
+          <div class="modal-body">
+              <p style="text-align: center;">Are you sure want to delete this?</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary yes-delete-all" data-dismiss="modal">Yes</button>
+              <button type="button" class="btn btn-danger no-delete-all" data-dismiss="modal">No</button>
+          </div>
+      </div>
+
+  </div>
+</div>
+<!--- delete all confirmation -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
     integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
@@ -536,6 +564,51 @@
             var url = '{{ route('vendor-expenses-pdf') }}';
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
+        });
+        $('.expense_id').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('.deleteAllExpense').removeClass('disabled');
+            } else {
+                $('.deleteAllExpense').addClass('disabled');
+            }
+        });
+        $('.deleteAllExpense').click(function() {
+            $('#deleteAllModal').modal('show');
+        });
+        $('.no-delete-all').click(function() {
+            $('.expense_id').prop('checked', false);
+            $('.deleteAllExpense').addClass('disabled');
+            $('#deleteAllModal').modal('hide');
+        });
+        $('.yes-delete-all').click(function() {
+
+            var val = [];
+            $('.expense_id:checked').each(function(i) {
+                val[i] = $(this).val();
+            });
+            $('.preloader').css('display', 'block');
+            $.ajax({
+                type: "get",
+                url: "{{ route('expense-delete-all') }}",
+                data: {
+                    id: val,
+                },
+                dataType: 'json',
+                success: function(html) {
+                    console.log(html);
+                    $('.preloader').css('display', 'none');
+                    $('#deleteAllModal').modal('hide');
+                    toastr.success('Deleted Successfully', {
+                        timeOut: 1000,
+                        fadeOut: 1000,
+                    });
+
+                    setTimeout(function() {
+                        // Do something after 5 seconds
+                        location.reload(); //reload page
+                    }, 5000);
+                }
+            });
         });
     </script>
 @endsection
