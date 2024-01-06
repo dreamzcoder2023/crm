@@ -69,7 +69,11 @@ div.dataTables_wrapper div.dataTables_length select {
   width:60px !important;
 }
   </style>
-
+ <style>
+  .wallet-container:hover .member-infoooo {
+      display: inline-block;
+  }
+</style>  
   <div class="preloader">
     <div class="loader"></div>
   </div>
@@ -106,7 +110,7 @@ $navbarDetached = ($navbarDetached ?? '');
 @endphp
 <!-- Navbar -->
 @if(isset($navbarDetached) && $navbarDetached == 'navbar-detached')
-<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar" style="  background-image: url('{{ asset('assets/img/backgrounds/WhatsApp Image 2024-01-06 at 8.03.27 AM.jpeg') }}'); background-size:cover;background ">
+<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar" style="  background-image: url('{{ asset('assets/img/backgrounds/WhatsApp Image 2024-01-06 at 8.03.27 AM.jpeg') }}'); background-size:cover;background-repeat:no-repeat ">
   @endif
   @if(isset($navbarDetached) && $navbarDetached == '')
   <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
@@ -174,23 +178,25 @@ $navbarDetached = ($navbarDetached ?? '');
 
           <!-- wallet started --->
 
+         
           <li class="nav-item lh-1 me-3">
-
-                <!-- <a href="{{route('expenses-create')}}" class="menu-link" ><span><i class="bi bi-wallet fs-5 plh-0"></i></span>&nbsp; {{Auth::user()->wallet}}
-
-                </a> -->
-              <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary card4" style="background-color: #0081b8;cursor:pointer;" ><span style="margin-left: -7px;"><i class="bi bi-wallet fs-5 plh-0" style="color: white; font-weight:800"></i></span>&nbsp; <b class="member-infoooo" style="display: none"> {{Auth::user()->wallet}} </b></button>
+              <div class="wallet-container">
+                  <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary card4" style="background-color: #0081b8;cursor:pointer;" onmouseover="showWallet()">
+                      <span style="margin-left: -7px;">
+                          <i class="bi bi-wallet fs-5 plh-0" style="color: white; font-weight:800" onmouseover="showWallet()"></i>
+                      </span>&nbsp;
+                      <b id="wallet-info" class="member-infoooo" style="display: none; color:white; ">{{ Auth::user()->wallet }}</b>
+                  </button>
+              </div>
+          
               <script>
-                $(document).ready(function () {
-                    // Toggle the display when the card is clicked
-                    $('.card4').click(function () {
-                        $('.member-infoooo').toggle();
-                    });
-                });
+                  function showWallet() {
+                      var walletInfo = document.getElementById('wallet-info');
+                      walletInfo.style.display = 'inline-block';
+                  }
               </script>
-
           </li>
-
+          
           <!-- wallet ended -->
 
           <!-- User -->
@@ -272,3 +278,6 @@ window.onload=function(){
 };
 
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

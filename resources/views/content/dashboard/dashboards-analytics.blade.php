@@ -4,8 +4,8 @@
 
 <!-- Dashboard -->
 @extends('layouts/contentNavbarLayout')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.4.2/css/all.min.css" integrity="sha512-NicFTMUg/LwBeG8C7VG+gC4YiiRtQACl98QdkmfsLy37RzXdkaUAuPyVMND0olPP4Jn8M/ctesGSB2pgUBDRIw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.4.2/css/all.min.css" integrity="sha512-NicFTMUg/LwBeG8C7VG+gC4YiiRtQACl98QdkmfsLy37RzXdkaUAuPyVMND0olPP4Jn8M/ctesGSB2pgUBDRIw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
+{{-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> --}}
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
@@ -55,17 +55,20 @@ up -->
 @endif
 <!-- success popup -->
 @section('content')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
+
+
 <style>
   .icon-shape {
     width: 50px;
     height: 50px;
   }
 
-  .bi {
+  /* .bi {
     margin-left: 13px;
     font-size: 19px;
     font-weight: 800;
-  }
+  } */
 
   .card-container {
     overflow: hidden;
@@ -79,17 +82,22 @@ up -->
     transform: scale(1.05);
     /* You can adjust the scale factor as needed */
   }
-  .fas{
+  .bi{
     margin-left:12px;
-    margin-top:11px;
+    margin-top:15px !important;
     font-size: 20px;
+  }
+  .rounded-circle{
+    display:flex;
+    /* justify-content: start; */
+    margin-top:-10px !important;
   }
 </style>
 
 <div class="row g-6 mb-6">
   @if ($checking == '')
   <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" style="height:100px;">
+    <div class="card cards shadow border-0" >
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -103,7 +111,7 @@ up -->
             <form action="{{ route('checking.store') }}" method="POST">
               @csrf
               <div class="icon icon-shape submit-icon text-white text-lg rounded-circle" style="background-color:darkcyan;border:2px solid white">
-                <i class="fas fa-sign-in-alt submit-icon" style="color: #ffffff;"></i>
+                <i class="bi bi-box-arrow-in-right"></i>
               </div>
             </form>
 
@@ -115,7 +123,7 @@ up -->
   </div>
   @elseif ($checking->notes == 1)
   <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" style="height:100px;">
+    <div class="card cards shadow border-0" >
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -128,7 +136,7 @@ up -->
             <form action="{{ route('checking.store') }}" method="POST">
               @csrf
               <div class="icon icon-shape submit-icon text-white text-lg rounded-circle" style="background-color:darkcyan;border:2px solid white">
-               <i class="fas fa-sign-in-alt submit-icon" style="color: #ffffff;"></i>
+                <i class="bi bi-box-arrow-in-right"></i>
               </div>
             </form>
 
@@ -142,7 +150,7 @@ up -->
   @if ($checking != '')
   @if ($checking->notes == 0)
   <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" style="background-color: darkcyan;height:100px;">
+    <div class="card cards shadow border-0" style="background-color: darkcyan;">
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -155,7 +163,7 @@ up -->
               @csrf
               @method('PUT')
               <div class="icon icon-shape submit-icon text-white text-lg rounded-circle" style="background-color:white;border:2px solid white">
-                <i class="fas fa-sign-out-alt submit-icon" style="color: darkcyan;"></i>
+                <i class="bi bi-box-arrow-in-left" style="color: darkcyan"></i>
               </div>
 
             </form>
@@ -188,12 +196,12 @@ up -->
                   <!-- Initially centered text -->
                   <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;">Team Members</span>
                   <!-- Hidden member information -->
-                  <span class="h3 font-bold mb-0 member-info" style="display: none;font-size:22px; font-weight:900">{{ $member }}</span>
+                  <span class="h3 font-bold mb-0 member-info" style="display: none;font-size:22px; font-weight:900;color:darkcyan">{{ $member }}</span>
               </div>
               <div class="col-auto">
                 <a class="dropdown-item" href="{{ route('user-index') }}">
                   <div class="icon icon-shape text-white text-lg rounded-circle" style="background-color:sandybrown;border:2px solid white;">
-                      <i class="fas fa-users" style="color: #ffffff;"></i>
+                    <i class="bi bi-people-fill" style="color: #ffffff;"></i>
                   </div>
                 </a>
               </div>
@@ -206,10 +214,10 @@ up -->
 <script>
   $(document).ready(function () {
       // Toggle the display when the card is clicked
-      $('.card2').click(function (event) {
+      $('.card1').click(function (event) {
           // Check if the clicked element is not the icon and not the col-auto element
           if (!$(event.target).is('.icon') && !$(event.target).closest('.col-auto').length) {
-              $('.member-infoo').toggle();
+              $('.member-info').toggle();
           }
       });
   });
@@ -222,12 +230,12 @@ up -->
           <div class="row">
               <div class="col">
                   <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important; margin-top:10px; font-weight:600 !important;text-align:center;">Unpaid Amount</span>
-                  <span class="h3 font-bold mb-0 member-infoo" style="display: none;font-size:22px; font-weight:900;margin-left:50px;">{{ $unpaid_amt }}</span>
+                  <span class="h3 font-bold mb-0 member-infoo" style="display: none;font-size:22px; font-weight:900;margin-left:50px;color:darkcyan">{{ $unpaid_amt }}</span>
               </div>
               <div class="col-auto">
                   <a class="dropdown-item" href="{{ route('expenses-history') }}">
                       <div class="icon icon-shape  text-white text-lg rounded-circle" style="background-color:lightseagreen;border:2px solid white">
-                          <i class="fas fa-credit-card" style="color: #ffffff;"></i>
+                        <i class="bi bi-credit-card-fill" style="color: #ffffff;"></i>
                       </div>
                   </a>
               </div>
@@ -255,12 +263,12 @@ up -->
         <div class="row">
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2 " style="color: black !important; margin-top:10px; font-weight:600 !important;text-align:center;">Wallet Balance</span>
-            <span class="h3 font-bold mb-0 member-infooo"  style="display: none;font-size:22px; font-weight:900;margin-left:50px;">{{ $wallet }}</span>
+            <span class="h3 font-bold mb-0 member-infooo"  style="display: none;font-size:22px; font-weight:900;margin-left:50px;color:darkcyan">{{ $wallet }}</span>
           </div>
           <div class="col-auto">
             <a class="dropdown-item" href="{{ route('user-index') }}">
             <div class="icon icon-shape bg-warning text-white text-lg rounded-circle" style="border:2px solid white;">
-              <i class="fas fa-wallet" style="color: #ffffff;"></i>
+              <i class="bi bi-wallet2" style="color: #ffffff;"></i>
             </div>
             </a>
           </div>
@@ -272,8 +280,11 @@ up -->
   <script>
     $(document).ready(function () {
         // Toggle the display when the card is clicked
-        $('.card3').click(function () {
-            $('.member-infooo').toggle();
+        $('.card3').click(function (event) {
+            // Check if the clicked element is not the icon and not the col-auto element
+            if (!$(event.target).is('.icon') && !$(event.target).closest('.col-auto').length) {
+                $('.member-infooo').toggle();
+            }
         });
     });
   </script>
