@@ -18,11 +18,11 @@ class AnalyticsController extends Controller
   public function index()
   {
     $user = User::join('model_has_roles','model_has_roles.model_id','=','users.id')->join('roles','roles.id','=','model_has_roles.role_id')->where('users.id',Auth::user()->id)->select('users.*','roles.name as role_name')->first();
-   
+
     $checking = Attendance::where('user_id',Auth::user()->id)->whereDate('created_at','=',now())->orderBy('id','desc')->first();
     $member = User::count();
-    $project_open = ProjectDetails::where('project_status',0)->count();
-    $project_close = ProjectDetails::where('project_status',1)->count();
+    $project_open = ProjectDetails::where('active_status',1)->where('delete_status',0)->where('project_status',0)->count();
+    $project_close = ProjectDetails::where('active_status',1)->where('delete_status',0)->where('project_status',1)->count();
     if($user->role_name == 'Admin')
     {
         $unpaid_amt = Expenses::sum('unpaid_amt');
@@ -36,7 +36,16 @@ class AnalyticsController extends Controller
       $monthly_transfer = Transfer::where('user_id',Auth::user()->id)->where('created_at', '>', now()->subDays(30)->endOfDay())
       ->sum('amount');
     }
-    $income = ProjectDetails::where('created_at', '>', now()->subDays(30)->endOfDay())->sum('advance_amt');
+    $allMonths = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
+  $income = ProjectDetails::selectRaw('DATE_FORMAT(created_at, "%b") as month, SUM(advance_amt) as total')
+      ->where('created_at', '>', now()->subMonths(12)->endOfDay())
+      ->groupBy('month')
+      ->orderByRaw('FIELD(month, ?)', [implode(',', $allMonths)])
+      ->get();
+    //dd($income);
     $wallet = User::where('active_status',1)->where('delete_status',0)->sum('wallet');
     //dd($checking);
     return view('content.dashboard.dashboards-analytics',['checking' =>$checking,'member' => $member,'project_open' =>$project_open ,'project_close' => $project_close,'unpaid_amt' => $unpaid_amt,'paid_amt' =>$paid_amt,'monthly_transfer' => $monthly_transfer,'income' => $income,'wallet' => $wallet]);

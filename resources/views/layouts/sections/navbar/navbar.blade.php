@@ -73,7 +73,7 @@ div.dataTables_wrapper div.dataTables_length select {
   .wallet-container:hover .member-infoooo {
       display: inline-block;
   }
-</style>  
+</style>
   <div class="preloader">
     <div class="loader"></div>
   </div>
@@ -178,7 +178,7 @@ $navbarDetached = ($navbarDetached ?? '');
 
           <!-- wallet started --->
 
-         
+
           <li class="nav-item lh-1 me-3">
               <div class="wallet-container">
                   <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary card4" style="background-color: #0081b8;cursor:pointer;" onmouseover="showWallet()">
@@ -188,7 +188,7 @@ $navbarDetached = ($navbarDetached ?? '');
                       <b id="wallet-info" class="member-infoooo" style="display: none; color:white; ">{{ Auth::user()->wallet }}</b>
                   </button>
               </div>
-          
+
               <script>
                   function showWallet() {
                       var walletInfo = document.getElementById('wallet-info');
@@ -196,7 +196,7 @@ $navbarDetached = ($navbarDetached ?? '');
                   }
               </script>
           </li>
-          
+
           <!-- wallet ended -->
 
           <!-- User -->

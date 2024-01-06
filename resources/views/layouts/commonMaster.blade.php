@@ -35,13 +35,13 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 
   @include('layouts/sections/styles')
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Salsa:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap">
 
 @include('layouts/app')
   <!-- Include Scripts for customizer, helper, analytics, config -->
   @include('layouts/sections/scriptsIncludes')
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Salsa:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
 
     @media only screen and(max-width:320px){
         .col-md-4 .col-form-label .text-md-end {
@@ -49,7 +49,7 @@
         }
     }
     *{
-      font-family: 'salsa' !important;
+      font-family: 'Comfortaa' !important;
       color:black;
     }
     body {

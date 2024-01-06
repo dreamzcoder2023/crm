@@ -21,16 +21,14 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme"
     style=" background-color:rgb(227 252 255) !important; ">
 
-
-  <!-- ! Hide app brand if navbar-full -->
-  <div class="app-brand demo">
-      <a href="{{ url('/') }}" class="app-brand-link">
-          <span class="app-brand-logo demo">
-              <img src="{{ asset('assets/img/icons/logo12.png') }}" class="img-fluid" alt="Layout container"
-                  style="width: 145px;margin-left:33px;margin-top:-1px;">
-          </span>
-      </a>
-
+    <!-- ! Hide app brand if navbar-full -->
+    <div class="app-brand demo">
+        <a href="{{ url('/') }}" class="app-brand-link">
+            <span class="app-brand-logo demo">
+                <img src="{{ asset('assets/img/icons/logo12.png') }}" class="img-fluid" alt="Layout container"
+                    style="width: 205px;margin-left:5px;margin-top:-1px;">
+            </span>
+        </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-autod-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
@@ -39,7 +37,7 @@
 
     <div class="menu-inner-shadow"></div>
 
-    <ul class="menu-inner py-1">
+    <ul class="menu-inner py-1" style="margin-top: 30px;">
         <!--- header -->
         <!-- <li class="menu-header small text-uppercase">
     <span class="menu-header-text"></span>
