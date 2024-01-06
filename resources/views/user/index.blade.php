@@ -1,5 +1,7 @@
 @extends('layouts/contentNavbarLayout')
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
@@ -13,7 +15,7 @@
     }
   }
   .dataTables_wrapper {
-    font-family: tahoma;
+    font-family: 'Source Sans 3', sans-serif;
     font-size: 13px;
     clear: both;
 
@@ -57,9 +59,9 @@
   </div></div></div>
 
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 40px auto; height:250px">
+<div class="card" style="max-width: 1200px; margin: 40px auto; height:502px;">
   <!-- <h5 class="card-header">Table Basic</h5> -->
-  <div class="table-responsive text-nowrap">
+  <div class="table-responsive text-nowrap" style="width:99%;">
     <table class="table" id="user_listing_table">
       <thead>
         <tr>

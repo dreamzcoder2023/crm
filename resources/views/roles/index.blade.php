@@ -15,7 +15,7 @@
     }
   }
   .dataTables_wrapper {
-    font-family: tahoma;
+    
     font-size: 13px;
     clear: both;
 
@@ -54,10 +54,10 @@ td, th {
     </div>
 @endif
 <div style="margin-top: 30px;">
-<h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">User /</span> Roles
+<h4 class="fw-bold py-3 mb-4" style="margin-top:-49px;font-size:16px;">
+  <span class="fw-light" style="color: orange;" >User /</span> Roles
 </h4>
-<div class="row" style="position:absolute; top:180px; right:50px ">
+<div class="row" style="position:absolute; top:90px; right:50px ">
 @can('role-create')
   <div class="col-md-12">
     <ul class="nav nav-pills flex-column flex-md-row mb-3">
@@ -67,8 +67,8 @@ td, th {
 @endcan
 </div>
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 40px auto; height:250px">
-  <div class="table-responsive text-nowrap">
+<div class="card" style="max-width: 1200px; margin: 40px auto;margin-top:24px;">
+  <div class="table-responsive text-nowrap" style="width: 99%;">
     <table class="table" id="role_listing_table">
       <thead>
         <tr>

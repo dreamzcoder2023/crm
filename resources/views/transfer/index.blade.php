@@ -58,8 +58,8 @@ td, th {
 </script>
 @endif
 <div style="margin-top: 30px;">
-<h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Transfer History </span>
+<h4 class="fw-bold py-3 mb-4" style="margin-top: -55px;font-size:13px;">
+  <span class="fw-light" style="color: black;">Transfer History </span>
 </h4>
 <div class="row" style="position:absolute; top:180px; right:50px ">
   <div class="col-md-12">
@@ -76,7 +76,7 @@ td, th {
             <div class="row aa">
 
             @role('Admin')
-                <div class="col">
+                <div class="col-md-2">
                     <select class="form-control" name="user_id" id="user_id">
                         <option value="">Select Member</option>
                         @foreach($user as $user)
@@ -85,19 +85,19 @@ td, th {
                     </select>
                 </div>
                @endrole
-                <div class="col">
-                    <label >from</label>
+                <div class="col-md-4">
+                   <h6> <span>From:&nbsp;&nbsp;</span>
                     <input type="date" class="form-control bb" id="from_date" name="from_date"
-                        value="{{$from_date}}"
-                       >
+                        value="{{$from_date}}" style="width: 145px;display:initial;"></h6>
+
                 </div>
-                <div class="col">
-                    <label>to</label>
+                <div class="col-md-4">
+                    <h6><span>To:</span>
                     <input type="date" class="form-control " id="to_date" name="to_date"
-                        value="{{$to_date1}}"
-                         >
+                        value="{{$to_date1}}" style="width: 145px;display:initial;"></h6>
+
                 </div>
-                <div class="col">
+                <div class="col-md-2">
                     <a href="{{route('transfer-history')}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
                             alt="slack" class="me-3" height="40" width="40"></a>
                 </div>

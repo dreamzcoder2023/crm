@@ -6,13 +6,16 @@
     <link rel="icon" type="image/x-icon" href="http://127.0.0.1:8000/assets/img/icons/housefix-favicon.png" />
     <title>{{ __('Login | HOUSE FIX - A DOCTOR FOR YOUR HOUSE') }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{asset('assets/vendor/css/pages/page-auth.css')}}">
+  </head>
 <style>
   .modal-backdrop {
     opacity: 0.5 !important;
   }
   </style>
-<body style="background-color: #e8f6f9;">
+<body style="background-color: #f5f5f9">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   @if (session()->has('popup'))
 
@@ -35,20 +38,23 @@
     </div>
 @endif
 
-<div class="container" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <div class="col-md-6" style="margin-top: -83px;">
-        <div class="card">
+<div class="container-xxl">
+  <div class="authentication-wrapper authentication-basic container-p-y">
+    <div class="authentication-inner py-4">
+        <div class="card" >
             <div class="card-header text-center">
                 <img src="{{ asset('assets/img/icons/logo12.png') }}" class="img-fluid" alt="Layout container" style="width: 55%;">
 
             </div>
 
-            <div class="card-body">
+            <div class="card-body" style="height:325px;">
+              <div class="app-brand justify-content-center">
+
                 <form method="POST" id="formloginAuth" action="{{ route('login') }}">
                     @csrf
 
                     <div class="form-group">
-                    <label for="phone" class="col-md-4 col-form-label text-left ">{{ __('Phone number') }}</label>
+                    <label for="phone" class="col-md-4  text-left " style="font-size:13px;">{{ __('Phone number') }}</label>
                         <input id="phone" type="text" onkeypress="allowNumbersOnly(event)" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required autocomplete="phone" autofocus>
                         @error('phone')
                             <span class="invalid-feedback" role="alert">
@@ -58,12 +64,12 @@
                     </div>
 
                     <div class="form-group">
-                    <label for="password" class="col-md-4 col-form-label text-left">{{ __('Password') }}</label>
+                    <label for="password" class="col-md-4  text-left" style="font-size:13px;">{{ __('Password') }}</label>
                         <input id="password" type="password" maxlength="10" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
                         <div class="col-form-label text-left">
                         <input type="checkbox" class="" onclick="myFunction()">&nbsp; Show Password
                         @error('password')
-</div>
+                    </div>
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -71,17 +77,20 @@
                     </div>
 
                     <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary d-grid w-100">
                             {{ __('Login') }}
                         </button>
-                        <a href="{{ route('forget-password') }}" type="submit" class="btn btn-primary">
-                          {{ __('forget password') }}
+<br><br>
+                        <a href="{{ route('forget-password') }}" type="submit" class="d-flex align-items-center justify-content-center">
+                          {{ __('forget password') }}<i class="bx bx-chevron-right scaleX-n1-rtl bx-sm"></i>
                         </a>
                     </div>
                 </form>
+              </div>
             </div>
         </div>
     </div>
+  </div>
 </div>
 <div id="walletsuccess" class="modal fade"  data-backdrop="static" data-keyboard="false" >
 	<div class="modal-dialog modal-centered modal-confirm modal-sm">

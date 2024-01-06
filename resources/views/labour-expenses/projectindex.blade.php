@@ -124,7 +124,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold">{{ $project->project_name }}</h3>
+                        <h3 class="fw-bold">{{ $project?->project_name }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -146,7 +146,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold">{{ $project->unpaid }}</h3>
+                        <h3 class="fw-bold">{{ $project?->unpaid }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -168,7 +168,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold">{{ $project->advance_amt }}</h3>
+                        <h3 class="fw-bold">{{ $project?->advance_amt }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -214,7 +214,7 @@
         </div>
     </div>
     <button class="btn btn-primary" id="advance_submit" data-start_week="{{ $start_date }}"
-        data-end_week="{{ $end_date }}" data-project_id = "{{ $project->project_id }}" disabled>Submit</button>
+        data-end_week="{{ $end_date }}" data-project_id = "{{ $project?->project_id }}" disabled>Submit</button>
     <!--/ Basic Bootstrap Table -->
 
 

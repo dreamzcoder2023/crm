@@ -15,6 +15,7 @@
 @endsection
 <!--- success pop
 up -->
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 @if (session()->has('popup'))
 
@@ -52,13 +53,13 @@ up -->
   <?php //dd($checking); ?>
 @if ($checking == '')
                 <div class="col-md-4 col-xl-3 mb-4">
-                    <div class="card cards shadow border-0" style="background-color:#423e3e; width:300px;">
+                    <div class="card cards shadow border-0" style="background-color:orange; width:300px;">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-3 text-center">
-                                    <span class="circle circle-sm bg-primary">
-                                        <i class="fas fa-sign-in-alt" style="padding-left:31.5px; color:white !important;"></i>
-                                    </span>
+
+                                        <img src="{{ url('assets/img/icons/refer.png') }}" style="height: 40px;">
+
                                 </div>
                                 <div class="col pr-0">
                                     <form action="{{ route('checking.store') }}" method="POST">
@@ -73,13 +74,11 @@ up -->
                 </div>
             @elseif ($checking->notes == 1)
                 <div class="col-md-4 col-xl-3 mb-4">
-                    <div class="card cards shadow border-0" style="background-color:#423e3e; width:300px;">
+                    <div class="card cards shadow border-0" style="background-color:orange; width:300px;">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-3 text-center">
-                                    <span class="circle circle-sm bg-primary">
-                                        <i class="fas fa-sign-in-alt" style="padding-left:31.5px; color:white !important;"></i>
-                                    </span>
+                                  <img src="{{ url('assets/img/icons/exitt.png') }}" style="height:25px;margin-top:-44px;">
                                 </div>
                                 <div class="col pr-0">
                                     <form action="{{ route('checking.store') }}" method="POST">
@@ -96,22 +95,20 @@ up -->
             @if ($checking != '')
                 @if ($checking->notes == 0)
                     <div class="col-md-4 col-xl-3 mb-4">
-                        <div class="card cards shadow border-0" style="background-color:lightgray; width:300px;">
+                        <div class="card cards shadow border-0" style="background-color:#699dce; width:300px;">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col-3 text-center">
-                                        <span class="circle circle-sm bg-primary">
-                                            <i class="fas fa-sign-out-alt" style="padding-left:31.5px; color:white !important;"></i>
-                                        </span>
+                                      <img src="{{ url('assets/img/icons/logoutt.png') }}" style="height:25px;margin-top:-44px;">
                                     </div>
 
                                     <div class="col pr-0">
                                         <form action="{{ route('checking.update', $checking->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
-                                            <button type="submit" class="btn btn-dark" style="margin-bottom: 30px; margin-left:30px; color:white;">Check Out</button>
+                                            <button type="submit" class="btn btn-light" style="margin-bottom: 30px; margin-left:30px; color:black;">Check Out</button>
                                         </form>
-                                        <span class="h6 mb-0 mt-3" style="color:black; margin-left:30px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span>
+                                        <span class="h6 mb-0 mt-3" style="color:white; margin-left:16px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span>
                                     </div>
 
                                 </div>
@@ -179,7 +176,7 @@ up -->
         </div>
         @endrole
         <div class="col-lg-4 mb-4">
-            <div class="card" style="width: 115%;left: 44px;height: 149px;">
+            <div class="card" style="width: 115%;left: 44px;height: 150px;">
             <div class="card-body">
                     <div class="card-title d-flex align-items-start justify-content-between">
                         <div class="avatar flex-shrink-0">
@@ -205,7 +202,7 @@ up -->
 <div class="col-lg-4 col-md-4 order-1">
     <div class="row">
         <div class="col-lg-6 col-md-12 col-6 mb-4">
-            <div class="card" style="width: 155%; height: 192px; left: -281px;">
+            <div class="card" style="width: 115%; height: 150px; left: -281px;">
                 <div class="card-body">
                     <div class="card-title d-flex align-items-start justify-content-between">
                         <div class="avatar flex-shrink-0">

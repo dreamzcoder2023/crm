@@ -33,6 +33,7 @@
             </a>
         </li>
         <!--- dashboard -->
+        
         <!--- roles -->
         @can('role-list')
             <li class="menu-item {{ \Request::route()->getName() == 'roles.index' ? 'active open' : '' }}">
