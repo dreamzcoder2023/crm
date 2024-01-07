@@ -56,17 +56,180 @@
         <!--- dashboard -->
 
         <!--- roles -->
+        @canany(['expenses-history', 'expenses-unpaid history', 'expenses-deleted history'])
+        <li class="menu-item {{ \Request::route()->getName() == 'expenses-history' || \Request::route()->getName() == 'unpaid-history' || \Request::route()->getName() == 'expenses-delete_record'  ? 'active open' : '' }} ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <img src="{{ asset('assets/img/icons/amountexpenses.png') }}" alt="slack" class="me-3"
+                    height="20">
+                <div class="dark">Expenses</div>
+            </a>
+            <ul class="menu-sub">
 
+                @can('expenses-history')
+                    <li class="menu-item {{ \Request::route()->getName() == 'expenses-history' ? 'active open' : '' }}">
+                        <a href="{{ route('expenses-history') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/icons8-activity-history-50.png') }}" alt="slack"
+                                class="me-3" height="20">
+                            <div class="dark">Expenses History</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('expenses-unpaid history')
+                    <li class="menu-item {{ \Request::route()->getName() == 'unpaid-history' ? 'active open' : '' }}">
+                        <a href="{{ route('unpaid-history') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/icons8-payment-history-30.png') }}" alt="slack"
+                                class="me-3" height="20">
+                            <div class="dark">Unpaid History</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('expenses-deleted history')
+                    <li
+                        class="menu-item {{ \Request::route()->getName() == 'expenses-delete_record' ? 'active open' : '' }}">
+                        <a href="{{ route('expenses-delete_record') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/capital.png') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Deleted History</div>
+                        </a>
+                    </li>
+                @endcan
+
+            </ul>
+
+        </li>
+
+
+    @endcanany
+    @canany(['labour expenses-list', 'labour expenses-weekly history', 'labour expenses-labour advance amount',
+        'labour expenses-delete history'])
+        <li class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history' ||  \Request::route()->getName() == 'labour-expenses-advance' || \Request::route()->getName() == 'labour-expenses-delete_record'  ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <img src="{{ asset('assets/img/icons/labour-cost.png') }}" alt="slack" class="me-3"
+                    height="20">
+                <div class="dark">Labour Expenses</div>
+            </a>
+
+            <ul class="menu-sub">
+                @can('labour expenses-list')
+                    <li
+                        class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history'  ? 'active open' : '' }}">
+                        <a href="{{ route('labour-expenses-history') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/labor-day.png') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Expense History</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('labour expenses-weekly history')
+                    <li class="menu-item labour_expense_history">
+                        <a href="#" class="menu-link"><img src="{{ asset('assets/img/icons/weekly-labour.png') }}"
+                                alt="slack" class="me-3" height="20">
+                            <div class="dark">Weekly History</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('labour expenses-labour advance amount')
+                    <li
+                        class="menu-item {{ \Request::route()->getName() == 'labour-expenses-advance' ? 'active open' : '' }}">
+                        <a href="{{ route('labour-expenses-advance') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/hand-money.jpg') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Advance Amount</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('labour expenses-delete history')
+                    <li
+                        class="menu-item {{ \Request::route()->getName() == 'labour-expenses-delete_record' ? 'active open' : '' }}">
+                        <a href="{{ route('labour-expenses-delete_record') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Deleted History</div>
+                        </a>
+                    </li>
+                @endcan
+            </ul>
+        </li>
+    @endcanany
+    @canany(['vendor expenses-list'])
+        <li class="menu-item  {{ \Request::route()->getName() == 'vendor-expenses-index' ||  \Request::route()->getName() == 'vendor-expenses-unpaid-history' || \Request::route()->getName() == 'vendor-expenses-advance-history' || \Request::route()->getName() == 'vendor-expenses-delete_record' ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <img src="{{ asset('assets/img/icons/vendor-expense.png') }}" alt="slack" class="me-3"
+                    height="20">
+                <div class="dark">Vendor Expenses</div>
+            </a>
+
+            <ul class="menu-sub">
+                @can('vendor expenses-list')
+                    <li
+                        class="menu-item  {{ \Request::route()->getName() == 'vendor-expenses-index' ? 'active open' : '' }}">
+                        <a href="{{ route('vendor-expenses-index') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/seller.png') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Expense History</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('vendor expenses-unpaid history')
+                    <li class="menu-item {{ \Request::route()->getName() == 'vendor-expenses-unpaid-history' ? 'active open' : '' }}">
+                        <a href="{{ route('vendor-expenses-unpaid-history') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/vendor-1.png') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Unpaid History</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('vendor expenses-vendor advance amount')
+                    <li
+                        class="menu-item {{ \Request::route()->getName() == 'vendor-expenses-advance-history' ? 'active open' : '' }}">
+                        <a href="{{ route('vendor-expenses-advance-history') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/vendor-2.png') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Advance Amount</div>
+                        </a>
+                    </li>
+                @endcan
+                @can('vendor expenses-deleted history')
+                    <li
+                        class="menu-item {{ \Request::route()->getName() == 'vendor-expenses-delete_record' ? 'active open' : '' }}">
+                        <a href="{{ route('vendor-expenses-delete_record') }}" class="menu-link"><img
+                                src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
+                                height="20">
+                            <div class="dark">Deleted History</div>
+                        </a>
+                    </li>
+                @endcan
+            </ul>
+        </li>
+    @endcan
+    <!--- expenses -->
         @canany(['role-list', 'user-list', 'labour role-list', 'labour-list', 'vendor-list', 'category-list',
             'payment-list', 'client-list', 'project-list', 'stage-list'])
-            <li class="menu-item ">
+            <li class="menu-item {{ \Request::route()->getName() == 'client-index' || \Request::route()->getName() == 'project-index' || \Request::route()->getName() == 'roles.index' || \Request::route()->getName() == 'user-index' || \Request::route()->getName() == 'labourrole-index' || \Request::route()->getName() == 'labour-index' || \Request::route()->getName() == 'vendor-index' || \Request::route()->getName() == 'category-index' || \Request::route()->getName() == 'payment-index' || \Request::route()->getName() == 'stage-index'   ? 'active open' : '' }} ">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <img src="{{ asset('assets/img/icons/search.png') }}" alt="slack" class="me-3 dark"
                         height="20">
                     <div class="dark">Category Added</div>
                 </a>
                 <ul class="menu-sub">
-
+                  @can('client-list')
+                  <li class="menu-item {{ \Request::route()->getName() == 'client-index' ? 'active open' : '' }}">
+                      <a href="{{ route('client-index') }}" class="menu-link">
+                          <i class="menu-icon tf-icons bx bx-user-circle"></i>
+                          <div class="dark">Client Details</div>
+                      </a>
+                  </li>
+              @endcan
+              <!--- client -->
+              <!--- project -->
+              @can('project-list')
+                  <li class="menu-item {{ \Request::route()->getName() == 'project-index' ? 'active open' : '' }}">
+                      <a href="{{ route('project-index') }}" class="menu-link">
+                          <i class="menu-icon tf-icons bi bi-tools"></i>
+                          <div class="dark">Project Details</div>
+                      </a>
+                  </li>
+              @endcan
                     @can('role-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'roles.index' ? 'active open' : '' }}">
                             <a href="{{ route('roles.index') }}" class="menu-link">
@@ -134,24 +297,7 @@
                     @endcan
                     <!--- payment -->
                     <!--- client -->
-                    @can('client-list')
-                        <li class="menu-item {{ \Request::route()->getName() == 'client-index' ? 'active open' : '' }}">
-                            <a href="{{ route('client-index') }}" class="menu-link">
-                                <i class="menu-icon tf-icons bx bx-user-circle"></i>
-                                <div class="dark">Client Details</div>
-                            </a>
-                        </li>
-                    @endcan
-                    <!--- client -->
-                    <!--- project -->
-                    @can('project-list')
-                        <li class="menu-item {{ \Request::route()->getName() == 'project-index' ? 'active open' : '' }}">
-                            <a href="{{ route('project-index') }}" class="menu-link">
-                                <i class="menu-icon tf-icons bi bi-tools"></i>
-                                <div class="dark">Project Details</div>
-                            </a>
-                        </li>
-                    @endcan
+
                     @can('stage-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'stage-index' ? 'active open' : '' }}">
                             <a href="{{ route('stage-index') }}" class="menu-link">
@@ -197,153 +343,7 @@
         @endcan
         <!--- transfer -->
         <!--- expenses -->
-        @canany(['expenses-history', 'expenses-unpaid history', 'expenses-deleted history'])
-            <li class="menu-item ">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <img src="{{ asset('assets/img/icons/amountexpenses.png') }}" alt="slack" class="me-3"
-                        height="20">
-                    <div class="dark">Expenses</div>
-                </a>
-                <ul class="menu-sub">
 
-                    @can('expenses-history')
-                        <li class="menu-item {{ \Request::route()->getName() == 'expenses-history' ? 'active open' : '' }}">
-                            <a href="{{ route('expenses-history') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/icons8-activity-history-50.png') }}" alt="slack"
-                                    class="me-3" height="20">
-                                <div class="dark">Expenses History</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('expenses-unpaid history')
-                        <li class="menu-item {{ \Request::route()->getName() == 'unpaid-history' ? 'active open' : '' }}">
-                            <a href="{{ route('unpaid-history') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/icons8-payment-history-30.png') }}" alt="slack"
-                                    class="me-3" height="20">
-                                <div class="dark">Unpaid History</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('expenses-deleted history')
-                        <li
-                            class="menu-item {{ \Request::route()->getName() == 'expenses-delete_record' ? 'active open' : '' }}">
-                            <a href="{{ route('expenses-delete_record') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/capital.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Deleted History</div>
-                            </a>
-                        </li>
-                    @endcan
-
-                </ul>
-
-            </li>
-
-
-        @endcanany
-        @canany(['labour expenses-list', 'labour expenses-weekly history', 'labour expenses-labour advance amount',
-            'labour expenses-delete history'])
-            <li class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history' ? 'active open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <img src="{{ asset('assets/img/icons/labour-cost.png') }}" alt="slack" class="me-3"
-                        height="20">
-                    <div class="dark">Labour Expenses</div>
-                </a>
-
-                <ul class="menu-sub">
-                    @can('labour expenses-list')
-                        <li
-                            class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history' ? 'active open' : '' }}">
-                            <a href="{{ route('labour-expenses-history') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/labor-day.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Expense History</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('labour expenses-weekly history')
-                        <li class="menu-item labour_expense_history">
-                            <a href="#" class="menu-link"><img src="{{ asset('assets/img/icons/weekly-labour.png') }}"
-                                    alt="slack" class="me-3" height="20">
-                                <div class="dark">Weekly History</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('labour expenses-labour advance amount')
-                        <li
-                            class="menu-item {{ \Request::route()->getName() == 'labour-expenses-advance' ? 'active open' : '' }}">
-                            <a href="{{ route('labour-expenses-advance') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/hand-money.jpg') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Advance Amount</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('labour expenses-delete history')
-                        <li
-                            class="menu-item {{ \Request::route()->getName() == 'labour-expenses-delete_record' ? 'active open' : '' }}">
-                            <a href="{{ route('labour-expenses-delete_record') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Deleted History</div>
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-            </li>
-        @endcanany
-        @canany(['vendor expenses-list'])
-            <li class="menu-item  {{ \Request::route()->getName() == 'vendor-expenses-index' ? 'active open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <img src="{{ asset('assets/img/icons/vendor-expense.png') }}" alt="slack" class="me-3"
-                        height="20">
-                    <div class="dark">Vendor Expenses</div>
-                </a>
-
-                <ul class="menu-sub">
-                    @can('vendor expenses-list')
-                        <li
-                            class="menu-item  {{ \Request::route()->getName() == 'vendor-expenses-index' ? 'active open' : '' }}">
-                            <a href="{{ route('vendor-expenses-index') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/seller.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Expense History</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('vendor expenses-unpaid history')
-                        <li class="menu-item ">
-                            <a href="{{ route('vendor-expenses-unpaid-history') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/vendor-1.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Unpaid History</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('vendor expenses-vendor advance amount')
-                        <li
-                            class="menu-item {{ \Request::route()->getName() == 'vendor-expenses-advance-history' ? 'active open' : '' }}">
-                            <a href="{{ route('vendor-expenses-advance-history') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/vendor-2.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Advance Amount</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('vendor expenses-deleted history')
-                        <li
-                            class="menu-item {{ \Request::route()->getName() == 'vendor-expenses-delete_record' ? 'active open' : '' }}">
-                            <a href="{{ route('vendor-expenses-delete_record') }}" class="menu-link"><img
-                                    src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
-                                    height="20">
-                                <div class="dark">Deleted History</div>
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-            </li>
-        @endcan
-        <!--- expenses -->
         <!--- reports -->
         @canany(['client-summary', 'payment-summary'])
             <li class="menu-item ">

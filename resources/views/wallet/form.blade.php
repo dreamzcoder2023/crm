@@ -107,31 +107,43 @@
             var project = $('#project_id').val();
             var amount = $('#amount').val();
             var payment = $('#payment_mode').val();
-console.log(client);
+            var type = $('.gender:checked').length;
+            var clientname = false,projectname = false, amountname = false,paymentname = false, typename = false;
+console.log(type);
             // Validation
             if (client === '') {
                 $('#client-error').removeClass('hide');
             } else {
                 $('#client-error').addClass('hide');
+                clientname = true;
             }
             if (project === '') {
                 $('#project-error').removeClass('hide');
             } else {
                 $('#project-error').addClass('hide');
+                projectname = true;
             }
             if (amount === '') {
                 $('#amount-error').removeClass('hide');
             } else {
                 $('#amount-error').addClass('hide');
+                amountname = true;
             }
             if (payment === '') {
                 $('#payment-error').removeClass('hide');
             } else {
                 $('#payment-error').addClass('hide');
+                paymentname = true;
+            }
+            if (type < 1) {
+                $('#gender-error').removeClass('hide');
+            } else {
+                $('#gender-error').addClass('hide');
+                typename = true;
             }
 
             // Submit the form if all fields are valid
-            if (client && project && amount && payment) {
+            if (clientname == true && projectname == true && amountname == true && paymentname == true && typename == true) {
                 document.getElementById("walletSubmit").submit();
             }
         });

@@ -181,9 +181,11 @@ $navbarDetached = ($navbarDetached ?? '');
 
           <li class="nav-item lh-1 me-3">
               <div class="wallet-container">
-                  <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary card4" style="background-color: #0081b8;cursor:pointer;" onmouseover="showWallet()">
+                <button type="button" @can('wallet-create') id="wallet-click" @endcan class="btn btn-primary card4"
+                style="background-color: #0081b8; cursor: pointer;" onmouseover="showWallet()" onmouseleave="closeWallet()">
+
                       <span style="margin-left: -7px;">
-                          <i class="bi bi-wallet fs-5 plh-0" style="color: white; font-weight:800" onmouseover="showWallet()"></i>
+                          <i class="bi bi-wallet fs-5 plh-0" style="color: white; font-weight:800" onmouseover="showWallet()" onmouseleave="closewallet()"></i>
                       </span>&nbsp;
                       <b id="wallet-info" class="member-infoooo" style="display: none; color:white; ">{{ Auth::user()->wallet }}</b>
                   </button>
@@ -193,6 +195,11 @@ $navbarDetached = ($navbarDetached ?? '');
                   function showWallet() {
                       var walletInfo = document.getElementById('wallet-info');
                       walletInfo.style.display = 'inline-block';
+                  }
+                  function closeWallet() {
+                    console.log('closewallet');
+                      var walletInfo = document.getElementById('wallet-info');
+                      walletInfo.style.display = 'none';
                   }
               </script>
           </li>
@@ -226,7 +233,7 @@ $navbarDetached = ($navbarDetached ?? '');
               <li>
                 <div class="dropdown-divider"></div>
               </li>
-              
+
               <li>
                 <div class="dropdown-divider"></div>
               </li>

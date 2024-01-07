@@ -9,6 +9,7 @@
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs"></script>
 
 @section('title', 'Dashboard | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -21,7 +22,7 @@
 @endsection
 
 @section('page-script')
-<script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
+<script src="{{ asset('assets/js/userdashboard.js') }}"></script>
 @endsection
 <!--- success pop
 up -->
@@ -191,40 +192,7 @@ up -->
       });
     });
   </script>
- <div class="col-xl-3 col-sm-6 col-12">
-  <div class="card card1 cards shadow border-0">
-      <div class="card-body">
-          <div class="row">
-              <div class="col text-center">
-                  <!-- Initially centered text -->
-                  <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;">Team Members</span>
-                  <!-- Hidden member information -->
-                  <span class="h3 font-bold mb-0 member-info" style="display: none;font-size:22px; font-weight:900;color:darkcyan">{{ $member }}</span>
-              </div>
-              <div class="col-auto">
-                <a class="dropdown-item" href="{{ route('user-index') }}">
-                  <div class="icon icon-shape text-white text-lg rounded-circle" style="background-color:sandybrown;border:2px solid white;">
-                    <i class="bi bi-people-fill" style="color: #ffffff;"></i>
-                  </div>
-                </a>
-              </div>
-          </div>
-      </div>
-  </div>
-</div>
 
-
-<script>
-  $(document).ready(function () {
-      // Toggle the display when the card is clicked
-      $('.card1').click(function (event) {
-          // Check if the clicked element is not the icon and not the col-auto element
-          if (!$(event.target).is('.icon') && !$(event.target).closest('.col-auto').length) {
-              $('.member-info').toggle();
-          }
-      });
-  });
-</script>
 
 
 <div class="col-xl-3 col-sm-6 col-12">
@@ -300,76 +268,7 @@ up -->
 <!-- Bootstrap JS and Popper.js -->
 <div class="row" style="margin:10px; padding:10px;">
   <!-- Order Statistics -->
-  <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
-    <div class="card h-100">
-      <div class="card-header d-flex align-items-center justify-content-between pb-0">
-        <div class="card-title mb-0">
-          <h5 class="m-0 me-2"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round" class="feather feather-grid icon-16">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-        </svg> &nbsp; Project Overview</h5>
-          {{-- <small class="text-muted">42.82k Total Sales</small> --}}
-        </div>
-        <div class="dropdown">
-          <button class="btn p-0" type="button" id="orederStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="bx bx-dots-vertical-rounded"></i>
-          </button>
-          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
-            <a class="dropdown-item" href="{{ route('project-index') }}">View More</a>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <input type="hidden" id="total_value" value="{{ $project_open + $project_close }}">
-          <input type="hidden" id="open_value" value="{{ $project_open  }}">
-          <input type="hidden" id="close_value" value="{{$project_close }}">
-          <div class="d-flex flex-column align-items-center gap-1">
-            <h2 class="mb-2">{{ $project_open + $project_close }}</h2>
 
-            <span>Total Projects</span>
-          </div>
-          <div id="orderStatisticsChart"></div>
-        </div>
-        <ul class="p-0 m-0">
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-primary"><i class='bx bx-mobile-alt'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0" style="color:green">Open</h6>
-                {{-- <small class="text-muted">Mobile, Earbuds, TV</small> --}}
-              </div>
-              <div class="user-progress">
-                <small class="fw-semibold">{{ $project_open }}</small>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-primary"><i class='bx bx-mobile-alt'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0" style="color:red">Close</h6>
-                {{-- <small class="text-muted">Mobile, Earbuds, TV</small> --}}
-              </div>
-              <div class="user-progress">
-                <small class="fw-semibold">{{ $project_close }}</small>
-              </div>
-            </div>
-          </li>
-
-
-        </ul>
-      </div>
-    </div>
-  </div>
   <!--/ Order Statistics -->
 
   <!-- Expense Overview -->
@@ -377,13 +276,13 @@ up -->
     <div class="card h-100">
         <div class="card-header">
             <ul class="nav nav-pills" role="tablist">
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                         data-bs-target="#navs-tabs-line-card-income" aria-controls="navs-tabs-line-card-income"
                         aria-selected="true">Income</button>
-                </li>
+                </li> --}}
                 <li class="nav-item">
-                    <button type="button" class="nav-link" role="tab"  data-bs-toggle="tab"
+                    <button type="button" class="nav-link active" role="tab"  data-bs-toggle="tab"
                     data-bs-target="#navs-tabs-line-card-expenses" aria-controls="navs-tabs-line-card-expenses"
                     aria-selected="true">Expenses</button>
                 </li>
@@ -393,7 +292,7 @@ up -->
         </div>
         <div class="card-body px-0">
             <div class="tab-content p-0">
-                <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+                {{-- <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
                     <div class="d-flex p-4 pt-3">
                         <div class="avatar flex-shrink-0 me-3">
                             <img src="{{ asset('assets/img/icons/unicons/wallet.png') }}" alt="User">
@@ -420,9 +319,9 @@ up -->
                           <small class="text-muted">{{$currentWeekPercentage}} %</small>
                       </div>
                   </div>
-                </div>
+                </div> --}}
 
-                <div class="tab-pane fade" id="navs-tabs-line-card-expenses" role="tabpanel">
+                <div class="tab-pane fade show active" id="navs-tabs-line-card-expenses" role="tabpanel">
                     <div class="d-flex p-4 pt-3">
                         <div class="avatar flex-shrink-0 me-3">
                             <img src="{{ asset('assets/img/icons/unicons/wallet.png') }}" alt="User">
@@ -431,7 +330,7 @@ up -->
                             <small class="text-muted d-block">Total Expenses</small>
                             <div class="d-flex align-items-center">
                                 <div id="monthly_expense_data"
-                                    data-expenses="{{ json_encode($expense) }}"></div>
+                                    data-expenses="{{  json_encode($expense) }}"></div>
 
                                <small class="text-danger fw-semibold">
                                     <i class='bx bx-chevron-down'></i>
@@ -567,7 +466,5 @@ up -->
       </div>
     </div>
   </div>
-<script>
-   console.log(@json($income));
-  </script>
+
   @endsection

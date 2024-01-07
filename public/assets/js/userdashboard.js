@@ -498,47 +498,45 @@
 
 
 
-  // Income Chart - Area chart
-  // --------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', function () {
-    const incomeChartEl = document.querySelector('#incomeChart');
-    const monthlyDataString = document.getElementById('monthly_data').getAttribute('data-income');
+    // Assuming you have passed $expenseWithPercentage from the controller
+    const expenseDataString = $('#monthly_expense_data').data('expenses');
+    const expenseData = JSON.parse(expenseDataString);
 
-    // Parse the string into a JavaScript object
-    const monthlyData = JSON.parse(monthlyDataString);
+    if (typeof expenseData === 'object') {
+      // Extract labels and series
+      const labels = expenseData.map(data => data.month);
+      const series = expenseData.map(data => data.total);
 
-    if (!Array.isArray(monthlyData)) {
-        console.error('Monthly data is not an array:', monthlyData);
-        return;
-    }
+      // Log the extracted data for further verification
+      console.log('Labels:', labels);
+      console.log('Series:', series);
 
-    const allMonths = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
+      // Proceed with the rest of your chart rendering logic...
+  }
 
-    const dataLookup = Object.fromEntries(monthlyData.map(data => [data.month, data.total]));
-    const filledData = allMonths.map(month => ({ month, total: dataLookup[month] || 0 }));
+    const expenseChartEl = document.querySelector('#expenseChart');
 
-    const labels = filledData.map(data => data.month);
-    const series = filledData.map(data => data.total);
+    // Simulate a wave effect using the anime library
+    anime({
+        targets: series,
+        delay: anime.stagger(100, { start: 0 }), // Adjust the delay between animations
+        easing: 'linear',
+        duration: 2000,
+        loop: true,
+        update: function (anim) {
+            expenseChart.updateSeries([{ data: anim.animations[0].currentValue }]);
+        }
+    });
 
-    const incomeChartConfig = {
-        series: [
-            {
-                name: 'Monthly Income',
-                data: series
-            }
-        ],
+    const expenseChartConfig = {
+        series: [{
+            name: 'Monthly Expenses',
+            data: series
+        }],
         chart: {
             height: 215,
-            type: 'line',
-            animations: {
-                enabled: true,
-                easing: 'linear',
-                dynamicAnimation: {
-                    speed: 2000
-                }
-            }
+            type: 'line'
         },
         stroke: {
             curve: 'smooth',
@@ -567,193 +565,11 @@
         }
     };
 
-    // Initialize the chart with the wave effect
-    if (typeof incomeChartEl !== 'undefined' && incomeChartEl !== null) {
-        ApexCharts.exec(incomeChartEl, 'wave', {
-            enabled: true,
-            color: '#38BDF8',
-            opacity: 0.5,
-            animation: {
-                duration: 2000
-            },
-            // You can customize other wave options here
-        });
-
-        const incomeChart = new ApexCharts(incomeChartEl, incomeChartConfig);
-        incomeChart.render();
-    }
+    const expenseChart = new ApexCharts(expenseChartEl, expenseChartConfig);
+    expenseChart.render();
 });
 
 
-  // Expenses Mini Chart - Radial Chart
-  // --------------------------------------------------------------------
-  document.addEventListener("DOMContentLoaded", function () {
-    // Mock data, replace this with your actual data
-    let currentWeekPercentage = 0;
-
-    // Check if the percentage is zero, set a default value
-    if (currentWeekPercentage === 0) {
-        currentWeekPercentage = $('#expensesOfWeek').attr('data-income');// Set your desired default percentage here
-    }
-
-    const weeklyExpensesEl = document.querySelector('#expensesOfWeek');
-    console.log("Script executed!");
-    const updateWeeklyExpensesChart = (percentage) => {
-        const weeklyExpensesConfig = {
-            series: [percentage],
-            chart: {
-                width: 60,
-                height: 60,
-                type: 'radialBar'
-            },
-            plotOptions: {
-                radialBar: {
-                    startAngle: 0,
-                    endAngle: 360,
-                    strokeWidth: '8',
-                    hollow: {
-                        margin: 2,
-                        size: '45%'
-                    },
-                    track: {
-                        strokeWidth: '50%',
-                        background: '#ececec'
-                    },
-                    dataLabels: {
-                        show: true,
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            formatter: function (val) {
-                                return val + '%'; // Display the percentage
-                            },
-                            offsetY: 5,
-                            color: '#697a8d',
-                            fontSize: '13px',
-                            show: true
-                        }
-                    }
-                }
-            },
-            fill: {
-                type: 'solid',
-                colors: ['#4caf50'] // Adjust the color as needed
-            },
-            stroke: {
-                lineCap: 'round'
-            },
-            grid: {
-                padding: {
-                    top: -10,
-                    bottom: -15,
-                    left: -10,
-                    right: -10
-                }
-            },
-            states: {
-                hover: {
-                    filter: {
-                        type: 'none'
-                    }
-                },
-                active: {
-                    filter: {
-                        type: 'none'
-                    }
-                }
-            }
-        };
-
-        const weeklyExpenses = new ApexCharts(weeklyExpensesEl, weeklyExpensesConfig);
-        weeklyExpenses.render();
-    };
-
-    updateWeeklyExpensesChart(currentWeekPercentage);
-});
-document.addEventListener('DOMContentLoaded', function () {
-  const expenseChartEl = document.querySelector('#expenseChart');
-  const monthlyDataString = document.getElementById('monthly_expense_data').getAttribute('data-expenses');
-
-  // Parse the string into a JavaScript object
-  const monthlyData = JSON.parse(monthlyDataString);
-
-  if (!Array.isArray(monthlyData)) {
-      console.error('Monthly data is not an array:', monthlyData);
-      return;
-  }
-
-  const allMonths = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
-
-  const dataLookup = Object.fromEntries(monthlyData.map(data => [data.month, data.total]));
-  const filledData = allMonths.map(month => ({ month, total: dataLookup[month] || 0 }));
-
-  const labels = filledData.map(data => data.month);
-  const series = filledData.map(data => data.total);
-
-  const expenseChartConfig = {
-      series: [
-          {
-              name: 'Monthly Expenses',
-              data: series
-          }
-      ],
-      chart: {
-        height: 215,
-        type: 'line',
-        animations: {
-            enabled: true,
-            easing: 'linear',
-            dynamicAnimation: {
-                speed: 2000
-            }
-        }
-    },
-    stroke: {
-        curve: 'smooth',
-        width: 4
-    },
-    markers: {
-        size: 6,
-        hover: {
-            size: 10
-        }
-    },
-    colors: ['#38BDF8'],
-    xaxis: {
-        categories: labels,
-        axisBorder: {
-            show: false
-        },
-        axisTicks: {
-            show: false
-        }
-    },
-    yaxis: {
-        labels: {
-            show: false
-        }
-    }
-};
-
-  // Initialize the chart with the wave effect
-  if (typeof expenseChartEl !== 'undefined' && expenseChartEl !== null) {
-      ApexCharts.exec(expenseChartEl, 'wave', {
-          enabled: true,
-          color: '#38BDF8',
-          opacity: 0.5,
-          animation: {
-              duration: 2000
-          },
-          // You can customize other wave options here
-      });
-
-      const expenseChart = new ApexCharts(expenseChartEl, expenseChartConfig);
-      expenseChart.render();
-  }
-});
 document.addEventListener("DOMContentLoaded", function () {
   // Mock data, replace this with your actual data
   let currentWeekPercentage = 0;

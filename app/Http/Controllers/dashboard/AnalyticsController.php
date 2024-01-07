@@ -11,6 +11,7 @@ use App\Models\Expenses;
 use App\Models\Transfer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 //use Illuminate\Http\Request;
 
@@ -19,52 +20,136 @@ class AnalyticsController extends Controller
   public function index()
   {
     $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where('users.id', Auth::user()->id)->select('users.*', 'roles.name as role_name')->first();
-
-    $checking = Attendance::where('user_id', Auth::user()->id)->whereDate('created_at', '=', now())->orderBy('id', 'desc')->first();
-    $member = User::count();
-    $project_open = ProjectDetails::where('active_status', 1)->where('delete_status', 0)->where('project_status', 0)->count();
-    $project_close = ProjectDetails::where('active_status', 1)->where('delete_status', 0)->where('project_status', 1)->count();
     if ($user->role_name == 'Admin') {
-      $unpaid_amt = Expenses::sum('unpaid_amt');
-      $paid_amt = Expenses::sum('paid_amt');
-      $monthly_transfer = Transfer::where('created_at', '>', now()->subDays(30)->endOfDay())
-        ->sum('amount');
-    } else {
-      $unpaid_amt = Expenses::where('user_id', Auth::user()->id)->sum('unpaid_amt');
-      $paid_amt = Expenses::where('user_id', Auth::user()->id)->sum('paid_amt');
-      $monthly_transfer = Transfer::where('user_id', Auth::user()->id)->where('created_at', '>', now()->subDays(30)->endOfDay())
-        ->sum('amount');
-    }
-    $allMonths = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-
-    $income = ProjectDetails::selectRaw('DATE_FORMAT(created_at, "%b") as month, SUM(advance_amt) as total')
-      ->where('created_at', '>', now()->subMonths(12)->endOfDay())
-      ->groupBy('month')
-      ->orderByRaw('FIELD(month, ?)', [implode(',', $allMonths)])
-      ->get();
-    $totalIncome = $income->sum('total');
-
-    // Calculate the overall percentage for each month
-    $incomeWithPercentage = $income->map(function ($item) use ($totalIncome) {
-      $percentage = ($item->total / $totalIncome) * 100;
-      return [
-        'percentage' => round($percentage, 2) // Round to two decimal places
+      $checking = Attendance::where('user_id', Auth::user()->id)->whereDate('created_at', '=', now())->orderBy('id', 'desc')->first();
+      $member = User::count();
+      $project_open = ProjectDetails::where('active_status', 1)->where('delete_status', 0)->where('project_status', 0)->count();
+      $project_close = ProjectDetails::where('active_status', 1)->where('delete_status', 0)->where('project_status', 1)->count();
+      if ($user->role_name == 'Admin') {
+        $unpaid_amt = Expenses::sum('unpaid_amt');
+        $paid_amt = Expenses::sum('paid_amt');
+        $monthly_transfer = Transfer::where('created_at', '>', now()->subDays(30)->endOfDay())
+          ->sum('amount');
+      } else {
+        $unpaid_amt = Expenses::where('user_id', Auth::user()->id)->sum('unpaid_amt');
+        $paid_amt = Expenses::where('user_id', Auth::user()->id)->sum('paid_amt');
+        $monthly_transfer = Transfer::where('user_id', Auth::user()->id)->where('created_at', '>', now()->subDays(30)->endOfDay())
+          ->sum('amount');
+      }
+      $allMonths = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
       ];
-    });
 
-    // Calculate the percentage for the current week
-    $currentWeekIncome = ProjectDetails::whereBetween('created_at', [
-      now()->startOfWeek(),
-      now()->endOfWeek()
-    ])->sum('advance_amt');
+      $income = ProjectDetails::selectRaw('DATE_FORMAT(start_date, "%b") as month, SUM(advance_amt) as total')
+        ->where('start_date', '>', now()->subMonths(12)->endOfDay())
+        ->groupBy('month')
+        ->orderByRaw('FIELD(month, ?)', [implode(',', $allMonths)])
+        ->get();
+      // dd($income);
+      $totalIncome = $income->sum('total');
 
-    $currentWeekPercentage = ($currentWeekIncome / $totalIncome) * 100;
-    //dd($income);
-    $wallet = User::where('active_status', 1)->where('delete_status', 0)->sum('wallet');
-    //dd($checking);
-    return view('content.dashboard.dashboards-analytics', ['checking' => $checking, 'member' => $member, 'project_open' => $project_open, 'project_close' => $project_close, 'unpaid_amt' => $unpaid_amt, 'paid_amt' => $paid_amt, 'monthly_transfer' => $monthly_transfer, 'income' => $income, 'wallet' => $wallet, 'incomeWithPercentage' => $incomeWithPercentage, 'currentWeekPercentage' => $currentWeekPercentage]);
+      // Calculate the overall percentage for each month
+      $incomeWithPercentage = $income->map(function ($item) use ($totalIncome) {
+        $percentage = ($item->total / $totalIncome) * 100;
+        return [
+          'percentage' => round($percentage, 2) // Round to two decimal places
+        ];
+      });
+
+      // Calculate the percentage for the current week
+      $currentWeekIncome = ProjectDetails::whereBetween('start_date', [
+        now()->startOfWeek(),
+        now()->endOfWeek()
+      ])->sum('advance_amt');
+
+      $currentWeekPercentage = ($currentWeekIncome / $totalIncome) * 100;
+
+      //expenses
+      $expense = Expenses::selectRaw('DATE_FORMAT(current_date, "%b") as month, SUM(paid_amt) as total')
+        ->where('current_date', '>', now()->subMonths(12)->endOfDay())
+        ->groupBy('month')
+        ->orderByRaw('FIELD(month, ?)', [implode(',', $allMonths)])
+        ->get();
+      $totalExpense = $expense->sum('total');
+
+      // Calculate the overall percentage for each month
+      $expenseWithPercentage = $expense->map(function ($item) use ($totalExpense) {
+        $percentage = ($item->total / $totalExpense) * 100;
+        return [
+          'percentage' => round($percentage, 2) // Round to two decimal places
+        ];
+      });
+
+      // Calculate the percentage for the current week
+      $currentWeekExpense = Expenses::whereBetween('current_date', [
+        now()->startOfWeek(),
+        now()->endOfWeek()
+      ])->sum('paid_amt');
+
+      $currentWeekExpensePercentage = ($currentWeekExpense / $totalExpense) * 100;
+      //dd($income);
+      $wallet = User::where('active_status', 1)->where('delete_status', 0)->sum('wallet');
+
+      $transfer_history = Transfer::select('users.id as member_id', 'users.first_name as first_name', 'users.last_name as last_name', DB::raw('SUM(transferdetails.amount) as total_amount'))
+        ->leftJoin('users', 'users.id', '=', 'transferdetails.member_id')
+        ->groupBy('users.id')
+        ->get();
+      //  dd($transfer_history);
+      return view('content.dashboard.dashboards-analytics', ['checking' => $checking, 'member' => $member, 'project_open' => $project_open, 'project_close' => $project_close, 'unpaid_amt' => $unpaid_amt, 'paid_amt' => $paid_amt, 'monthly_transfer' => $monthly_transfer, 'income' => $income, 'wallet' => $wallet, 'incomeWithPercentage' => $incomeWithPercentage, 'currentWeekPercentage' => $currentWeekPercentage, 'expenseWithPercentage' => $expenseWithPercentage, 'currentWeekExpensePercentage' => $currentWeekExpensePercentage, 'expense' => $expense, 'transfer_history' => $transfer_history]);
+    }else{
+      $checking = Attendance::where('user_id', Auth::user()->id)->whereDate('created_at', '=', now())->orderBy('id', 'desc')->first();
+     
+      if ($user->role_name == 'Admin') {
+        $unpaid_amt = Expenses::sum('unpaid_amt');
+        $paid_amt = Expenses::sum('paid_amt');
+        $monthly_transfer = Transfer::where('created_at', '>', now()->subDays(30)->endOfDay())
+          ->sum('amount');
+      } else {
+        $unpaid_amt = Expenses::where('user_id', Auth::user()->id)->sum('unpaid_amt');
+        $paid_amt = Expenses::where('user_id', Auth::user()->id)->sum('paid_amt');
+        $monthly_transfer = Transfer::where('user_id', Auth::user()->id)->where('created_at', '>', now()->subDays(30)->endOfDay())
+          ->sum('amount');
+      }
+      $allMonths = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ];
+
+    
+      $expense = Expenses::selectRaw('DATE_FORMAT(current_date, "%b") as month, SUM(paid_amt) as total')
+      ->where('user_id',Auth::user()->id)
+        ->where('current_date', '>', now()->subMonths(12)->endOfDay())
+        ->groupBy('month')
+        ->orderByRaw('FIELD(month, ?)', [implode(',', $allMonths)])
+        ->get();
+        //dd($expense);
+      $totalExpense = $expense->sum('total');
+
+      // Calculate the overall percentage for each month
+      $expenseWithPercentage = $expense->map(function ($item) use ($totalExpense) {
+        $percentage = ($item->total / $totalExpense) * 100;
+        return [
+          'percentage' => round($percentage, 2) // Round to two decimal places
+        ];
+      });
+
+      // Calculate the percentage for the current week
+      $currentWeekExpense = Expenses::where('user_id',Auth::user()->id)->whereBetween('current_date', [
+        now()->startOfWeek(),
+        now()->endOfWeek()
+      ])->sum('paid_amt');
+
+      $currentWeekExpensePercentage = ($currentWeekExpense / $totalExpense) * 100;
+      //dd($income);
+      $wallet = User::where('active_status', 1)->where('delete_status', 0)->where('id',Auth::user()->id)->sum('wallet');
+
+      $transfer_history = Transfer::select('users.id as member_id', 'users.first_name as first_name', 'users.last_name as last_name', DB::raw('SUM(transferdetails.amount) as total_amount'))
+        ->leftJoin('users', 'users.id', '=', 'transferdetails.member_id')
+        ->where('users.id',Auth::user()->id)
+        ->groupBy('users.id')
+        ->get();
+      //  dd($transfer_history);
+      return view('content.dashboard.userdashboard', ['checking' => $checking,  'unpaid_amt' => $unpaid_amt, 'paid_amt' => $paid_amt, 'monthly_transfer' => $monthly_transfer,  'expenseWithPercentage' => $expenseWithPercentage, 'currentWeekExpensePercentage' => $currentWeekExpensePercentage, 'expense' => $expense, 'transfer_history' => $transfer_history,'wallet' => $wallet]);
+    }
   }
   public function store()
   {

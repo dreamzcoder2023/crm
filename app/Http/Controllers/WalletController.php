@@ -22,10 +22,10 @@ class WalletController extends Controller
     $role = Role::join('model_has_roles','model_has_roles.role_id','=','roles.id')->where('roles.id',$user_id)->pluck('model_has_roles.model_id')->first();
    // dd($role);
    if($role == 1){
-    $wallet = Wallet::leftjoin('users','users.id','=','wallet.user_id')->leftjoin('clientdetails','clientdetails.id','=','wallet.client_id')->leftjoin('project_details','project_details.id','=','wallet.project_id')->leftjoin('payment','payment.id','=','wallet.payment_mode')->leftjoin('stage','stage.id','=','wallet.stage_id')->select('wallet.*','clientdetails.first_name as client_first','clientdetails.last_name as client_last','payment.name as payment_name','users.first_name as first_name','users.last_name as last_name','stage.name as stage_name','project_details.name as project_name')->get();
+    $wallet = Wallet::leftjoin('users','users.id','=','wallet.user_id')->leftjoin('clientdetails','clientdetails.id','=','wallet.client_id')->leftjoin('project_details','project_details.id','=','wallet.project_id')->leftjoin('payment','payment.id','=','wallet.payment_mode')->leftjoin('stage','stage.id','=','wallet.stage_id')->select('wallet.*','clientdetails.first_name as client_first','clientdetails.last_name as client_last','payment.name as payment_name','users.first_name as first_name','users.last_name as last_name','stage.name as stage_name','project_details.name as project_name')->latest()->get();
    }
    else{
-    $wallet = Wallet::leftjoin('users','users.id','=','wallet.user_id')->leftjoin('clientdetails','clientdetails.id','=','wallet.client_id')->leftjoin('project_details','project_details.id','=','wallet.project_id')->leftjoin('payment','payment.id','=','wallet.payment_mode')->leftjoin('stage','stage.id','=','wallet.stage_id')->where('wallet.user_id',$user_id)->select('wallet.*','clientdetails.first_name as client_first','clientdetails.last_name as client_last','payment.name as payment_name','users.first_name as first_name','users.last_name as last_name','stage.name as stage_name','project_details.name as project_name')->get();
+    $wallet = Wallet::leftjoin('users','users.id','=','wallet.user_id')->leftjoin('clientdetails','clientdetails.id','=','wallet.client_id')->leftjoin('project_details','project_details.id','=','wallet.project_id')->leftjoin('payment','payment.id','=','wallet.payment_mode')->leftjoin('stage','stage.id','=','wallet.stage_id')->where('wallet.user_id',$user_id)->select('wallet.*','clientdetails.first_name as client_first','clientdetails.last_name as client_last','payment.name as payment_name','users.first_name as first_name','users.last_name as last_name','stage.name as stage_name','project_details.name as project_name')->latest()->get();
    }
    $sum = $wallet->sum('amount');
     return view('wallet.index',['wallet' => $wallet,'sum' =>$sum]);
@@ -44,7 +44,7 @@ class WalletController extends Controller
      */
     public function store(Request $request)
     {
-
+     // dd($request->all());
         $user_id = Auth::user()->id;
       $input = $request->all();
       $input['user_id'] = $user_id;
@@ -56,6 +56,7 @@ class WalletController extends Controller
       //print_r($input);exit;
         $wallet = Wallet::create($input);
         $project_detail = ProjectDetails::find($project_id);
+        if($request->transfer_type == 0){
         $project_detail['advance_amt'] = abs($project_detail->advance_amt + $request->amount);
         $project_detail['profit'] = abs($project_detail->profit - $request->amount);
         $project_detail->update();
@@ -65,6 +66,18 @@ class WalletController extends Controller
         $project['wallet'] = $sum;
        // print_r($project['wallet']);exit;
         $project->update();
+        }
+        else{
+          $project_detail['advance_amt'] = abs($project_detail->advance_amt - $request->amount);
+          $project_detail['profit'] = abs($project_detail->profit + $request->amount);
+          $project_detail->update();
+          $project = User::find($user_id);
+         // print_r($project_detail);exit;
+          $sum = abs($project->wallet - $request->amount);
+          $project['wallet'] = $sum;
+         // print_r($project['wallet']);exit;
+          $project->update();
+        }
         return redirect()->route('dashboard')
         ->with('popup', 'open');
 
