@@ -8,6 +8,7 @@
 {{-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> --}}
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 @section('title', 'Dashboard | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -375,7 +376,9 @@ up -->
         <div class="card-header">
             <ul class="nav nav-pills" role="tablist">
                 <li class="nav-item">
-                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-line-card-income" aria-controls="navs-tabs-line-card-income" aria-selected="true">Income</button>
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#navs-tabs-line-card-income" aria-controls="navs-tabs-line-card-income"
+                        aria-selected="true">Income</button>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="nav-link" role="tab">Expenses</button>
@@ -399,21 +402,33 @@ up -->
 
                                 <small class="text-success fw-semibold">
                                     <i class='bx bx-chevron-up'></i>
-                                    42.9%
+                                    {{$incomeWithPercentage[0]['percentage']}} %
                                 </small>
                             </div>
                         </div>
                     </div>
                     <div id="incomeChart"></div>
-                    <div class="d-flex justify-content-center pt-4 gap-2">
-                        <div class="flex-shrink-0">
-                            <div id="expensesOfWeek"></div>
+                </div>
+
+                <div class="tab-pane fade" id="navs-tabs-line-card-expenses" role="tabpanel">
+                    <div class="d-flex p-4 pt-3">
+                        <div class="avatar flex-shrink-0 me-3">
+                            <img src="{{ asset('assets/img/icons/unicons/wallet.png') }}" alt="User">
                         </div>
                         <div>
-                            <p class="mb-n1 mt-1">Expenses This Week</p>
-                            <small class="text-muted">$39 less than last week</small>
+                            <small class="text-muted d-block">Total Expenses</small>
+                            <div class="d-flex align-items-center">
+                                <div id="monthly_expense_data"
+                                    data-expenses="{{ json_encode($expenses) }}"></div>
+
+                                <small class="text-danger fw-semibold">
+                                    <i class='bx bx-chevron-down'></i>
+                                    {{$expenseWithPercentage[0]['percentage']}} %
+                                </small>
+                            </div>
                         </div>
                     </div>
+                    <div id="expenseChart"></div>
                 </div>
             </div>
         </div>
