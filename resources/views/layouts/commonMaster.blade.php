@@ -35,35 +35,16 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 
   @include('layouts/sections/styles')
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap">
 
 @include('layouts/app')
   <!-- Include Scripts for customizer, helper, analytics, config -->
   @include('layouts/sections/scriptsIncludes')
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
-
     @media only screen and(max-width:320px){
         .col-md-4 .col-form-label .text-md-end {
             margin-left:-135px ;
         }
     }
-    *{
-      font-family: 'Comfortaa' !important;
-      color:black;
-    }
-    body {
-    /* other styles */
-    /* background-image: url('{{ asset('assets/img/backgrounds/WhatsApp Image 2024-01-06 at 12.36.34 PM.jpeg') }}'); */
-    background-size: contain; /* Adjust the size as needed */
-    background-repeat: no-repeat; /* Prevent the background from repeating */
-    background-position: center; /* Center the background image */
-    background-color: #f8f9fa;
-    /* style=" background-color:rgb(227 252 255) !important; " */
-    /* other styles */
-}
-
-
     </style>
 </head>
 
