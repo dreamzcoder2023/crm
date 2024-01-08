@@ -20,7 +20,7 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
-        $payments = Payment::orderBy('id','desc')->paginate(5);
+        $payments = Payment::orderBy('id','desc');
         $wallet = Wallet::where('active_status',1)->where('delete_status',0)->pluck('payment_mode')->toArray();
         $expenses = Expenses::pluck('payment_mode')->toArray();
         $transfer = Transfer::pluck('payment_mode')->toArray();
@@ -40,8 +40,8 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $cat = Payment::where(['active_status' => 1, 
-                    'delete_status' => 0, 
+        $cat = Payment::where(['active_status' => 1,
+                    'delete_status' => 0,
                     'name' => $request->name])->first();
         if(!empty($cat)){
             return redirect()->route('payment-index')
@@ -69,9 +69,9 @@ class PaymentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        
-        $cat = Payment::where(['active_status' => 1, 
-                    'delete_status' => 0, 
+
+        $cat = Payment::where(['active_status' => 1,
+                    'delete_status' => 0,
                     'name' => $request->name ])->where('id','!=',$id)->first();
         if(!empty($cat)){
             return redirect()->route('payment-index')

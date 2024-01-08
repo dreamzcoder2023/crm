@@ -499,44 +499,44 @@
 
 
   document.addEventListener('DOMContentLoaded', function () {
-    // Assuming you have passed $expenseWithPercentage from the controller
-    const expenseDataString = $('#monthly_expense_data').attr('data-expenses');
-    const expenseData = JSON.parse(expenseDataString);
-
-
-      // Extract labels and series
-      const labels = expenseData.map(data => data.month);
-      const series = expenseData.map(data => data.total);
-
-      // Log the extracted data for further verification
-      console.log('Labels:', labels);
-      console.log('Series:', series);
-
-      // Proceed with the rest of your chart rendering logic...
-  
-
     const expenseChartEl = document.querySelector('#expenseChart');
+    const monthlyDataString = document.getElementById('monthly_expense_data').getAttribute('data-expenses');
 
-    // Simulate a wave effect using the anime library
-    anime({
-        targets: series,
-        delay: anime.stagger(100, { start: 0 }), // Adjust the delay between animations
-        easing: 'linear',
-        duration: 2000,
-        loop: true,
-        update: function (anim) {
-            expenseChart.updateSeries([{ data: anim.animations[0].currentValue }]);
-        }
-    });
+    // Parse the string into a JavaScript object
+    const monthlyData = JSON.parse(monthlyDataString);
+
+    if (!Array.isArray(monthlyData)) {
+        console.error('Monthly data is not an array:', monthlyData);
+        return;
+    }
+
+    const allMonths = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    const dataLookup = Object.fromEntries(monthlyData.map(data => [data.month, data.total]));
+    const filledData = allMonths.map(month => ({ month, total: dataLookup[month] || 0 }));
+
+    const labels = filledData.map(data => data.month);
+    const series = filledData.map(data => data.total);
 
     const expenseChartConfig = {
-        series: [{
-            name: 'Monthly Expenses',
-            data: series
-        }],
+        series: [
+            {
+                name: 'Monthly Expenses',
+                data: series
+            }
+        ],
         chart: {
             height: 215,
-            type: 'line'
+            type: 'line',
+            animations: {
+                enabled: true,
+                easing: 'linear',
+                dynamicAnimation: {
+                    speed: 2000
+                }
+            }
         },
         stroke: {
             curve: 'smooth',
@@ -565,9 +565,13 @@
         }
     };
 
-    const expenseChart = new ApexCharts(expenseChartEl, expenseChartConfig);
-    expenseChart.render();
+    // Initialize the chart
+    if (typeof expenseChartEl !== 'undefined' && expenseChartEl !== null) {
+        const expenseChart = new ApexCharts(expenseChartEl, expenseChartConfig);
+        expenseChart.render();
+    }
 });
+
 
 
 document.addEventListener("DOMContentLoaded", function () {

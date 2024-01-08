@@ -134,7 +134,10 @@ class AnalyticsController extends Controller
 
       // Calculate the overall percentage for each month
       $expenseWithPercentage = $expense->map(function ($item) use ($totalExpense) {
+        if($totalExpense != 0)
         $percentage = ($item->total / $totalExpense) * 100;
+      else
+      $percentage = 0;
         return [
           'percentage' => round($percentage, 2) // Round to two decimal places
         ];

@@ -36,12 +36,12 @@
                             <div class="col-6">
                                 <div class="mb-3 " id="here">
                                     <label class="form-label" for="basic-default-phone">Category Name</label>
-                                   <input type="hidden" name="category_id" value="{{ $category->id }}">
+                                   <input type="hidden" name="category_id" value="{{ $category?->id }}">
                                     <div> <select class="form-control " name="category_id" id="category_id"
                                             style="width:100%" disabled >
                                             <option value="">Select category </option>
 
-                                                <option value="{{ $category->id }}" {{ $category->name == 'salary' ? 'selected ' : '' }} readonly>{{ $category->name }}</option>
+                                                <option value="{{ $category?->id }}" {{ $category->name == 'salary' ? 'selected ' : '' }} readonly>{{ $category?->name }}</option>
 
                                         </select></div>
                                     <label id="showing_error_msg" class="error hide">Category name already exists.</label>
@@ -55,7 +55,7 @@
                                     <select class="form-control selectpicker" name="project_id" data-live-search="true" id="project_id">
                                         <option value="">Select project </option>
                                         @foreach ($project as $project)
-                                            <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                            <option value="{{ $project?->id }}">{{ $project?->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="project-error" class="error hide" for="basic-default-role">Project is
@@ -66,7 +66,7 @@
                                     <select class="form-control" name="labour_id" id="labour_id">
                                         <option value="">Select labour </option>
                                         @foreach ($labours as $labour)
-                                            <option value="{{ $labour->id }}">{{ $labour->name }}</option>
+                                            <option value="{{ $labour?->id }}">{{ $labour?->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="labour-error" class="error hide" for="basic-default-role">Labour is
@@ -91,7 +91,7 @@
                                     <select class="form-control" name="payment_mode" id="payment_mode">
                                         <option value="">Select payment </option>
                                         @foreach ($payment as $payment)
-                                            <option value="{{ $payment->id }}">{{ $payment->name }}</option>
+                                            <option value="{{ $payment?->id }}">{{ $payment?->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="payment-error" class="error" for="basic-default-role">Payment mode is

@@ -98,7 +98,7 @@ div.dataTables_wrapper div.dataTables_length select {
   </div>
   <!-- Bootstrap JS -->
 <!-- Bootstrap 4 JS -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 
 
 
@@ -232,7 +232,7 @@ $navbarDetached = ($navbarDetached ?? '');
           <!-- wallet ended -->
           {{-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Toggle right offcanvas</button> --}}
 
-          
+
           <!-- User -->
           <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" onclick="toggleOffcanvas()">
@@ -244,7 +244,7 @@ $navbarDetached = ($navbarDetached ?? '');
                   @endif
               </div>
           </a>
-          
+
             <div class="offcanvas offcanvas-right" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div class="offcanvas-header">
                     <h5 id="offcanvasRightLabel">Offcanvas right</h5>
@@ -264,8 +264,8 @@ $navbarDetached = ($navbarDetached ?? '');
               }
           });
       </script>
-      
-      
+
+
             {{-- <ul class="dropdown-menu dropdown-menu-end">
               <li>
                 <a class="dropdown-item" href="javascript:void(0);">
@@ -299,7 +299,7 @@ $navbarDetached = ($navbarDetached ?? '');
                 </a>
               </li>
             </ul> --}}
-         
+
           <!--/ User -->
         </ul>
       </div>
@@ -317,6 +317,3 @@ window.onload=function(){
 };
 
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

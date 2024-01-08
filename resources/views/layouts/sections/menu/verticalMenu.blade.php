@@ -330,6 +330,7 @@
                             <div class="dark">Transfer History</div>
                         </a>
                     </li>
+                    @can('wallet-history')
                     <li class="menu-item {{ \Request::route()->getName() == 'wallet-history' ? 'active open' : '' }}">
                         <a href="{{ route('wallet-history') }}" class="menu-link">
                             <img src="{{ asset('assets/img/icons/wallet.png') }}" alt="slack" class="me-3"
@@ -338,6 +339,7 @@
                             <div class="dark">Wallet History</div>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </li>
         @endcan

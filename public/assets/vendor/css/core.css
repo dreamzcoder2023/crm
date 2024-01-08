@@ -2547,6 +2547,22 @@ textarea.form-control-lg {
   border-radius: 0.375rem;
   transition: all 0.2s ease-in-out;
 }
+.dropdown-toggle {
+  white-space: nowrap;
+}
+.dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.5em;
+  vertical-align: middle;
+  content: "";
+  margin-top: -0.28em;
+  width: 0.42em;
+  height: 0.42em;
+  border: 1px solid;
+  border-top: 0;
+  border-left: 0;
+  transform: rotate(45deg);
+}
 @media (prefers-reduced-motion: reduce) {
   .btn {
     transition: none;
