@@ -130,15 +130,15 @@ up -->
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="font-weight: 800;color:black !important;">Check Out</span>
             <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:800;color:darkcyan;width:40px;">You
-              Currently Check Out</span>
-              <p style="color:darkcyan">Good Bye, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
+              Currently Check Out</span> <br>
+              <p style="color:red; font-weight:800; font-size:12px;margin-top:10px;">Good Bye, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
           </div>
           <div class="col-auto">
 
             <form action="{{ route('checking.store') }}" method="POST">
               @csrf
               <div class="icon icon-shape submit-icon text-white text-lg rounded-circle" style="background-color:darkcyan;border:2px solid white">
-                <i class="bi bi-box-arrow-in-right" style="color:white"></i>
+                <i class="bi bi-box-arrow-in-left" style="color:white"></i>
               </div>
             </form>
 
@@ -157,8 +157,8 @@ up -->
         <div class="row">
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style=" color:rgb(215, 250, 246) !important;font-weight:800;">Check-in</span>
-            <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:800;color:white;width:20px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span>
-            <p style="color:white">Welcome, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
+            <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:800;color:white;width:20px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span> <br>
+            <p style="color:yellow; font-weight:800; font-size:12px;margin-top:10px;">Welcome, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
           </div>
           <div class="col-auto">
 
@@ -166,7 +166,7 @@ up -->
               @csrf
               @method('PUT')
               <div class="icon icon-shape submit-icon text-white text-lg rounded-circle" style="background-color:white;border:2px solid white">
-                <i class="bi bi-box-arrow-in-left" style="color: darkcyan"></i>
+                <i class="bi bi-box-arrow-in-right" style="color: darkcyan"></i>
               </div>
 
             </form>

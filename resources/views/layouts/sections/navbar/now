@@ -84,15 +84,6 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 
 </style>
-<style>
-  @media (min-width: 576px) {  /* Apply background image for screens wider than 576px */
-    #layout-navbar {
-      background-image: url('{{ asset('assets/img/backgrounds/nav.jpg') }}');
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  }
-</style>
   <div class="preloader">
     <div class="loader"></div>
   </div>
@@ -135,7 +126,7 @@ $navbarDetached = ($navbarDetached ?? '');
 @endphp
 <!-- Navbar -->
 @if(isset($navbarDetached) && $navbarDetached == 'navbar-detached')
-<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar" >
+<nav class="layout-navbar {{$containerNav}} navbar navbar-expand-xl {{$navbarDetached}} align-items-center bg-navbar-theme" id="layout-navbar" style="  background-image: url('{{ asset('assets/img/backgrounds/nav.jpg') }}'); background-size:contain;background-repeat:no-repeat ">
   @endif
   @if(isset($navbarDetached) && $navbarDetached == '')
   <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
