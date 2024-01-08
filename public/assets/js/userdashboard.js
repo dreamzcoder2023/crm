@@ -500,10 +500,10 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     // Assuming you have passed $expenseWithPercentage from the controller
-    const expenseDataString = $('#monthly_expense_data').data('expenses');
+    const expenseDataString = $('#monthly_expense_data').attr('data-expenses');
     const expenseData = JSON.parse(expenseDataString);
 
-    if (typeof expenseData === 'object') {
+
       // Extract labels and series
       const labels = expenseData.map(data => data.month);
       const series = expenseData.map(data => data.total);
@@ -513,7 +513,7 @@
       console.log('Series:', series);
 
       // Proceed with the rest of your chart rendering logic...
-  }
+  
 
     const expenseChartEl = document.querySelector('#expenseChart');
 

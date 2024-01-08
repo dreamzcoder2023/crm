@@ -61,8 +61,12 @@ class AnalyticsController extends Controller
         now()->startOfWeek(),
         now()->endOfWeek()
       ])->sum('advance_amt');
-
+      if($currentWeekIncome != 0 && $totalIncome != 0 ){
       $currentWeekPercentage = ($currentWeekIncome / $totalIncome) * 100;
+      }
+      else{
+      $currentWeekPercentage = 0;
+      }
 
       //expenses
       $expense = Expenses::selectRaw('DATE_FORMAT(current_date, "%b") as month, SUM(paid_amt) as total')
@@ -85,20 +89,24 @@ class AnalyticsController extends Controller
         now()->startOfWeek(),
         now()->endOfWeek()
       ])->sum('paid_amt');
-
+ if($currentWeekExpense != 0 && $totalExpense!= 0 ){
       $currentWeekExpensePercentage = ($currentWeekExpense / $totalExpense) * 100;
+      }
+      else{
+      $currentWeekExpensePercentage = 0;
+      }
       //dd($income);
       $wallet = User::where('active_status', 1)->where('delete_status', 0)->sum('wallet');
 
-      $transfer_history = Transfer::select('users.id as member_id', 'users.first_name as first_name', 'users.last_name as last_name', DB::raw('SUM(transferdetails.amount) as total_amount'))
-        ->leftJoin('users', 'users.id', '=', 'transferdetails.member_id')
+      $transfer_history = User::select('users.id as member_id', 'users.first_name as first_name', 'users.last_name as last_name', DB::raw('SUM(transferdetails.amount) as total_amount'))
+        ->leftJoin('transferdetails', 'users.id', '=', 'transferdetails.member_id')
         ->groupBy('users.id')
         ->get();
       //  dd($transfer_history);
       return view('content.dashboard.dashboards-analytics', ['checking' => $checking, 'member' => $member, 'project_open' => $project_open, 'project_close' => $project_close, 'unpaid_amt' => $unpaid_amt, 'paid_amt' => $paid_amt, 'monthly_transfer' => $monthly_transfer, 'income' => $income, 'wallet' => $wallet, 'incomeWithPercentage' => $incomeWithPercentage, 'currentWeekPercentage' => $currentWeekPercentage, 'expenseWithPercentage' => $expenseWithPercentage, 'currentWeekExpensePercentage' => $currentWeekExpensePercentage, 'expense' => $expense, 'transfer_history' => $transfer_history]);
     }else{
       $checking = Attendance::where('user_id', Auth::user()->id)->whereDate('created_at', '=', now())->orderBy('id', 'desc')->first();
-     
+
       if ($user->role_name == 'Admin') {
         $unpaid_amt = Expenses::sum('unpaid_amt');
         $paid_amt = Expenses::sum('paid_amt');
@@ -114,7 +122,7 @@ class AnalyticsController extends Controller
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
       ];
 
-    
+
       $expense = Expenses::selectRaw('DATE_FORMAT(current_date, "%b") as month, SUM(paid_amt) as total')
       ->where('user_id',Auth::user()->id)
         ->where('current_date', '>', now()->subMonths(12)->endOfDay())

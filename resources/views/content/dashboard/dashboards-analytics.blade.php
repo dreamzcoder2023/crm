@@ -387,9 +387,9 @@ up -->
                     data-bs-target="#navs-tabs-line-card-expenses" aria-controls="navs-tabs-line-card-expenses"
                     aria-selected="true">Expenses</button>
                 </li>
-              
+
             </ul>
-            
+
         </div>
         <div class="card-body px-0">
             <div class="tab-content p-0">
@@ -405,7 +405,8 @@ up -->
 
                                 <small class="text-success fw-semibold">
                                     <i class='bx bx-chevron-up'></i>
-                                    {{$incomeWithPercentage[0]['percentage']}} %
+
+                                    {{count($incomeWithPercentage) == 0 ? 0 : $incomeWithPercentage[0]['percentage']}} %
                                 </small>
                             </div>
                         </div>
@@ -435,7 +436,7 @@ up -->
 
                                <small class="text-danger fw-semibold">
                                     <i class='bx bx-chevron-down'></i>
-                                    {{$expenseWithPercentage[0]['percentage']}} %
+                                    {{count($expenseWithPercentage) == 0 ? 0 : $expenseWithPercentage[0]['percentage']}} %
                                 </small>
                             </div>
                         </div>
@@ -475,22 +476,22 @@ up -->
         <ul class="p-0 m-0">
           @foreach($transfer_history as $transfer)
           <li class="d-flex mb-4 pb-1">
-           
+
             <div class="avatar flex-shrink-0 me-3">
-            
+
               <img src="{{ asset('assets/img/icons/unicons/member.png') }}" alt="User" class="rounded">
             </div>
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              
+
               <div class="me-2">
                 <small class="text-muted d-block mb-1">{{$transfer->first_name}}</small>
                 <h6 class="mb-0">{{$transfer->last_name}}</h6>
               </div>
               <div class="user-progress d-flex align-items-center gap-1">
-                <h6 class="mb-0">{{$transfer->total_amount}}</h6> <span class="text-muted">Rupees</span>
+                <h6 class="mb-0">{{empty($transfer->total_amount) == 0 ? 0 :$transfer->total_amount}}</h6> <span class="text-muted">Rupees</span>
               </div>
             </div>
-         
+
           </li>
           @endforeach
           {{-- <li class="d-flex mb-4 pb-1">
