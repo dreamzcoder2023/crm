@@ -50,7 +50,10 @@ class AnalyticsController extends Controller
 
       // Calculate the overall percentage for each month
       $incomeWithPercentage = $income->map(function ($item) use ($totalIncome) {
+      if($totalIncome!= 0)
         $percentage = ($item->total / $totalIncome) * 100;
+      else
+      $percentage = 0;
         return [
           'percentage' => round($percentage, 2) // Round to two decimal places
         ];
@@ -134,10 +137,10 @@ class AnalyticsController extends Controller
 
       // Calculate the overall percentage for each month
       $expenseWithPercentage = $expense->map(function ($item) use ($totalExpense) {
-        if($totalExpense != 0)
+       if($totalExpense!= 0)
         $percentage = ($item->total / $totalExpense) * 100;
-      else
-      $percentage = 0;
+        else
+        $percentage = 0;
         return [
           'percentage' => round($percentage, 2) // Round to two decimal places
         ];
@@ -149,7 +152,12 @@ class AnalyticsController extends Controller
         now()->endOfWeek()
       ])->sum('paid_amt');
 
+      if($currentWeekExpense != 0 && $totalExpense!= 0 ){
       $currentWeekExpensePercentage = ($currentWeekExpense / $totalExpense) * 100;
+      }
+      else{
+      $currentWeekExpensePercentage = 0;
+      }
       //dd($income);
       $wallet = User::where('active_status', 1)->where('delete_status', 0)->where('id',Auth::user()->id)->sum('wallet');
 

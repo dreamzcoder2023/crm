@@ -172,8 +172,10 @@ up -->
         <div class="row">
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style=" color:rgb(215, 250, 246) !important;font-weight:800;">Check-in</span>
+
             <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:800;color:white;width:20px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span> <br>
             <p style="color:yellow; font-weight:800; font-size:12px;margin-top:7px;">Welcome, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
+
           </div>
           <div class="col-auto">
 
@@ -501,7 +503,7 @@ up -->
               <div class="me-2">
                 <h6 class="mb-0">{{$transfer->first_name}}</h6>
                 <small class="text-muted d-block mb-1">{{$transfer->last_name}}</small>
-               
+
               </div>
               <div class="user-progress d-flex align-items-center gap-1">
                 <h6 class="mb-0" style="font-weight: ">{{empty($transfer->total_amount) == 0 ? 0 :$transfer->total_amount}}</h6> <span class="text-muted">Rupees</span>
