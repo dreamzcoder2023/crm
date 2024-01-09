@@ -58,22 +58,7 @@ up -->
 @section('content')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 
-<style>
-  @media (max-width: 576px) {  /* Apply background image for screens wider than 576px */
-   .inc{
-    height:400px !important;
-   }
-   .incc{
-    height:600px !important;
-   }
-   .inccc{
-    height:800px !important;
-   }
-   .cards{
-    margin-bottom:10px !important;
-   }
-  }
-</style>
+
 <style>
   .icon-shape {
     width: 50px;
@@ -113,7 +98,7 @@ up -->
 <div class="row g-6 mb-6">
   @if ($checking == '')
   <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" style="height: 95px;">
+    <div class="card cards shadow border-0" style="height: 100px;">
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -139,7 +124,7 @@ up -->
   </div>
   @elseif ($checking->notes == 1)
   <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" style="height: 95px;">
+    <div class="card cards shadow border-0" style="height: 104px;">
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -167,7 +152,7 @@ up -->
   @if ($checking != '')
   @if ($checking->notes == 0)
   <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" style="background-color: darkcyan;height:95px;">
+    <div class="card cards shadow border-0" style="background-color: darkcyan;height:100px;">
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -316,10 +301,10 @@ up -->
 <div class="row" style="margin:10px; padding:10px;">
   <!-- Order Statistics -->
   <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
-    <div class="card h-100 inc">
+    <div class="card h-100">
       <div class="card-header d-flex align-items-center justify-content-between pb-0">
         <div class="card-title mb-0">
-          <h5 class="m-0 me-2" style="color:black; fomt-weight:900;margin-bottom:2px;"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          <h5 class="m-0 me-2" style="color:black; fomt-weight:900;"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round" class="feather feather-grid icon-16">
             <rect x="3" y="3" width="7" height="7"></rect>
@@ -389,7 +374,7 @@ up -->
 
   <!-- Expense Overview -->
   <div class="col-md-6 col-lg-4 order-1 mb-4">
-    <div class="card h-100 incc">
+    <div class="card h-100">
         <div class="card-header">
             <ul class="nav nav-pills" role="tablist">
                 <li class="nav-item">
@@ -475,7 +460,7 @@ up -->
 
   <!-- Transactions -->
   <div class="col-md-6 col-lg-4 order-2 mb-4">
-    <div class="card h-100 inccc">
+    <div class="card h-100">
       <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="card-title m-0 me-2" style="color:black">Transactions</h5>
         <div class="dropdown">

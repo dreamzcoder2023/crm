@@ -83,7 +83,56 @@ div.dataTables_wrapper div.dataTables_length select {
     background: rgba(0, 0, 0, 0.5); /* Dim overlay color */
 }
 
+
 </style>
+<style>
+  body {
+    overflow-x: hidden;
+  }
+
+  .navbar {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  #sidebar {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    height: 100%;
+    width: 250px;
+    background-color: #343a40;
+    transition: all 0.3s;
+    z-index: 1;
+    overflow-y: auto;
+  }
+
+  #sidebar a {
+    padding: 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #818181;
+    display: block;
+    transition: color 0.3s;
+  }
+
+  #sidebar a:hover {
+    color: #f8f9fa;
+  }
+
+  #content {
+    transition: margin-right 0.3s;
+    padding: 15px;
+  }
+
+  #menu-toggle {
+    font-size: 24px;
+    cursor: pointer;
+    color: #007bff;
+  }
+</style>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
   @media (min-width: 576px) {  /* Apply background image for screens wider than 576px */
     #layout-navbar {
@@ -101,13 +150,14 @@ div.dataTables_wrapper div.dataTables_length select {
 
 
 
-
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link
   href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css"
   rel="stylesheet"  type='text/css'>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script>
   toastr.options = {
   "closeButton": false,
@@ -235,36 +285,27 @@ $navbarDetached = ($navbarDetached ?? '');
 
           <!-- User -->
           <li class="nav-item navbar-dropdown dropdown-user dropdown">
-            <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" onclick="toggleOffcanvas()">
-              <div class="avatar avatar-online">
-                  @if(Auth::user()->image != '' || Auth::user()->image != null)
-                      <img class="rounded float-left" src="public/images/{{ Auth::user()->image }}" width="30px" style="border-radius: 1.375rem !important;">
-                  @else
-                      <img class=" w-px-40 h-auto rounded float-left" src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" width="30px" style="border-radius: 1.375rem !important;">
-                  @endif
-              </div>
-          </a>
+<a class="nav-link dropdown-toggle hide-arrow" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" >
+  <div class="avatar avatar-online menu-click">
+      @if(Auth::user()->image != '' || Auth::user()->image != null)
+          <img class="rounded float-left" src="public/images/{{ Auth::user()->image }}" width="30px" style="border-radius: 1.375rem !important;">
+      @else
+          <img id="navbarImage" class=" w-px-40 h-auto rounded float-left" src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" width="30px" style="border-radius: 1.375rem !important;">
+      @endif
+  </div>
+</a>
 
-            <div class="offcanvas offcanvas-right" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-                <div class="offcanvas-header">
-                    <h5 id="offcanvasRightLabel">Offcanvas right</h5>
-                    <button type="button" class="btn-close text-reset" data-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <!-- ... -->
-                </div>
-            </div>
+
+           
         </li>
-        <script>
-          $(document).ready(function() {
-              function toggleOffcanvas() {
-                  // $('#offcanvasRight').toggleClass('show');
-                  // If using Bootstrap 4.3, you might need to trigger the modal manually
-                  $('#offcanvasRight').modal('toggle');
-              }
-          });
-      </script>
+       
+       
+       <!-- Add the following HTML at the end of your existing code -->
+      
 
+
+
+      
 
             {{-- <ul class="dropdown-menu dropdown-menu-end">
               <li>
@@ -317,3 +358,11 @@ window.onload=function(){
 };
 
 </script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+integrity="sha384-mQCyt3fKnMLgIVIsaRkVjzKPM3VXmXfgx5e6P4M5JwF4AvcMq2oOplC26QR84xnH" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy3q1nXBo/6RDQDHE4h8+5g7uYU2FgklT" crossorigin="anonymous"></script>
+

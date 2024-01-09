@@ -68,8 +68,8 @@
                 @can('expenses-history')
                     <li class="menu-item {{ \Request::route()->getName() == 'expenses-history' ? 'active open' : '' }}">
                         <a href="{{ route('expenses-history') }}" class="menu-link"><img
-                                src="{{ asset('assets/img/icons/icons8-activity-history-50.png') }}" alt="slack"
-                                class="me-3" height="20">
+                            src="{{ asset('assets/img/icons/icons8-payment-history-30.png') }}" alt="slack"
+                            class="me-3" height="20">
                             <div class="dark">Expenses History</div>
                         </a>
                     </li>
@@ -114,8 +114,8 @@
                     <li
                         class="menu-item  {{ \Request::route()->getName() == 'labour-expenses-history'  ? 'active open' : '' }}">
                         <a href="{{ route('labour-expenses-history') }}" class="menu-link"><img
-                                src="{{ asset('assets/img/icons/labor-day.png') }}" alt="slack" class="me-3"
-                                height="20">
+                            src="{{ asset('assets/img/icons/icons8-payment-history-30.png') }}" alt="slack"
+                            class="me-3" height="20">
                             <div class="dark">Expense History</div>
                         </a>
                     </li>
@@ -225,7 +225,7 @@
               @can('project-list')
                   <li class="menu-item {{ \Request::route()->getName() == 'project-index' ? 'active open' : '' }}">
                       <a href="{{ route('project-index') }}" class="menu-link">
-                          <i class="menu-icon tf-icons bi bi-tools"></i>
+                        <i class="fa fa-folder-open-o" aria-hidden="true" style="margin-right: 9px;margin-left:1px;" ></i>
                           <div class="dark">Project Details</div>
                       </a>
                   </li>
@@ -249,18 +249,16 @@
                     @can('labour role-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'labourrole-index' ? 'active open' : '' }}">
                             <a href="{{ route('labourrole-index') }}" class="menu-link">
-                                <img src="{{ asset('assets/img/icons/labour-job.png') }}" alt="slack" class="me-3"
-                                    height="25">
-                                <div class="dark">Labour Role</div>
+                                <i class="fa fa-wrench" style="margin-right: 9px;margin-left:1px;"></i> 
+                                <div class="dark" >Labour Role</div>
                             </a>
                         </li>
                     @endcan
                     @can('labour-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'labour-index' ? 'active open' : '' }}">
                             <a href="{{ route('labour-index') }}" class="menu-link">
-                                <img src="{{ asset('assets/img/icons/labour-icon.jpg') }}" alt="slack" class="me-3"
-                                    height="25">
-                                <div class="dark">Labour</div>
+                                <i class="fa fa-wrench" style="margin-right: 9px;margin-left:1px;"></i> 
+                                <div class="dark" >Labour</div>
                             </a>
                         </li>
                     @endcan
@@ -269,8 +267,7 @@
                     @can('vendor-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'vendor-index' ? 'active open' : '' }}">
                             <a href="{{ route('vendor-index') }}" class="menu-link">
-                                <img src="{{ asset('assets/img/icons/vendor.png') }}" alt="slack" class="me-3"
-                                    height="25">
+                                <i class="fa fa-users" style="margin-right:9px;margin-left:1px;"></i>
                                 <div class="dark">Vendor</div>
                             </a>
                         </li>
@@ -280,7 +277,7 @@
                     @can('category-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'category-index' ? 'active open' : '' }}">
                             <a href="{{ route('category-index') }}" class="menu-link">
-                                <i class="menu-icon tf-icons bx bxs-category"></i>
+                                <i class="menu-icon tf-icons bx bxs-category" style="margin-left:1px;"></i>
                                 <div class="dark">Category</div>
                             </a>
                         </li>
@@ -290,7 +287,7 @@
                     @can('payment-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'payment-index' ? 'active open' : '' }}">
                             <a href="{{ route('payment-index') }}" class="menu-link">
-                                <i class="menu-icon tf-icons bi bi-cash"></i>
+                                <i class="fa fa-money" style="margin-right:8px; margin-left:1px;"></i>
                                 <div class="dark">Payment</div>
                             </a>
                         </li>
@@ -303,7 +300,7 @@
                             <a href="{{ route('stage-index') }}" class="menu-link">
                                 <img src="{{ asset('assets/img/icons/project-management.png') }}" alt="slack" class="me-3"
                                     height="20">
-                                <div class="dark">Stages</div>
+                                <div class="dark" style="margin-left: -10px;">Stages</div>
                             </a>
                         </li>
                     @endcan
