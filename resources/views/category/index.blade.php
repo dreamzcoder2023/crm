@@ -29,7 +29,14 @@
         margin-top: 5px;
         margin-left: 5px;
     }
-
+    .dropdown-toggle{
+  width:146px !important;
+}
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
     table {
         width: 50%;
         border-spacing: 0;

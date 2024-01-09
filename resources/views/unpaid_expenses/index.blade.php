@@ -36,6 +36,14 @@
   text-overflow: ellipsis; /* Add ellipsis for long text */
   overflow: hidden; /* Hide overflowing content */
 }
+.dropdown-toggle{
+  width:146px !important;
+}
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
   </style>
 
 
@@ -65,11 +73,15 @@
     </div>
 @endif
 <div style="margin-top:-32px ;">
+ 
 <h4 class="fw-bold py-3 mb-4">
   <span class="fw-light" style="color: black;font-size:16px;">Unpaid Expenses History </span>
+  
 </h4>
+
 <div class="row" style="position:absolute;  right:50px ">
   <div class="col-md-12">
+    
     <!-- @can('transfer-create') -->
     <!-- <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('transfer-create')}}"><i class="bi bi-currency-exchange me-1"></i> Add Transfer</a></li>
@@ -77,70 +89,54 @@
     </ul> -->
     <!-- @endcan -->
   </div></div></div>
+  
   <div class="card" style="top:-28px;">
+    
     <div class="card-header">
         <div class="container text-center">
+          <div style="float: right"> <!-- Reduce the column size from 1 to 2 -->
+            <a href="{{route('unpaid-history')}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
+              alt="slack" class="me-3" height="40" width="40"></a>
+              <button type="button" class="btn btn-light" id="unpaidexpense-export" style="background-color: green;"><i class="fa fa-file-excel-o"
+                aria-hidden="true" style="color:white"></i></button>
+              <button type="button" class="btn btn-light" id="unpaidexpense-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
+                style="color:white"></i></button>
+          
+            </div> 
             <div class="row aa">
 
 
-              <div class="col-2 col-lg-2">
-                <button type="button" class="btn btn-light" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal" style="border-color: black;">
-                    Filter
-                </button>
-            </div>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <select class="form-group selectpicker" name="category_id" id="category_id"
-                                        data-live-search="true">
-                                        <option value="">Select category</option>
-                                        @foreach ($category as $category)
-                                            <option
-                                                value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
-                                                {{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4"><select class="form-group selectpicker" name="project_id"
-                                        id="project_id" data-live-search="true">
-                                        <option value="">Select Project</option>
-                                        @foreach ($project as $project)
-                                            <option
-                                                value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
-                                                {{ $project->name }}</option>
-                                        @endforeach
-                                    </select></div>
-                                @role('Admin') <div class="col-md-4"><select class="form-group selectpicker"
-                                            name="user_id" id="user_id" data-live-search="true">
-                                            <option value="">Select Member</option>
-                                            @foreach ($user as $user)
-                                                <option
-                                                    value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
-                                                    {{ $user->first_name }} {{ $user->last_name }} -
-                                                    {{ $user->name }}</option>
-                                            @endforeach
-                                    </select></div> @endrole
-                            </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Close</button>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              
+            <div class="col-md-2">
+              <select class="form-group selectpicker" name="category_id" id="category_id"
+                  data-live-search="true" style="width:50px;">
+                  <option value="">Select category</option>
+                  @foreach ($category as $category)
+                      <option
+                          value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
+                          {{ $category->name }}</option>
+                  @endforeach
+              </select>
+          </div>
+          <div class="col-md-2"><select class="form-group selectpicker" name="project_id"
+                  id="project_id" data-live-search="true">
+                  <option value="">Select Project</option>
+                  @foreach ($project as $project)
+                      <option
+                          value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
+                          {{ $project->name }}</option>
+                  @endforeach
+              </select></div>
+          @role('Admin') <div class="col-md-2"><select class="form-group selectpicker"
+                      name="user_id" id="user_id" data-live-search="true">
+                      <option value="">Select Member</option>
+                      @foreach ($user as $user)
+                          <option
+                              value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
+                              {{ $user->first_name }} {{ $user->last_name }} -
+                              {{ $user->name }}</option>
+                      @endforeach
+              </select></div> @endrole
 
                 <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
                   <span> <label>From:&nbsp;</label>
@@ -154,16 +150,9 @@
                 </div>
 
 
-                <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="unpaidexpense-export" style="border-color: black;">Excel</button>
-                </div>
-                <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="unpaidexpense-pdf" style="border-color: black;">Pdf</button>
-                </div>
-                <div class="col">
-                    <a href="{{route('unpaid-history')}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
-                            alt="slack" class="me-3" height="40" width="40"></a>
-                </div>
+               
+                
+               
             </div>
         </div>
     </div>

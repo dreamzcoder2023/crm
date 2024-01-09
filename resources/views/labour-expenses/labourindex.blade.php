@@ -31,6 +31,14 @@
 
 
     }
+    .dropdown-toggle{
+  width:146px !important;
+}
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
 </style>
 @section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 

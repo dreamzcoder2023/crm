@@ -22,6 +22,14 @@
     .bootstrap-select {
         max-width: 150px;
     }
+    .dropdown-toggle{
+  width:146px !important;
+}
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
 
 
     /* Customize the styling further if needed */
@@ -93,66 +101,51 @@
     <div class="card" style="margin-top: -13px;">
         <div class="card-header">
             <div class="container justify-content-start">
+                <div style="float: right"><!-- Reduce the column size from 1 to 2 -->
+                    <a href="{{ route('vendor-expenses-delete_record') }}" class="me-3">
+                        <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
+                            width="30">
+                    </a>
+                <!-- Reduce the column size from 1 to 2 -->
+                    <button type="button" class="btn btn-light" id="expense-export" style="background-color: green;"><i class="fa fa-file-excel-o"
+                        aria-hidden="true" style="color:white"></i></button>
+                <!-- Reduce the column size from 1 to 2 -->
+                    <button type="button" class="btn btn-light" id="expense-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
+                        style="color:white"></i></button>
+                </div>
                 <div class="row aa">
-                  <div class="col-2 col-lg-2">
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                        style="border-color: black;">
-                        Filter
-                    </button>
+                 
+
+                <div class="col-md-2">
+                    <select class="form-group selectpicker" name="category_id" id="category_id"
+                        data-live-search="true">
+                        <option value="">Select category</option>
+                        @foreach ($category as $category)
+                            <option
+                                value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
+                                {{ $category->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <select class="form-group selectpicker" name="category_id" id="category_id"
-                                            data-live-search="true">
-                                            <option value="">Select category</option>
-                                            @foreach ($category as $category)
-                                                <option
-                                                    value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
-                                                    {{ $category->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4"><select class="form-group selectpicker" name="project_id"
-                                            id="project_id" data-live-search="true">
-                                            <option value="">Select Project</option>
-                                            @foreach ($project as $project)
-                                                <option
-                                                    value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
-                                                    {{ $project->name }}</option>
-                                            @endforeach
-                                        </select></div>
-                                    @role('Admin') <div class="col-md-4"><select class="form-group selectpicker"
-                                                name="user_id" id="user_id" data-live-search="true">
-                                                <option value="">Select Member</option>
-                                                @foreach ($user as $user)
-                                                    <option
-                                                        value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
-                                                        {{ $user->first_name }} {{ $user->last_name }} -
-                                                        {{ $user->name }}</option>
-                                                @endforeach
-                                        </select></div> @endrole
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
+                <div class="col-md-2"><select class="form-group selectpicker" name="project_id"
+                        id="project_id" data-live-search="true">
+                        <option value="">Select Project</option>
+                        @foreach ($project as $project)
+                            <option
+                                value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
+                                {{ $project->name }}</option>
+                        @endforeach
+                    </select></div>
+                @role('Admin') <div class="col-md-2"><select class="form-group selectpicker"
+                            name="user_id" id="user_id" data-live-search="true">
+                            <option value="">Select Member</option>
+                            @foreach ($user as $user)
+                                <option
+                                    value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
+                                    {{ $user->first_name }} {{ $user->last_name }} -
+                                    {{ $user->name }}</option>
+                            @endforeach
+                    </select></div> @endrole
 
                 <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
                     <span> <label>From:&nbsp;</label>
@@ -164,18 +157,7 @@
                     <input type="date" class="form-control" id="to_date" name="to_date"
                         value="{{ $to_date1 }}" style="width: 144px;display:initial;">
                 </div>
-                    <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <a href="{{ route('vendor-expenses-delete_record') }}" class="me-3">
-                            <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
-                                width="30">
-                        </a>
-                    </div>
-                    <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
-                        <button type="button" class="btn btn-light" id="expense-export" style="border-color: black;">Excel</button>
-                    </div>
-                    <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <button type="button" class="btn btn-light" id="expense-pdf" style="border-color: black;">Pdf</button>
-                    </div>
+                   
                 </div>
             </div>
         </div>

@@ -31,7 +31,14 @@ table {
   border-spacing: 0; /* Remove spacing between cells */
   border-collapse: collapse; /* Collapse cell borders */
 }
-
+.dropdown-toggle{
+  width:146px !important;
+}
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
 td, th {
   padding: 5px; /* Reduce cell padding */
 }

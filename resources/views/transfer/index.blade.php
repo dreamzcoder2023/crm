@@ -35,7 +35,15 @@ table {
 td, th {
   padding: 5px; /* Reduce cell padding */
 }
+.dropdown-toggle{
+  width:146px !important;
+}
 
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
   </style>
 @section('title','List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -77,7 +85,7 @@ td, th {
 
             @role('Admin')
                 <div class="col-md-2">
-                    <select class="form-control" name="user_id" id="user_id">
+                    <select class="form-control selectpicker" name="user_id" id="user_id" data-live-search="true">
                         <option value="">Select Member</option>
                         @foreach($user as $user)
                         <option value="{{$user->id}}"{{$user->id == $user_filter ? 'selected' : ''}}>{{$user->first_name}} {{$user->last_name}} - {{$user->name}}</option>

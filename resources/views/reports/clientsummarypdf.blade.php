@@ -5,6 +5,14 @@ table, th, td {
   border-collapse: collapse;
   font-size: 11px;
 }
+.dropdown-toggle{
+  width:146px !important;
+}
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
 </style>
 </head><body>
 <div class="card" style="margin-top: 40px;">

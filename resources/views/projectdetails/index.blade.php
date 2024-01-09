@@ -22,6 +22,14 @@
 .dataTables_length select {
   width: 120px;
 }
+.dropdown-toggle{
+  width:146px !important;
+}
+.bs-caret::after{
+  color:#f7f7f7 !important;
+  content: "";
+  display:none !important;
+}
 .table-responsive{
   margin-top:5px;
   margin-left:5px;

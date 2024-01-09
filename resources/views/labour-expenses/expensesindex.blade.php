@@ -61,6 +61,7 @@
         padding: 5px;
         /* Reduce cell padding */
     }
+
     a.disabled {
         pointer-events: none;
         cursor: default;
@@ -77,9 +78,9 @@
 
         <script>
             $(function() {
-              toastr.success('{{ session("expenses-popup") }}', {
-                            timeOut: 1000,
-                            fadeOut: 1000,
+                toastr.success('{{ session('expenses-popup') }}', {
+                    timeOut: 1000,
+                    fadeOut: 1000,
                 });
             });
         </script>
@@ -98,89 +99,63 @@
     <div class="card" style="margin-top: -14px;">
         <div class="card-header">
             <div class="container justify-content-start">
+                <div style="float: right"> <!-- Reduce the column size from 1 to 2 -->
+                    <a href="{{ route('labour-expenses-history') }}" class="me-3">
+                        <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
+                            width="30">
+                    </a>
+               <!-- Reduce the column size from 1 to 2 -->
+                    <button type="button" class="btn btn-light" id="expense-export"
+                        style="background-color: green;"><i class="fa fa-file-excel-o"
+                        aria-hidden="true" style="color:white"></i></button>
+                 <!-- Reduce the column size from 1 to 2 -->
+                    <button type="button" class="btn btn-light" id="expense-pdf"
+                        style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
+                        style="color:white"></i></button>
+                </div>
                 <div class="row aa">
-                  <div class="col-2 col-lg-2">
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                        style="border-color: black;">
-                        Filter
-                    </button>
-                </div>
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <select class="form-group selectpicker" name="category_id" id="category_id"
-                                            data-live-search="true">
-                                            <option value="">Select category</option>
-                                            @foreach ($category as $category)
-                                                <option
-                                                    value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
-                                                    {{ $category->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4"><select class="form-group selectpicker" name="project_id"
-                                            id="project_id" data-live-search="true">
-                                            <option value="">Select Project</option>
-                                            @foreach ($project as $project)
-                                                <option
-                                                    value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
-                                                    {{ $project->name }}</option>
-                                            @endforeach
-                                        </select></div>
-                                    @role('Admin') <div class="col-md-4"><select class="form-group selectpicker"
-                                                name="user_id" id="user_id" data-live-search="true">
-                                                <option value="">Select Member</option>
-                                                @foreach ($user as $user)
-                                                    <option
-                                                        value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
-                                                        {{ $user->first_name }} {{ $user->last_name }} -
-                                                        {{ $user->name }}</option>
-                                                @endforeach
-                                        </select></div> @endrole
-                                </div>
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    
 
-                            </div>
-                        </div>
+
+                    <div class="col-md-2">
+                        <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
+                            <option value="">Select category</option>
+                            @foreach ($category as $category)
+                                <option
+                                    value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
+                                    {{ $category->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                </div>
-
-
-
-                <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
-                    <span> <label>From:&nbsp;</label>
-                        <input type="date" class="form-control bb" id="from_date" name="from_date"
-                            value="{{ $from_date }}" style="width: 144px;display:initial;"></span>
-                </div>
-                <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
-                    <label>To</label>
-                    <input type="date" class="form-control" id="to_date" name="to_date"
-                        value="{{ $to_date1 }}" style="width: 144px;display:initial;">
-                </div>
-                    <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <a href="{{ route('labour-expenses-history') }}" class="me-3">
-                            <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
-                                width="30">
-                        </a>
+                    <div class="col-md-2"><select class="form-group selectpicker" name="project_id" id="project_id"
+                            data-live-search="true">
+                            <option value="">Select Project</option>
+                            @foreach ($project as $project)
+                                <option value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
+                                    {{ $project->name }}</option>
+                            @endforeach
+                        </select></div>
+                    @role('Admin') <div class="col-md-2"><select class="form-group selectpicker" name="user_id"
+                                id="user_id" data-live-search="true">
+                                <option value="">Select Member</option>
+                                @foreach ($user as $user)
+                                    <option value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
+                                        {{ $user->first_name }} {{ $user->last_name }} -
+                                        {{ $user->name }}</option>
+                                @endforeach
+                        </select></div> @endrole
+                    <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
+                        <span> <label>From:&nbsp;</label>
+                            <input type="date" class="form-control bb" id="from_date" name="from_date"
+                                value="{{ $from_date }}" style="width: 144px;display:initial;"></span>
                     </div>
-                    <div class="col-2"> <!-- Reduce the column size from 1 to 2 -->
-                        <button type="button" class="btn btn-light" id="expense-export" style="border-color: black;">Excel</button>
+                    <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
+                        <label>To</label>
+                        <input type="date" class="form-control" id="to_date" name="to_date"
+                            value="{{ $to_date1 }}" style="width: 144px;display:initial;">
                     </div>
-                    <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                        <button type="button" class="btn btn-light" id="expense-pdf" style="border-color: black;">Pdf</button>
-                    </div>
+                   
                 </div>
             </div>
         </div>
@@ -195,25 +170,25 @@
                 <thead>
                     <tr>
                         <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
-                          class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a></th>
+                                    class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a></th>
                         <th>Paid date</th>
-                        <th >Category <br/>Name</th>
+                        <th>Category <br />Name</th>
                         <th>Project Name</th>
                         <th>Labour Name</th>
                         <th>Amount</th>
                         <th>Paid</th>
                         <th>Unpaid</th>
-                        <th>Advanced <br/>Amount</th>
+                        <th>Advanced <br />Amount</th>
                         <th>Image</th>
                         <th>Payment Mode</th>
                         <th>Description</th>
-                            <th>Added By</th>
+                        <th>Added By</th>
 
-                            <th>Edited By</th>
-                            <th>Advance <br/>Edited By</th>
-                            @canany(['labour expenses-delete','labour expenses-edit'])
+                        <th>Edited By</th>
+                        <th>Advance <br />Edited By</th>
+                        @canany(['labour expenses-delete', 'labour expenses-edit'])
                             <th>Action</th>
-                            @endcanany
+                        @endcanany
 
                     </tr>
                 </thead>
@@ -222,18 +197,17 @@
                     @foreach ($expenses as $expense)
                         <tr>
                             <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
-                              value="{{ $expense->id }}"></td>
+                                    value="{{ $expense->id }}"></td>
                             <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A') }}</td>
 
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
-                            <td>{{ $expense->labour_name  }}</td>
+                            <td>{{ $expense->labour_name }}</td>
                             <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                             <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                             <td>
                                 @if ($expense->unpaid_amt != 0)
-                                    <b><a
-                                        style="color:red">{{ $expense->unpaid_amt }}</a></b> @else<b>
+                                <b><a style="color:red">{{ $expense->unpaid_amt }}</a></b> @else<b>
                                         <p style="color:red">{{ $expense->unpaid_amt }}</p>
                                     </b>
                                 @endif
@@ -244,25 +218,26 @@
                                     <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
                                 @else
                                     --
-                                @endif</td>
+                                @endif
+                            </td>
                             <td>{{ $expense->payment_name }}</td>
                             <td>{{ $expense->description ? $expense->description : '--' }}</td>
-                                <td>{{ $expense->first }} {{ $expense->last }}</td>
-                                <td>{{ $expense->first_name }} {{  $expense->last_name }}</td>
-                                <td>{{ $expense->labour_first}} {{ $expense->labour_last }}</td>
-                                @canany(['labour expenses-delete','labour expenses-edit'])
-                            <td>
-                              @can('labour expenses-edit')
-                                    <a class="" href="{{ route('labour-expenses-edit', $expense->id) }}"><i class="fa fa-edit"
-                                            style="font-size:24px"></i></a>
-                              @endcan
-                              @can('labour expenses-delete')
-                              <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
-                                data-id="{{ $expense->id }}" class="deleteExpense"><i class="fa fa-trash-o"
-                                    style="font-size:24px; color:red"></i> </a><br />
-                              @endcan
+                            <td>{{ $expense->first }} {{ $expense->last }}</td>
+                            <td>{{ $expense->first_name }} {{ $expense->last_name }}</td>
+                            <td>{{ $expense->labour_first }} {{ $expense->labour_last }}</td>
+                            @canany(['labour expenses-delete', 'labour expenses-edit'])
+                                <td>
+                                    @can('labour expenses-edit')
+                                        <a class="" href="{{ route('labour-expenses-edit', $expense->id) }}"><i
+                                                class="fa fa-edit" style="font-size:24px"></i></a>
+                                    @endcan
+                                    @can('labour expenses-delete')
+                                        <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
+                                            data-id="{{ $expense->id }}" class="deleteExpense"><i class="fa fa-trash-o"
+                                                style="font-size:24px; color:red"></i> </a><br />
+                                    @endcan
 
-                            </td>
+                                </td>
                             @endcanany
 
                         </tr>
@@ -348,64 +323,64 @@
     </div>
 
     <!-- modal popup for delete role ended -->
- <!--- delete all confirmation -->
- <div class="modal fade" id="myModal_reason" role="dialog">
-  <div class="modal-dialog modal-sm">
+    <!--- delete all confirmation -->
+    <div class="modal fade" id="myModal_reason" role="dialog">
+        <div class="modal-dialog modal-sm">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-          <div class="modal-header">
-              <h4 class="modal-title">Reason</h4>
-              <hr>
-          </div>
-          <div class="modal-body">
-              <input type="text" id="reason" name="reason" class="form-control" placeholder="Enter reason"
-                  value="" />
-              <label id="reason-error" class="error" style="color:red" for="basic-default-email">Reason is
-                  required</label>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-primary yes-reason" data-dismiss="modal">Submit</button>
-              <button type="button" class="btn btn-danger no-reason" data-dismiss="modal">cancel</button>
-          </div>
-      </div>
-
-  </div>
-</div>
-
-  <!--- delete all confirmation -->
-  <div class="modal fade" id="deleteAllModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Confirmation</h4>
-
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Reason</h4>
+                    <hr>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="reason" name="reason" class="form-control" placeholder="Enter reason"
+                        value="" />
+                    <label id="reason-error" class="error" style="color:red" for="basic-default-email">Reason is
+                        required</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary yes-reason" data-dismiss="modal">Submit</button>
+                    <button type="button" class="btn btn-danger no-reason" data-dismiss="modal">cancel</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <p style="text-align: center;">Are you sure want to delete this?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary yes-delete-all" data-dismiss="modal">Yes</button>
-                <button type="button" class="btn btn-danger no-delete-all" data-dismiss="modal">No</button>
-            </div>
+
         </div>
-
     </div>
-</div>
-<!--- delete all confirmation -->
+
+    <!--- delete all confirmation -->
+    <div class="modal fade" id="deleteAllModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation</h4>
+
+                </div>
+                <div class="modal-body">
+                    <p style="text-align: center;">Are you sure want to delete this?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary yes-delete-all" data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-danger no-delete-all" data-dismiss="modal">No</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--- delete all confirmation -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-</script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.selectpicker').selectpicker();
