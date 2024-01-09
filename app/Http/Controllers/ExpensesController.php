@@ -237,12 +237,11 @@ class ExpensesController extends Controller
   }
   public function insufficientamt(Request $request)
   {
-
     $wallet = User::where('id', $request->user_id)->first();
     $amount = $request->amount;
 
     $response = true;
-    if (($wallet->wallet > 0) && ($amount < $wallet->wallet)) {
+    if (($wallet->wallet >= 0) && ($amount <= $wallet->wallet)) {
       $response = false;
     }
     return response()->json($response);

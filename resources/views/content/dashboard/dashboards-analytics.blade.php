@@ -499,8 +499,9 @@ up -->
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
 
               <div class="me-2">
-                <small class="text-muted d-block mb-1">{{$transfer->first_name}}</small>
-                <h6 class="mb-0">{{$transfer->last_name}}</h6>
+                <h6 class="mb-0">{{$transfer->first_name}}</h6>
+                <small class="text-muted d-block mb-1">{{$transfer->last_name}}</small>
+               
               </div>
               <div class="user-progress d-flex align-items-center gap-1">
                 <h6 class="mb-0" style="font-weight: ">{{empty($transfer->total_amount) == 0 ? 0 :$transfer->total_amount}}</h6> <span class="text-muted">Rupees</span>

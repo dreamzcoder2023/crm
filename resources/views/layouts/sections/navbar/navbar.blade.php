@@ -133,6 +133,7 @@ div.dataTables_wrapper div.dataTables_length select {
   }
 </style>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 <style>
   @media (min-width: 576px) {  /* Apply background image for screens wider than 576px */
     #layout-navbar {
@@ -284,28 +285,67 @@ $navbarDetached = ($navbarDetached ?? '');
 
 
           <!-- User -->
-          <li class="nav-item navbar-dropdown dropdown-user dropdown">
-<a class="nav-link dropdown-toggle hide-arrow" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" >
+
+          {{-- <li class="nav-item navbar-dropdown dropdown-user dropdown">
+
+            <a>
   <div class="avatar avatar-online menu-click">
       @if(Auth::user()->image != '' || Auth::user()->image != null)
-          <img class="rounded float-left" src="public/images/{{ Auth::user()->image }}" width="30px" style="border-radius: 1.375rem !important;">
+          <img class="rounded float-left" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" src="public/images/{{ Auth::user()->image }}" width="30px" style="border-radius: 1.375rem !important;">
       @else
-          <img id="navbarImage" class=" w-px-40 h-auto rounded float-left" src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" width="30px" style="border-radius: 1.375rem !important;">
+          <img id="navbarImage" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class=" w-px-40 h-auto rounded float-left" src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" width="30px" style="border-radius: 1.375rem !important;">
       @endif
   </div>
 </a>
 
 
-           
-        </li>
-       
-       
+
+        </li> --}}
+        <button class="toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+          <span class="toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Offcanvas</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class=" justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="d-flex mt-3" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+
+
+
        <!-- Add the following HTML at the end of your existing code -->
-      
 
 
 
-      
+
+
 
             {{-- <ul class="dropdown-menu dropdown-menu-end">
               <li>
@@ -349,6 +389,8 @@ $navbarDetached = ($navbarDetached ?? '');
     </div>
     @endif
   </nav>
+
+
   <!-- / Navbar -->
 <script>
 
