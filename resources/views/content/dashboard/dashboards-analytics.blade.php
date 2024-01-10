@@ -146,7 +146,7 @@ up -->
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="font-weight: 800;color:black !important;">Check Out</span>
             <span class="h3 font-bold mb-0" style="font-size: 13px; font-weight:800;color:darkcyan;width:40px;">You
               Currently Check Out</span> <br>
-              <p style="color:red; font-weight:800 !important; font-size:12px;margin-top:6px;font-style:bold ;"> <b style="color:red; font-weight:800 !important; font-size:12px;margin-top:6px;font-style:bold ;">Good Bye, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</b></p>
+              <p style="color:red; font-weight:800 !important; font-size:12px;margin-top:6px;font-style:bold ;"> <b style="color:red; font-weight:800 !important; font-size:12px;font-style:bold ;">Good Bye, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</b></p>
           </div>
           <div class="col-auto">
 
@@ -173,7 +173,7 @@ up -->
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style=" color:rgb(215, 250, 246) !important;font-weight:800;">Check-in</span>
             <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:800;color:white;width:20px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span> <br>
-            <p style="color:yellow; font-weight:800; font-size:12px;margin-top:7px;">Welcome, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
+            <p style="color:yellow; font-weight:800; font-size:12px;">Welcome, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
           </div>
           <div class="col-auto">
 
@@ -317,9 +317,9 @@ up -->
   <!-- Order Statistics -->
   <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
     <div class="card h-100 inc">
-      <div class="card-header d-flex align-items-center justify-content-between pb-0">
+      <div class="card-header d-flex align-items-center justify-content-between pb-2">
         <div class="card-title mb-0">
-          <h5 class="m-0 me-2" style="color:black; fomt-weight:900;margin-bottom:2px;"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          <h5 class="m-0 me-2" style="color:black; margin-bottom:2px;font-size:18px !important;"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round" class="feather feather-grid icon-16">
             <rect x="3" y="3" width="7" height="7"></rect>
