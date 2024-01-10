@@ -1,6 +1,12 @@
 <!-- Banner -->
 
+<html lang="en" xmlns:ng="https://angularjs.org">
 
+  
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://code.angularjs.org/1.2.21/angular.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
 
 <!-- Dashboard -->
 @extends('layouts/contentNavbarLayout')
@@ -511,98 +517,57 @@ up -->
 
           </li>
           @endforeach
-          {{-- <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <img src="{{ asset('assets/img/icons/unicons/wallet.png') }}" alt="User" class="rounded">
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <small class="text-muted d-block mb-1">Wallet</small>
-                <h6 class="mb-0">Mac'D</h6>
-              </div>
-              <div class="user-progress d-flex align-items-center gap-1">
-                <h6 class="mb-0">+270.69</h6> <span class="text-muted">USD</span>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <img src="{{ asset('assets/img/icons/unicons/chart.png') }}" alt="User" class="rounded">
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <small class="text-muted d-block mb-1">Transfer</small>
-                <h6 class="mb-0">Refund</h6>
-              </div>
-              <div class="user-progress d-flex align-items-center gap-1">
-                <h6 class="mb-0">+637.91</h6> <span class="text-muted">USD</span>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <img src="{{ asset('assets/img/icons/unicons/cc-success.png') }}" alt="User" class="rounded">
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <small class="text-muted d-block mb-1">Credit Card</small>
-                <h6 class="mb-0">Ordered Food</h6>
-              </div>
-              <div class="user-progress d-flex align-items-center gap-1">
-                <h6 class="mb-0">-838.71</h6> <span class="text-muted">USD</span>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <img src="{{ asset('assets/img/icons/unicons/wallet.png') }}" alt="User" class="rounded">
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <small class="text-muted d-block mb-1">Wallet</small>
-                <h6 class="mb-0">Starbucks</h6>
-              </div>
-              <div class="user-progress d-flex align-items-center gap-1">
-                <h6 class="mb-0">+203.33</h6> <span class="text-muted">USD</span>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex">
-            <div class="avatar flex-shrink-0 me-3">
-              <img src="{{ asset('assets/img/icons/unicons/cc-warning.png') }}" alt="User" class="rounded">
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <small class="text-muted d-block mb-1">Mastercard</small>
-                <h6 class="mb-0">Ordered Food</h6>
-              </div>
-              <div class="user-progress d-flex align-items-center gap-1">
-                <h6 class="mb-0">-92.45</h6> <span class="text-muted">USD</span>
-              </div>
-            </div>
-          </li> --}}
+          
         </ul>
       </div>
     </div>
   </div>
-  <script>
-    var chart = new Highcharts.Chart({
-  chart: {
-    renderTo: 'container',
-    marginBottom: 80
-  },
-  xAxis: {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    labels: {
-      rotation: 90
-    }
-  },
+  
+  </div>
 
-  series: [{
-    data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]        
-  }]
-});
-  </script>
+  <div class="row">
+    <div class="col-4">
+      <div id="container" style="height: 400px; width: 500px"></div>
+    </div>
+   <div class="col-4"><div id="containerr" style="height: 400px; width: 500px;"></div> 
+  </div>
+
+  <script>
+  var chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'container',
+      marginBottom: 80
+    },
+    xAxis: {
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      labels: {
+        rotation: 90
+      }
+    },
+  
+    series: [{
+      data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]        
+    }]
+  });
+</script>
+<script>
+  var chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'containerr',
+      marginBottom: 80
+    },
+    xAxis: {
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      labels: {
+        rotation: 90
+      }
+    },
+  
+    series: [{
+      data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]        
+    }]
+  });
+</script>
 <script>
    console.log(@json($income));
   </script>

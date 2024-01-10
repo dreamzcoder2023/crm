@@ -285,10 +285,10 @@ $navbarDetached = ($navbarDetached ?? '');
 
 
           <!-- User -->
+          <a href="#" >
+          <li class="nav-item navbar-dropdown dropdown-user dropdown"  data-bs-toggle="offcanvas" data-bs-target="#demo">
 
-          <li class="nav-item navbar-dropdown dropdown-user dropdown">
-
-            <a href="#" >
+            
   <div class="avatar avatar-online menu-click" data-bs-toggle="offcanvas" data-bs-target="#demo">
       @if(Auth::user()->image != '' || Auth::user()->image != null)
           <img class="rounded float-left" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" src="public/images/{{ Auth::user()->image }}" width="30px" style="border-radius: 1.375rem !important;">
@@ -296,11 +296,11 @@ $navbarDetached = ($navbarDetached ?? '');
           <img id="navbarImage" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class=" w-px-40 h-auto rounded float-left" src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" width="30px" style="border-radius: 1.375rem !important;">
       @endif
   </div>
-</a>
 
 
 
-        </li>
+
+        </li></a>
 
 
 

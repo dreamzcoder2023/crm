@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 
-<html class="light-style layout-menu-fixed" data-theme="theme-default" data-assets-path="{{ asset('/assets') . '/' }}" data-base-url="{{url('/')}}" data-framework="laravel" data-template="vertical-menu-laravel-template-free">
+<html class="light-style layout-menu-fixed" data-theme="theme-default" data-assets-path="{{ asset('/assets') . '/' }}"
+    data-base-url="{{ url('/') }}" data-framework="laravel" data-template="vertical-menu-laravel-template-free">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-  <title>@yield('title')  </title>
-  <meta name="description" content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
-  <meta name="keywords" content="{{ config('variables.templateKeyword') ? config('variables.templateKeyword') : '' }}">
-  <!-- laravel CRUD token -->
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <!-- Canonical SEO -->
-  <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/icons/housefix-favicon.png') }}" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <!-- Include Styles -->
+    <title>@yield('title') </title>
+    <meta name="description"
+        content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
+    <meta name="keywords"
+        content="{{ config('variables.templateKeyword') ? config('variables.templateKeyword') : '' }}">
+    <!-- laravel CRUD token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Canonical SEO -->
+    <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/icons/housefix-favicon.png') }}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- Include Styles -->
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css"
+        rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
@@ -37,58 +43,132 @@
     <!--- link bootstrap --->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!--- link bootstrap --->
-  @include('layouts/sections/styles')
 
-@include('layouts/app')
-  <!-- Include Scripts for customizer, helper, analytics, config -->
-  @include('layouts/sections/scriptsIncludes')
-  <style>
-    @media only screen and(max-width:320px){
-        .col-md-4 .col-form-label .text-md-end {
-            margin-left:-135px ;
+    <!--- link bootstrap --->
+    @include('layouts/sections/styles')
+
+    @include('layouts/app')
+    <!-- Include Scripts for customizer, helper, analytics, config -->
+    @include('layouts/sections/scriptsIncludes')
+    <style>
+        @media only screen and(max-width:320px) {
+            .col-md-4 .col-form-label .text-md-end {
+                margin-left: -135px;
+            }
         }
-    }
+
+        .round {
+            border: 3px solid #03BFCB;
+            border-radius: 50%;
+            padding: 7px;
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .image-container {
+            /* position: relative; */
+            /* display: inline-block; */
+            
+          text-align: center;
+        }
+        .offcanvas-body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .plus-symbol {
+            font-size: 22px;
+            line-height: 1;
+            /* float: right; */
+            margin-top: -20px;
+            color: black;
+            cursor: pointer;
+            
+
+            margin-left: 71px !important;
+        }
     </style>
 </head>
 
 <body>
 
-                        <!-- @guest
-                            @if (Route::has('login'))
-                               @include('auth/login')
-                            @endif
-
-
-                        @else
-                        <script>window.location = "/dashboard";</script>
+    <!-- @guest
+                                @if (Route::has('login'))
+    @include('auth/login')
+    @endif
+@else
+    <script>
+        window.location = "/dashboard";
+    </script>
                         @endguest -->
-  <!-- Layout Content -->
-  @yield('layoutContent')
-  <!--/ Layout Content -->
+    <!-- Layout Content -->
+    @yield('layoutContent')
+    <!--/ Layout Content -->
 
-  {{-- remove while creating package --}}
-  <!-- <div class="buy-now">
-    <a href="{{config('variables.productPage')}}" target="_blank" class="btn btn-danger btn-buy-now">Upgrade To Pro</a>
+    {{-- remove while creating package --}}
+    <!-- <div class="buy-now">
+    <a href="{{ config('variables.productPage') }}" target="_blank" class="btn btn-danger btn-buy-now">Upgrade To Pro</a>
   </div> -->
-  {{-- remove while creating package end --}}
+    {{-- remove while creating package end --}}
 
-  <!-- Include Scripts -->
-  @include('layouts/sections/scripts')
+    <!-- Include Scripts -->
+    @include('layouts/sections/scripts')
 
-  <div class="offcanvas offcanvas-end" id="demo">
-    <div class="offcanvas-header">
-      <h1 class="offcanvas-title">Heading</h1>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    <div class="offcanvas offcanvas-end" id="demo">
+        <div class="offcanvas-header">
+            {{-- <h3 class="offcanvas-title">My Profile</h3> --}}
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div class="image-container text-center">
+              <img class="round" id="profile-image" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
+  
+              <div>
+                  <label for="image-input" class="plus-symbol">&#43;</label>
+                  <input type="file" id="image-input" accept="image/*" style="display: none; height: 100px; width: 100px;" />
+              </div>
+          </div>
+  {{-- <div class="logout" style="position: fixed;">
+          <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class='bx bx-power-off me-2'></i>
+              <span class="align-middle">Log Out</span>
+              <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                  @csrf
+              </form>
+          </a>
+        </div> --}}
+      </div>
+  
+      {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
     </div>
-    <div class="offcanvas-body">
-      <p>Some text lorem ipsum.</p>
-      <p>Some text lorem ipsum.</p>
-      <p>Some text lorem ipsum.</p>
-      <button class="btn btn-secondary" type="button">A Button</button>
-    </div>
-  </div>
+    <script>
+        document.getElementById('image-input').addEventListener('change', function(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-image').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelector('.overlay').addEventListener('click', function() {
+            document.getElementById('image-input').click();
+        });
+    </script>
 </body>
 
 </html>
-
