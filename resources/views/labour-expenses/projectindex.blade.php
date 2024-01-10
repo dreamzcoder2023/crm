@@ -327,14 +327,25 @@
                     dataType: 'json',
                     success: function(html) {
                         console.log(html);
-                        toastr.success('Unpaid Successfully', {
-                            timeOut: 1000,
-                            fadeOut: 1000,
+                        if(html == 'error'){
+                            toastr.error('Insufficient Balance', {
+                            timeOut: 500,
+                            fadeOut: 500,
                         });
                         setTimeout(function() {
                             // Do something after 5 seconds
                             location.reload(); //reload page
                         }, 5000);
+                        }else{
+                        toastr.success('Unpaid Successfully', {
+                            timeOut: 500,
+                            fadeOut: 500,
+                        });
+                        setTimeout(function() {
+                            // Do something after 5 seconds
+                            location.reload(); //reload page
+                        }, 5000);
+                    }
                     }
                 });
             });

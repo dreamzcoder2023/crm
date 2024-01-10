@@ -84,7 +84,7 @@ class TransferController extends Controller
        $amount = $request->amount;
 
        $response = true;
-       if (($wallet->wallet > 0) && ($amount < $wallet->wallet)) {
+       if (($wallet->wallet >= 0) && ($amount <= $wallet->wallet)) {
          $response = false;
        }
        return response()->json($response);

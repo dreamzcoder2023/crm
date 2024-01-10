@@ -77,14 +77,13 @@
                                     <label class="form-label" for="basic-default-email">Salary</label>
 
                                     <input type="text" id="amount" name="amount" class="form-control"
-                                        placeholder="Enter amount" oninput="amountcheck(this.value)"
+                                        placeholder="Enter amount"
                                         onkeypress="allowNumbersOnly(event)" />
                                     <p class="advance_amt" style="color:blue"> </p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
                                     <input type="hidden" class="amount-check-error" value=""><br>
-                                    <label id="amount-check-error" class="error" for="basic-default-phone">Insufficient
-                                        Balance</label>
+
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Payment Mode</label>
@@ -113,10 +112,12 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-message">Paid Amount</label><br>
-                                    <input type="text" class="form-control" value="" id="paid_amt"
+                                    <input type="text" class="form-control" value="" id="paid_amt"  oninput="amountcheck(this.value)"
                                         name="paid_amt" onkeypress="allowNumbersOnly(event)">
                                     <label id="paid-error" class="error" for="basic-default-amt">Paid amount is
                                         required.</label>
+                                        <label id="amount-check-error" class="error" for="basic-default-phone">Insufficient
+                                          Balance</label>
                                     <!-- <label id="paid_amt-error" class="error" for="basic-default-amt">Paid amount must be less than amount.</label> -->
                                 </div>
                                 <!-- <div class="mb-3">

@@ -174,10 +174,12 @@ class LabourExpensesController extends Controller
   public function labour_expenses_store(Request $request)
   {
     //dd($request->all());
+    $user = Auth::user()->wallet;
     $labours = '';
     foreach ($request->labour_id as $labour) {
       $labours = Expenses::where(['labour_id' => $labour, 'project_id' => $request->project_id])->whereBetween('current_date', [$request->start_date, $request->end_date])->get();
       foreach ($labours as $labours) {
+        if($user > 0 ){
         if ($labours->unpaid_amt > 0) {
           $labours['paid_amt'] = abs($labours->unpaid_amt + $labours->paid_amt);
           $wallet = User::find(Auth::user()->id);
@@ -187,9 +189,12 @@ class LabourExpensesController extends Controller
 
           $labours->update();
         }
+      }else{
+        return response()->json('error');
+      }
       }
     }
-    return response()->json($labours);
+    return response()->json('success');
   }
   public function labour_expenses_history(Request $request)
   {

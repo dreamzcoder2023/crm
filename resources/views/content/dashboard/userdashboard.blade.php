@@ -204,7 +204,7 @@ up -->
                   <span class="h3 font-bold mb-0 member-infoo" style="display: none;font-size:22px; font-weight:900;color:darkcyan">{{ $unpaid_amt }}</span>
               </div>
               <div class="col-auto">
-                  <a class="dropdown-item" @can('expenses-history') href="{{ route('expenses-history') }}" @endcan>
+                  <a class="dropdown-item" href="{{ route('expenses-history') }}">
                       <div class="icon icon-shape  text-white text-lg rounded-circle" style="background-color:lightseagreen;border:2px solid white">
                         <i class="bi bi-credit-card-fill" style="color: #ffffff;"></i>
                       </div>
@@ -237,7 +237,7 @@ up -->
             <span class="h3 font-bold mb-0 member-infooo"  style="display: none;font-size:22px; font-weight:900;color:darkcyan">{{ $wallet }}</span>
           </div>
           <div class="col-auto">
-            <a class="dropdown-item" @can('user-list') href="{{ route('user-index') }}" @endcan>
+            <a class="dropdown-item" href="{{ route('user-index') }}">
             <div class="icon icon-shape bg-warning text-white text-lg rounded-circle" style="border:2px solid white;">
               <i class="bi bi-wallet2" style="color: #ffffff;"></i>
             </div>
@@ -304,7 +304,7 @@ up -->
 
                                 <small class="text-success fw-semibold">
                                     <i class='bx bx-chevron-up'></i>
-                                    {{$incomeWithPercentage[0]['percentage']}} %
+                                    {{count($incomeWithPercentage) == 0 ? 0 : $incomeWithPercentage[0]['percentage']}} %
                                 </small>
                             </div>
                         </div>
@@ -334,7 +334,7 @@ up -->
 
                                <small class="text-danger fw-semibold">
                                     <i class='bx bx-chevron-down'></i>
-                                    {{$expenseWithPercentage[0]['percentage']}} %
+                                    {{count($expenseWithPercentage) == 0 ? 0 : $expenseWithPercentage[0]['percentage']}} %
                                 </small>
                             </div>
                         </div>
@@ -361,7 +361,6 @@ up -->
     <div class="card h-100">
       <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="card-title m-0 me-2">Transactions</h5>
-        @can('transfer-history')
         <div class="dropdown">
           <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="bx bx-dots-vertical-rounded"></i>
@@ -370,7 +369,6 @@ up -->
             <a class="dropdown-item" href="{{route('transfer-history')}}">View more</a>
           </div>
         </div>
-        @endcan
       </div>
       <div class="card-body">
         <ul class="p-0 m-0">
