@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css">
 
 <style>
     #expenses_listing_table th,
@@ -115,11 +115,11 @@
                 </div>
                 <div class="row aa">
 
-                    
+
 
 
                     <div class="col-md-2">
-                        <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
+                        <select class="selectpicker" name="category_id" id="category_id" data-live-search="true" data-live-search-style="startsWith" >
                             <option value="">Select category</option>
                             @foreach ($category as $category)
                                 <option
@@ -155,7 +155,7 @@
                         <input type="date" class="form-control" id="to_date" name="to_date"
                             value="{{ $to_date1 }}" style="width: 144px;display:initial;">
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -380,7 +380,7 @@
     </script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
     <script>
         $(document).ready(function() {
             $('.selectpicker').selectpicker();
