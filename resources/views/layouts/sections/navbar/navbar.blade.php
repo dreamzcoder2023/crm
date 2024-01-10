@@ -73,16 +73,15 @@ div.dataTables_wrapper div.dataTables_length select {
   .wallet-container:hover .member-infoooo {
       display: inline-block;
   }
-  .offcanvas {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1040;
-    background: rgba(0, 0, 0, 0.5); /* Dim overlay color */
-}
 
+  .offcanvas {
+  backdrop-filter: none; /* Remove the backdrop-filter property */
+  /* Add any other necessary styling */
+}
+.offcanvas-header {
+  background-color: #fff; /* Set a background color to avoid the blur effect */
+  /* Add any other necessary styling */
+}
 
 </style>
 <style>
@@ -142,6 +141,7 @@ div.dataTables_wrapper div.dataTables_length select {
       background-repeat: no-repeat;
     }
   }
+
 </style>
   <div class="preloader">
     <div class="loader"></div>
@@ -286,10 +286,10 @@ $navbarDetached = ($navbarDetached ?? '');
 
           <!-- User -->
 
-          {{-- <li class="nav-item navbar-dropdown dropdown-user dropdown">
+          <li class="nav-item navbar-dropdown dropdown-user dropdown">
 
-            <a>
-  <div class="avatar avatar-online menu-click">
+            <a href="#" >
+  <div class="avatar avatar-online menu-click" data-bs-toggle="offcanvas" data-bs-target="#demo">
       @if(Auth::user()->image != '' || Auth::user()->image != null)
           <img class="rounded float-left" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" src="public/images/{{ Auth::user()->image }}" width="30px" style="border-radius: 1.375rem !important;">
       @else
@@ -300,43 +300,7 @@ $navbarDetached = ($navbarDetached ?? '');
 
 
 
-        </li> --}}
-        <button class="toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-          <span class="toggler-icon"></span>
-        </button>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Offcanvas</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body">
-            <ul class=" justify-content-end flex-grow-1 pe-3">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </li>
-            </ul>
-            <form class="d-flex mt-3" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-          </div>
-        </div>
+        </li>
 
 
 
@@ -390,7 +354,6 @@ $navbarDetached = ($navbarDetached ?? '');
     @endif
   </nav>
 
-
   <!-- / Navbar -->
 <script>
 
@@ -400,11 +363,5 @@ window.onload=function(){
 };
 
 </script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
-integrity="sha384-mQCyt3fKnMLgIVIsaRkVjzKPM3VXmXfgx5e6P4M5JwF4AvcMq2oOplC26QR84xnH" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy3q1nXBo/6RDQDHE4h8+5g7uYU2FgklT" crossorigin="anonymous"></script>
+
 

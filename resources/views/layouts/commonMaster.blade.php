@@ -34,6 +34,10 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 
+    <!--- link bootstrap --->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!--- link bootstrap --->
   @include('layouts/sections/styles')
 
 @include('layouts/app')
@@ -49,6 +53,7 @@
 </head>
 
 <body>
+
                         <!-- @guest
                             @if (Route::has('login'))
                                @include('auth/login')
@@ -70,7 +75,20 @@
 
   <!-- Include Scripts -->
   @include('layouts/sections/scripts')
- 
+
+  <div class="offcanvas offcanvas-end" id="demo">
+    <div class="offcanvas-header">
+      <h1 class="offcanvas-title">Heading</h1>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p>Some text lorem ipsum.</p>
+      <p>Some text lorem ipsum.</p>
+      <p>Some text lorem ipsum.</p>
+      <button class="btn btn-secondary" type="button">A Button</button>
+    </div>
+  </div>
 </body>
 
 </html>
+
