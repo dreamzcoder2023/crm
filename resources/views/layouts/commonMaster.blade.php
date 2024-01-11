@@ -108,7 +108,7 @@
             margin-left: 71px !important;
         }
     </style>
-</head>3
+</head>
 
 <body>
 

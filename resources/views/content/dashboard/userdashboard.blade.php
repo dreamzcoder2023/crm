@@ -1,6 +1,12 @@
 <!-- Banner -->
 
+<html lang="en" xmlns:ng="https://angularjs.org">
 
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://code.angularjs.org/1.2.21/angular.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
 
 <!-- Dashboard -->
 @extends('layouts/contentNavbarLayout')
@@ -98,13 +104,13 @@ up -->
 
 <div class="row g-6 mb-6">
   @if ($checking == '')
-  <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" >
+  <div class="col-xl-4 col-sm-6 col-12">
+    <div class="card cards shadow border-0" style="height:90px;" >
       <div class="card-body">
         <div class="row">
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="font-weight: 800;color:black !important;">Check Out</span>
-            <span class="h3 font-bold mb-0" style="font-size: 10px; font-weight:800;color:darkcyan;width:40px;">You Currently Check
+            <span class="h3 font-bold mb-0" style="font-size: 10px; font-weight:700;color:darkcyan;width:40px;">You Currently Check
               Out</span>
           </div>
           <div class="col-auto">
@@ -124,15 +130,15 @@ up -->
     </div>
   </div>
   @elseif ($checking->notes == 1)
-  <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" >
+  <div class="col-xl-4 col-sm-6 col-12">
+    <div class="card cards shadow border-0" style="height:90px;" >
       <div class="card-body">
         <div class="row">
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="font-weight: 800;color:black !important;">Check Out</span>
             <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:800;color:darkcyan;width:40px;">You
               Currently Check Out</span>
-              <p style="color:darkcyan">Good Bye, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
+              <p style="color:red;font-weight:700; font-size:12px;margin-top:3px;" >Good Bye, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
           </div>
           <div class="col-auto">
 
@@ -152,14 +158,14 @@ up -->
   @endif
   @if ($checking != '')
   @if ($checking->notes == 0)
-  <div class="col-xl-3 col-sm-6 col-12">
-    <div class="card cards shadow border-0" style="background-color: darkcyan;">
+  <div class="col-xl-4 col-sm-6 col-12">
+    <div class="card cards shadow border-0" style="background-color: darkcyan;height:90px;">
       <div class="card-body">
         <div class="row">
           <div class="col">
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style=" color:rgb(215, 250, 246) !important;font-weight:800;">Check-in</span>
-            <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:800;color:white;width:20px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span>
-            <p style="color:white">Welcome, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
+            <span class="h3 font-bold mb-0" style="font-size: 14px; font-weight:700;color:white;width:20px;">{{ $checking->created_at->format('d:m:Y h:i:s A') }}</span>
+            <p style="color:yellow !important;font-size:12px;font-weight:800;margin-top:3px">Welcome, {{Auth::user()->first_name}} {{Auth::user()->last_name}}</p>
           </div>
           <div class="col-auto">
 
@@ -195,7 +201,7 @@ up -->
 
 
 
-<div class="col-xl-3 col-sm-6 col-12">
+<div class="col-xl-4 col-sm-6 col-12">
   <div class="card card2 cards shadow border-0">
       <div class="card-body">
           <div class="row">
@@ -228,7 +234,7 @@ up -->
 </script>
 
 
-  <div class="col-xl-3 col-sm-6 col-12">
+  <div class="col-xl-4 col-sm-6 col-12">
     <div class="card card3 cards shadow border-0">
       <div class="card-body">
         <div class="row">
@@ -272,92 +278,31 @@ up -->
   <!--/ Order Statistics -->
 
   <!-- Expense Overview -->
-  <div class="col-md-6 col-lg-4 order-1 mb-4">
-    <div class="card h-100">
-        <div class="card-header">
-            <ul class="nav nav-pills" role="tablist">
-                {{-- <li class="nav-item">
-                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
-                        data-bs-target="#navs-tabs-line-card-income" aria-controls="navs-tabs-line-card-income"
-                        aria-selected="true">Income</button>
-                </li> --}}
-                <li class="nav-item">
-                    <button type="button" class="nav-link active" role="tab"  data-bs-toggle="tab"
-                    data-bs-target="#navs-tabs-line-card-expenses" aria-controls="navs-tabs-line-card-expenses"
-                    aria-selected="true">Expenses</button>
-                </li>
-
-            </ul>
-
-        </div>
-        <div class="card-body px-0">
-            <div class="tab-content p-0">
-                {{-- <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
-                    <div class="d-flex p-4 pt-3">
-                        <div class="avatar flex-shrink-0 me-3">
-                            <img src="{{ asset('assets/img/icons/unicons/wallet.png') }}" alt="User">
-                        </div>
-                        <div>
-                            <small class="text-muted d-block">Total Balance</small>
-                            <div class="d-flex align-items-center">
-                                <div id="monthly_data" data-income="{{ json_encode($income) }}"></div>
-
-                                <small class="text-success fw-semibold">
-                                    <i class='bx bx-chevron-up'></i>
-                                    {{count($incomeWithPercentage) == 0 ? 0 : $incomeWithPercentage[0]['percentage']}} %
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="incomeChart"></div>
-                    <div class="d-flex justify-content-center pt-4 gap-2">
-                      <div class="flex-shrink-0">
-                          <div id="expensesOfWeek" data-income="{{$currentWeekPercentage}}"></div>
-                      </div>
-                      <div>
-                          <p class="mb-n1 mt-1">Income This Week</p>
-                          <small class="text-muted">{{$currentWeekPercentage}} %</small>
-                      </div>
-                  </div>
-                </div> --}}
-
-                <div class="tab-pane fade show active" id="navs-tabs-line-card-expenses" role="tabpanel">
-                    <div class="d-flex p-4 pt-3">
-                        <div class="avatar flex-shrink-0 me-3">
-                            <img src="{{ asset('assets/img/icons/unicons/wallet.png') }}" alt="User">
-                        </div>
-                        <div>
-                            <small class="text-muted d-block">Total Expenses</small>
-                            <div class="d-flex align-items-center">
-                                <div id="monthly_expense_data"
-                                    data-expenses="{{  json_encode($expense) }}"></div>
-
-                               <small class="text-danger fw-semibold">
-                                    <i class='bx bx-chevron-down'></i>
-                                    {{count($expenseWithPercentage) == 0 ? 0 : $expenseWithPercentage[0]['percentage']}} %
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="expenseChart"></div>
-                    <div class="d-flex justify-content-center pt-4 gap-2">
-                      <div class="flex-shrink-0">
-                          <div id="expensesOfWeek1" data-income="{{$currentWeekExpensePercentage}}"></div>
-                      </div>
-                      <div>
-                          <p class="mb-n1 mt-1">Expenses This Week</p>
-                          <small class="text-muted">{{$currentWeekExpensePercentage}} %</small>
-                      </div>
-                  </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="col-6">
+    <div id="container" style="height: 400px; width: 500px"></div>
 </div>
+<script>
+  var chart = new Highcharts.Chart({
+      chart: {
+          renderTo: 'container',
+          marginBottom: 80
+      },
+      xAxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          labels: {
+              rotation: 90
+          }
+      },
+
+      series: [{
+          data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+      }]
+  });
+</script>
   <!--/ Expense Overview -->
 
   <!-- Transactions -->
-  <div class="col-md-6 col-lg-4 order-2 mb-4">
+  <div class="col-6">
     <div class="card h-100">
       <div class="card-header d-flex align-items-center justify-content-between">
         <h5 class="card-title m-0 me-2">Transactions</h5>
