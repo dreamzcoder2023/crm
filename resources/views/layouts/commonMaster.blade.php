@@ -68,9 +68,19 @@
         .image-container {
             /* position: relative; */
             /* display: inline-block; */
-            
-          text-align: center;
+
+            text-align: center;
         }
+        .logout {
+    position: fixed;
+    bottom: 20px; /* Add the unit (e.g., pixels) */
+    width: 100%;
+    z-index: -9999999;
+    /* background-color: #03BFCB; Adjust background color as needed */
+    /* padding: 10px; */
+    text-align: center;
+}
+
         .offcanvas-body {
             display: flex;
             flex-direction: column;
@@ -93,17 +103,17 @@
             margin-top: -20px;
             color: black;
             cursor: pointer;
-            
+
 
             margin-left: 71px !important;
         }
     </style>
-</head>
+</head>3
 
 <body>
 
     <!-- @guest
-                                @if (Route::has('login'))
+                                    @if (Route::has('login'))
     @include('auth/login')
     @endif
 @else
@@ -124,32 +134,38 @@
     <!-- Include Scripts -->
     @include('layouts/sections/scripts')
 
-    <div class="offcanvas offcanvas-end" id="demo">
+    <div class="offcanvas offcanvas-end" id="demo" style="width: 270px;">
         <div class="offcanvas-header">
             {{-- <h3 class="offcanvas-title">My Profile</h3> --}}
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
-          <div class="image-container text-center">
-              <img class="round" id="profile-image" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
-  
-              <div>
-                  <label for="image-input" class="plus-symbol">&#43;</label>
-                  <input type="file" id="image-input" accept="image/*" style="display: none; height: 100px; width: 100px;" />
-              </div>
-          </div>
-  {{-- <div class="logout" style="position: fixed;">
-          <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              <i class='bx bx-power-off me-2'></i>
-              <span class="align-middle">Log Out</span>
-              <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                  @csrf
-              </form>
-          </a>
-        </div> --}}
-      </div>
-  
-      {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
+            <div class="image-container text-center">
+                <img class="round" id="profile-image" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
+    
+                <div>
+                    <label for="image-input" class="plus-symbol">&#43;</label>
+                    <input type="file" id="image-input" accept="image/*" style="display: none; height: 100px; width: 100px;" />
+                </div>
+            </div>
+    
+            <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> Bala Murugan </b></h6>
+            <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> Admin </b></h6>
+            <button type="submit" class="btn btn-dark" style="margin-top:50px;width:120px;text-align:center !important;margin-left:50px;"><i
+                class="fa fa-edit" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</button>
+    
+            <div class="logout" >
+              
+                    
+                    <h6> <i class='bx bx-power-off me-2'></i>
+                        <span class="align-middle" style="color: rgb(0, 0, 0)">Log Out</span></h6>
+                   
+                </a>
+            </div>
+        </div>
+    
+
+        {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
     </div>
     <script>
         document.getElementById('image-input').addEventListener('change', function(event) {
