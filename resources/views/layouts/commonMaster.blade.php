@@ -35,7 +35,7 @@
   <!--- link bootstrap --->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+  
   <!--- link bootstrap --->
   @include('layouts/sections/styles')
 
@@ -69,6 +69,10 @@
       max-height: 100px;
     }
 
+
+    /* *{
+  font-size: 13px !important;
+} */
     .image-container {
       /* position: relative; */
       /* display: inline-block; */
@@ -156,7 +160,7 @@
 
       <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> Bala Murugan </b></h6>
       <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> Admin </b></h6>
-      <button type="submit" class="btn btn-dark" style="margin-top:50px;width:120px;text-align:center !important;margin-left:50px;"><i class="fa fa-edit" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</button>
+      <button type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="fa fa-edit" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</button>
 
       <div class=" mob ">
 
