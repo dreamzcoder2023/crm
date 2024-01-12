@@ -227,6 +227,12 @@ class VendorExpensesController extends Controller
       if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
         $unpaid_amt = abs($request->amount - $request->paid_amt);
       }
+      if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
+        $extra_amt = abs($request->paid_amt - $request->amount);
+      }
+      if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = abs($request->amount - $request->paid_amt);
+      }
     }
 
     // exit;
@@ -242,6 +248,11 @@ class VendorExpensesController extends Controller
     $expense = Expenses::find($request->id);
     $expense['reason'] = $request->reason;
     $expense->update();
+    if(!empty($expense->vendor_id)){
+      $labour = Vendor::where('id',$expense->vendor_id)->first();
+        $labour['advance_amt'] = $labour->advance_amt - $expense->extra_amt;
+        $labour->update();
+    }
     $wallet = User::find($request->user);
     $wallet['wallet'] = $wallet->wallet + $expense->paid_amt;
     $wallet->update();

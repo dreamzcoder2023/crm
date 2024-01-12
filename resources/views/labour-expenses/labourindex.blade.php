@@ -188,7 +188,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Labour Expenses Details</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" onclick="window.location.reload();">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

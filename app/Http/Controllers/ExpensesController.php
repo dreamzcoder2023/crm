@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 use Mockery\Undefined;
 use App\Exports\ExportExpenses;
 use App\Exports\DeleteExpensesExport;
+use App\Models\Labour;
+use App\Models\Vendor;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
@@ -223,6 +225,12 @@ class ExpensesController extends Controller
         $extra_amt = abs($request->paid_amt - $request->amount);
       }
       if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = abs($request->amount - $request->paid_amt);
+      }
+      if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
+        $extra_amt = abs($request->paid_amt - $request->amount);
+      }
+      if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
         $unpaid_amt = abs($request->amount - $request->paid_amt);
       }
     }
@@ -589,11 +597,21 @@ class ExpensesController extends Controller
     return Excel::download((new DeleteExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'delete-expenses.xlsx');
   }
   public function expense_delete_all(Request $request){
-    //dd($request->id);
+   // dd($request->all());
     $expense_id = $request->id;
     $expense = [];
     foreach($expense_id as $id){
       $expense = Expenses::where('id',$id)->first();
+      if(!empty($expense->labour_id)){
+        $labour = Labour::where('id',$expense->labour_id)->first();
+        $labour['advance_amt'] = $labour->advance_amt - $expense->extra_amt;
+        $labour->update();
+      }
+      if(!empty($expense->vendor_id)){
+        $vendor = Vendor::where('id',$expense->vendor_id)->first();
+        $vendor['advance_amt'] = $vendor->advance_amt - $expense->extra_amt;
+        $vendor->update();
+      }
       $wallet = User::where('id',$expense->user_id)->first();
       $wallet['wallet'] = $wallet->wallet + $expense->paid_amt;
       $wallet->update();

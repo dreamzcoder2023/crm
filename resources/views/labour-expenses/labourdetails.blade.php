@@ -42,6 +42,7 @@
                     <th>Salary</th>
                     <th>Unpaid Amount</th>
                     <th>Advance Amount</th>
+                    <th>Description</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -53,6 +54,7 @@
                         <td>{{ $labour->amount }} </td>
                         <td>{{ $labour->unpaid_amt }}</td>
                         <td>{{ $labour->advance_amt }}</td>
+                        <td>{{ $labour->description }}</td>
                     </tr>
                 @endforeach
 

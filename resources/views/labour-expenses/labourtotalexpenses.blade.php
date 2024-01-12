@@ -56,7 +56,7 @@
                         <td>{{ $labour->amount }} </td>
                         <td>{{ $labour->paid_amt }}</td>
                         <td>{{ $labour->unpaid_amt }}</td>
-                        <td>{{ $labour->advance_amt }}</td>
+                        <td>{{ $labour->extra_amt }}</td>
                         <td>{{ $labour->description }}</td>
                     </tr>
                 @endforeach
