@@ -379,9 +379,9 @@ up -->
           <div class="col text-center">
             <!-- Initially centered text -->
             <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;">
-              Members</span>
+            Today Clock-in Members</span>
             <!-- Hidden member information -->
-            <span class="h3 font-bold mb-0 member-info" style="font-size:22px; font-weight:900;color:skyblue">{{ $member }}</span>
+            <span class="h3 font-bold mb-0 member-info" style="font-size:22px; font-weight:900;color:skyblue">{{ $clocked_in }}</span>
           </div>
           <div class="col-auto" style="margin-top:-40px;">
             <a class="dropdown-item" href="{{ route('user-index') }}">
@@ -399,9 +399,9 @@ up -->
             <div class="col text-center">
               <!-- Initially centered text -->
               <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;">
-                Members</span>
+                Today Not clocked-in Members</span>
               <!-- Hidden member information -->
-              <span class="h3 font-bold mb-0 member-info" style="font-size:22px; font-weight:900;color:#ffc107">{{ $member }}</span>
+              <span class="h3 font-bold mb-0 member-info" style="font-size:22px; font-weight:900;color:#ffc107">{{ $clocked_out }}</span>
             </div>
             <div class="col-auto" style="margin-top:-40px;">
               <a class="dropdown-item" href="{{ route('user-index') }}">

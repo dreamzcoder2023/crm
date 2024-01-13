@@ -258,6 +258,8 @@
                     style="color: red;">{{ $unpaid_amt }}</span></b></span>
         <span class="d-inline ms-3"><b>Total Advanced Amount:</b><b><span style="color: #840eef;">
                     {{ $advanced_amt }}</span></b></span>
+                    <span class="d-inline ms-3"><b>Total Settle Amount:</b><b><span style="color: #800000;">
+                      {{ $unpaid_amt - $advanced_amt }}</span></b></span>
     </p>
 
     <!--- modal popup for transfer -->

@@ -315,8 +315,9 @@ class LabourExpensesController extends Controller
   }
   public function labour_advance_store(Request $request)
   {
-   // dd($request->all());
+    //dd($request->all());
     $project = Expenses::where(['labour_id' => $request->labour_id, 'project_id' => $request->project_id])->get();
+    $project_advance = Expenses::where('labour_id',$request->labour_id)->where('extra_amt','>',0)->get();
     $labour = Labour::where('id', $request->labour_id)->first();
     $labour['advance_amt'] = abs($labour->advance_amt - $request->extra_amt);
     // dd($labour);
@@ -330,21 +331,47 @@ class LabourExpensesController extends Controller
       $input['expense_id'] = $project->id;
       $input['amount'] = $project->extra_amt;
       AdvanceHistory::create($input);
-      if ($request->gender == 1) {
-        if ($request->extra_amt <= $project->extra_amt) {
-          $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
-        } else {
-          $project['extra_amt'] = 0;
-        }
-      }
-      if($request->gender == 2){
+      // if ($request->gender == 1) {
+      //   if ($request->extra_amt <= $project->extra_amt) {
+      //     $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
+      //   } else {
+      //     $project['extra_amt'] = 0;
+      //   }
+      // }
+     // if($request->gender == 2){
         if ($request->extra_amt <= $project->unpaid_amt) {
           $project['unpaid_amt'] = abs($request->extra_amt - $project->unpaid_amt);
         } else {
           $project['unpaid_amt'] = 0;
         }
-      }
+     // }
       $project['is_advance'] = Auth::user()->id;
+    //  dd($project);
+      $project->update();
+    }
+    foreach ($project_advance as $project) {
+
+      // $amount = abs($amount - $project->extra_amt);
+      // $input['labour_id'] = $request->labour_id;
+      // $input['expense_id'] = $project->id;
+      // $input['amount'] = $project->extra_amt;
+      // AdvanceHistory::create($input);
+       if ($project->extra_amt > 0) {
+        if ($request->extra_amt <= $project->extra_amt) {
+          $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
+        } else {
+          $project['extra_amt'] = 0;
+        }
+       }
+     // if($request->gender == 2){
+        // if ($request->extra_amt <= $project->unpaid_amt) {
+        //   $project['unpaid_amt'] = abs($request->extra_amt - $project->unpaid_amt);
+        // } else {
+        //   $project['unpaid_amt'] = 0;
+        // }
+     // }
+     // $project['is_advance'] = Auth::user()->id;
+   //   dd($project);
       $project->update();
     }
     return redirect()->route('labour-expenses-advance')->with('popup', 'open');

@@ -105,8 +105,16 @@ class AnalyticsController extends Controller
         ->leftJoin('transferdetails', 'users.id', '=', 'transferdetails.member_id')
         ->groupBy('users.id')
         ->get();
-      //  dd($transfer_history);
-      return view('content.dashboard.dashboards-analytics', ['checking' => $checking, 'member' => $member, 'project_open' => $project_open, 'project_close' => $project_close, 'unpaid_amt' => $unpaid_amt, 'paid_amt' => $paid_amt, 'monthly_transfer' => $monthly_transfer, 'income' => $income, 'wallet' => $wallet, 'incomeWithPercentage' => $incomeWithPercentage, 'currentWeekPercentage' => $currentWeekPercentage, 'expenseWithPercentage' => $expenseWithPercentage, 'currentWeekExpensePercentage' => $currentWeekExpensePercentage, 'expense' => $expense, 'transfer_history' => $transfer_history]);
+        $clocked_in = Attendance::wheredate('created_at',Carbon::today())->count();
+        $clocked_out = User::whereExists(function ($query) {
+          $query->select(DB::raw(1))
+              ->from('attendance')
+              ->whereRaw('attendance.user_id = users.id')
+              ->whereDate('attendance.created_at', Carbon::today());
+      }, 'and', true) // The 'and' and false parameters are used to negate the condition
+      ->count();
+          //  dd($clocked_out);
+      return view('content.dashboard.dashboards-analytics', ['checking' => $checking, 'member' => $member, 'project_open' => $project_open, 'project_close' => $project_close, 'unpaid_amt' => $unpaid_amt, 'paid_amt' => $paid_amt, 'monthly_transfer' => $monthly_transfer, 'income' => $income, 'wallet' => $wallet, 'incomeWithPercentage' => $incomeWithPercentage, 'currentWeekPercentage' => $currentWeekPercentage, 'expenseWithPercentage' => $expenseWithPercentage, 'currentWeekExpensePercentage' => $currentWeekExpensePercentage, 'expense' => $expense, 'transfer_history' => $transfer_history,'clocked_in' => $clocked_in,'clocked_out' => $clocked_out]);
     }else{
       $checking = Attendance::where('user_id', Auth::user()->id)->whereDate('created_at', '=', now())->orderBy('id', 'desc')->first();
 

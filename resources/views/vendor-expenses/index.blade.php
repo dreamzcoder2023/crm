@@ -119,8 +119,8 @@
                         style="color:white"></i></button>
                 </div>
                 <div class="row aa">
-                  
-                
+
+
 
 
                 <div class="col-md-2">
@@ -163,7 +163,7 @@
                     <input type="date" class="form-control" id="to_date" name="to_date"
                         value="{{ $to_date1 }}" style="width: 144px;display:initial;">
                 </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -269,6 +269,8 @@
                     style="color: red;">{{ $unpaid_amt }}</span></b></span>
         <span class="d-inline ms-3"><b>Total Advanced Amount:</b><b><span style="color: #840eef;">
                     {{ $advanced_amt }}</span></b></span>
+                    <span class="d-inline ms-3"><b>Total Settle Amount:</b><b><span style="color: #800000;">
+                      {{ $unpaid_amt - $advanced_amt }}</span></b></span>
     </p>
 
     <!--- modal popup for transfer -->
