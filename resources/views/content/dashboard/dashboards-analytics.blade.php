@@ -422,39 +422,85 @@ up -->
 
   <!-- Expense Overview -->
   <div class="col-md-6 col-lg-4 order-1 mb-4 chartphone">
+    <input type="hidden" id="income-daily" value="{{ json_encode($today_income) }}">
+    <input type="hidden" id="expense-daily" value="{{ json_encode($today_expense) }}">
     <canvas id="myChart" style="width:100%;max-width:600px ; height:300px;"></canvas>
-  </div>
-  <!--/ Expense Overview -->
-  <script>
-    const xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+    <center>Today Income vs Expenses</center>
+</div>
+<!--/ Expense Overview -->
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Script for dynamic chart -->
+<script>
+    // Parse the JSON strings into JavaScript objects
+    const incomeJsonString = document.getElementById('income-daily').value;
+    const expenseJsonString = document.getElementById('expense-daily').value;
+
+    const incomeData = JSON.parse(incomeJsonString).map(entry => ({
+        project_name: entry.project_name,
+        total: entry.total
+    }));
+
+    const expenseData = JSON.parse(expenseJsonString).map(entry => ({
+        project_name: entry.project_name,
+        total: entry.total
+    }));
+
+    // Extract project names and amounts for labels and data
+    const xValues = incomeData.map(entry => entry.project_name);
+    const yValuesIncome = incomeData.map(entry => entry.total);
+    const yValuesExpense = expenseData.map(entry => entry.total);
 
     new Chart("myChart", {
-      type: "line",
-      data: {
-        labels: xValues,
-        datasets: [{
-          data: [860, 1140, 1060, 1060, 1070, 1110, 1330, 2210, 7830, 2478],
-          borderColor: "skyblue",
-          fill: false
-        }, {
-          data: [1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000, 6000, 7000],
-          borderColor: "#ffc107",
-          fill: false
-        }]
-      },
-      options: {
-        legend: {
-          display: false
+        type: "line",
+        data: {
+            labels: xValues,
+            datasets: [
+                {
+                    label: 'Income',
+                    data: yValuesIncome,
+                    borderColor: "skyblue",
+                    fill: false
+                },
+                {
+                    label: 'Expenses',
+                    data: yValuesExpense,
+                    borderColor: "red",
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Project Name'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Total Amount'
+                    }
+                }
+            },
+            legend: {
+                display: true,
+                position: 'bottom'
+            }
         }
-      }
     });
-  </script>
+</script>
+
 
   <!-- Transactions -->
   <div class="col-md-6 col-lg-4 order-2 mb-4">
     <div class="card  inccc" style="height:300px;overflow:auto;">
       <div class="card-header d-flex align-items-center justify-content-between">
-        <h5 class="card-title m-0 me-2" style="color:black">Transactions</h5>
+        <h5 class="card-title m-0 me-2" style="color:black">Recent Transactions</h5>
         <div class="dropdown">
           <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="bx bx-dots-vertical-rounded"></i>
@@ -466,7 +512,7 @@ up -->
       </div>
       <div class="card-body">
         <ul class="p-0 m-0">
-          @foreach ($transfer_history as $transfer)
+          @foreach ($recent_transfer_history as $transfer)
           <li class="d-flex mb-4 pb-1">
 
             <div class="avatar flex-shrink-0 me-3">
@@ -476,13 +522,13 @@ up -->
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
 
               <div class="me-2">
-                <h6 class="mb-0">{{ $transfer->first_name }}</h6>
-                <small class="text-muted d-block mb-1">{{ $transfer->last_name }}</small>
+                <h6 class="mb-0">{{ $transfer?->first_name }}</h6>
+                <small class="text-muted d-block mb-1">{{ $transfer?->last_name }}</small>
 
               </div>
               <div class="user-progress d-flex align-items-center gap-1">
                 <h6 class="mb-0">
-                  {{ empty($transfer->total_amount) == 0 ? 0 : $transfer->total_amount }}
+                  {{  $transfer->total_amount }}
                 </h6>
                 <span class="text-muted">Rupees</span>
               </div>
@@ -658,7 +704,7 @@ up -->
   <div class="col-md-6 col-lg-4 order-2 mb-4">
     <div class="card h-100  inccc over">
       <div class="card-header d-flex align-items-center justify-content-between">
-        <h5 class="card-title m-0 me-2" style="color:black">Transactions</h5>
+        <h5 class="card-title m-0 me-2" style="color:black">Total Transactions</h5>
         <div class="dropdown">
           <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="bx bx-dots-vertical-rounded"></i>
@@ -680,13 +726,13 @@ up -->
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
 
               <div class="me-2">
-                <h6 class="mb-0">{{ $transfer->first_name }}</h6>
-                <small class="text-muted d-block mb-1">{{ $transfer->last_name }}</small>
+                <h6 class="mb-0">{{ $transfer?->first_name }}</h6>
+                <small class="text-muted d-block mb-1">{{ $transfer?->last_name }}</small>
 
               </div>
               <div class="user-progress d-flex align-items-center gap-1">
                 <h6 class="mb-0" style="font-weight: ">
-                  {{ empty($transfer->total_amount) == 0 ? 0 : $transfer->total_amount }}
+                  {{ $transfer?->total_amount }}
                 </h6>
                 <span class="text-muted">Rupees</span>
               </div>

@@ -9,6 +9,7 @@
   <title>@yield('title') </title>
   <meta name="description" content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
   <meta name="keywords" content="{{ config('variables.templateKeyword') ? config('variables.templateKeyword') : '' }}">
+  
   <!-- laravel CRUD token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- Canonical SEO -->
@@ -43,14 +44,15 @@
   <!-- Include Scripts for customizer, helper, analytics, config -->
   @include('layouts/sections/scriptsIncludes')
   <style>
-    @media (max-width: 576px) {
+    @media (min-width: 576px) {
+   
       .mob {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         justify-content: stretch;
         position: fixed;
-        /* left: 99px; */
+         left: 99px; 
         bottom: 0;
       }
     }
@@ -86,7 +88,7 @@
       align-items: stretch;
       justify-content: stretch;
       position: fixed;
-      left: 1150px !important;
+      left: 1156px ;
       bottom: 0;
     }
 
@@ -150,7 +152,7 @@
     </div>
     <div class="offcanvas-body">
       <div class="image-container text-center">
-        <img class="round" id="profile-image" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
+        <img class="round" id="profile-image" @if(Auth::user()->image!= '' || Auth::user()->image != null)  src="public/images/{{ Auth::user()->image }}"  @else  src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" @endif alt="user" />
 
         <div>
           <label for="image-input" class="plus-symbol">&#43;</label>
@@ -158,11 +160,11 @@
         </div>
       </div>
 
-      <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> Bala Murugan </b></h6>
-      <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> Admin </b></h6>
+      <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> {{Auth::user()->first_name}} {{Auth::user()->last_name}}</b></h6>
+      <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> {{Auth::user()->roles->pluck('name')->first()}}</b></h6>
       <button type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="fa fa-edit" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</button>
 
-      <div class=" mob ">
+      <div class="mob">
 
 
         <h6> <i class="bx bx-power-off me-2" style="color:black;font-weight:900 !important; text-shadow:black"></i>
