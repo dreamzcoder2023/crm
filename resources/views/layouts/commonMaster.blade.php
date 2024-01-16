@@ -9,7 +9,7 @@
   <title>@yield('title') </title>
   <meta name="description" content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
   <meta name="keywords" content="{{ config('variables.templateKeyword') ? config('variables.templateKeyword') : '' }}">
-  
+
   <!-- laravel CRUD token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- Canonical SEO -->
@@ -36,7 +36,7 @@
   <!--- link bootstrap --->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  
+
   <!--- link bootstrap --->
   @include('layouts/sections/styles')
 
@@ -45,14 +45,14 @@
   @include('layouts/sections/scriptsIncludes')
   <style>
     @media (min-width: 576px) {
-   
+
       .mob {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         justify-content: stretch;
         position: fixed;
-         left: 99px; 
+         left: 99px;
         bottom: 0;
       }
     }
@@ -152,26 +152,31 @@
     </div>
     <div class="offcanvas-body">
       <div class="image-container text-center">
-        <img class="round" id="profile-image" @if(Auth::user()->image!= '' || Auth::user()->image != null)  src="public/images/{{ Auth::user()->image }}"  @else  src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" @endif alt="user" />
+        <img class="round" id="profile-image" @if(Auth::user()->image!= '' || Auth::user()->image != null)  src="{{ url('images/'.Auth::user()->image) }}"  @else  src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" @endif alt="user" />
 
-        <div>
+        <div id="refresh-image">
           <label for="image-input" class="plus-symbol">&#43;</label>
           <input type="file" id="image-input" accept="image/*" style="display: none; height: 100px; width: 100px;" />
+
         </div>
+        <p id="image_upload" style="display:none">Image is uploading ... </p>
+        <p id="image_uploaded" style="display:none">Image is uploaded <img height="20px" width="20px" src="{{asset('assets/img/icons/check-icon-right-mark.jpg')}}" ></p>
       </div>
 
       <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> {{Auth::user()->first_name}} {{Auth::user()->last_name}}</b></h6>
       <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> {{Auth::user()->roles->pluck('name')->first()}}</b></h6>
-      <button type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="fa fa-edit" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</button>
+      <a href="{{route('user-edit',Auth::user()->id)}}" type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="fa fa-edit" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</a>
 
       <div class="mob">
 
 
-        <h6> <i class="bx bx-power-off me-2" style="color:black;font-weight:900 !important; text-shadow:black"></i>
+        <h6> <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bx bx-power-off me-2" style="color:black;font-weight:900 !important; text-shadow:black"></i></a>
           <!-- <span class="align-middle" style="color: rgb(0, 0, 0)"></span> -->
           <span class="datetime" style="color: red;font-weight:800;">{{ \Carbon\Carbon::now()->toDateTimeString() }}</span>
         </h6>
-
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+          @csrf
+        </form>
         </a>
       </div>
     </div>
@@ -181,16 +186,38 @@
   </div>
   <script>
     document.getElementById('image-input').addEventListener('change', function(event) {
+    //  alert('hi');
       const fileInput = event.target;
       const file = fileInput.files[0];
 
       if (file) {
+        $('#image_upload').css('display','inline');
         const reader = new FileReader();
         reader.onload = function(e) {
           document.getElementById('profile-image').src = e.target.result;
         };
         reader.readAsDataURL(file);
+        var formData = new FormData();
+        formData.append('image', file);
+        $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: "{{route('profile_photo_upload')}}",
+        data: formData,
+        type: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (html) {
+          console.log(html);
+          $('#image_upload').css('display','none');
+          $('#image_uploaded').css('display','inline');
+          window.location.reload();
+                }
+    });
       }
+      console.log(file);
+
     });
 
     document.querySelector('.overlay').addEventListener('click', function() {

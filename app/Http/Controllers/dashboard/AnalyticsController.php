@@ -253,7 +253,7 @@ class AnalyticsController extends Controller
     $input['notes'] = 0;
     $checking = Attendance::create($input);
     return redirect()->route('dashboard')
-      ->with('popup1', 'open');
+      ->with('popup', 'Check-in Successfully.');
   }
   public function update()
   {
@@ -270,7 +270,7 @@ class AnalyticsController extends Controller
     $input['duration'] = $hours;
     $checking->update($input);
     return redirect()->route('dashboard')
-      ->with('popup2', 'open');
+      ->with('popup', 'Check-out Successfully.');
   }
   public function convert_hrs($value)
   {

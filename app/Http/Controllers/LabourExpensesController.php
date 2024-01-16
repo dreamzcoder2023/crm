@@ -122,7 +122,7 @@ class LabourExpensesController extends Controller
     $labour = Labour::find($request->labour_id);
     $labour['advance_amt'] = abs($labour->advance_amt + $extra_amt);
     $labour->update();
-    return redirect()->route('labour-expenses-history')
+    return redirect()->route('labour-expenses-create')
       ->with('expenses-popup', 'Labour Detail Added Successfully');
   }
   public function labour_salary(Request $request)

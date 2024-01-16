@@ -266,4 +266,20 @@ class UserController extends Controller
 //"$day:$hours:$minutes:$seconds";
         return $hours.' hours '.$minutes.' minutes ';
     }
+    public function profile_photo_upload(Request $request){
+      //dd($request->all());
+      $user = User::where('id',Auth::user()->id)->first();
+      if ($image =$request->file('image')) {
+
+        $destinationPath = public_Path('images');
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+
+
+        $input['image'] = $profileImage;
+
+    }
+    $user->update($input);
+    return response()->json($user);
+    }
 }

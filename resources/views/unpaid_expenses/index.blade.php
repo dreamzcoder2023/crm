@@ -56,32 +56,44 @@
 
 <script>
     $(function() {
-      $('.success-msg').text('Expenses Updated Successfully')
-      $('#walletsuccess').removeClass('fade');
-      $('#walletsuccess').modal('show');
+    toastr.success('{{session('expenses-popup')}}',{
+      timeOut:1000,
+      fadeOut:1000,
+    });
     });
 </script>
 @endif
-@if(session()->has('message'))
-    <div class="alert alert-success">
-        {{ session()->get('message') }}
-    </div>
+@if (session()->has('message'))
+
+<script>
+      $(function() {
+            toastr.success('{{ session('message') }}', {
+                timeOut: 1000,
+                fadeOut: 1000,
+            });
+        });
+</script>
 @endif
 @if(session()->has('msg'))
-    <div class="alert alert-danger">
-        {{ session()->get('msg') }}
-    </div>
+<script>
+$(function() {
+  toastr.error('{{ session('msg') }}', {
+      timeOut: 1000,
+      fadeOut: 1000,
+  });
+});
+</script>
 @endif
 <div style="margin-top:-32px ;">
- 
+
 <h4 class="fw-bold py-3 mb-4">
   <span class="fw-light" style="color: black;font-size:16px;">Unpaid Expenses History </span>
-  
+
 </h4>
 
 <div class="row" style="position:absolute;  right:50px ">
   <div class="col-md-12">
-    
+
     <!-- @can('transfer-create') -->
     <!-- <ul class="nav nav-pills flex-column flex-md-row mb-3">
       <li class="nav-item"><a class="nav-link active" href="{{route('transfer-create')}}"><i class="bi bi-currency-exchange me-1"></i> Add Transfer</a></li>
@@ -89,9 +101,9 @@
     </ul> -->
     <!-- @endcan -->
   </div></div></div>
-  
+
   <div class="card" style="top:-28px;">
-    
+
     <div class="card-header">
         <div class="container text-center">
           <div style="float: right"> <!-- Reduce the column size from 1 to 2 -->
@@ -101,12 +113,12 @@
                 aria-hidden="true" style="color:white"></i></button>
               <button type="button" class="btn btn-light" id="unpaidexpense-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
                 style="color:white"></i></button>
-          
-            </div> 
+
+            </div>
             <div class="row aa">
 
 
-              
+
             <div class="col-md-2">
               <select class="form-group selectpicker" name="category_id" id="category_id"
                   data-live-search="true" style="width:50px;">
@@ -150,9 +162,9 @@
                 </div>
 
 
-               
-                
-               
+
+
+
             </div>
         </div>
     </div>

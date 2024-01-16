@@ -79,7 +79,7 @@ class WalletController extends Controller
           $project->update();
         }
         return redirect()->route('dashboard')
-        ->with('popup', 'open');
+        ->with('popup', 'Wallet Details Created Successfully.');
 
     }
 

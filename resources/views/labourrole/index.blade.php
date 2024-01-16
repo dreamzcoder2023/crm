@@ -44,17 +44,23 @@
 @if (session()->has('message'))
 
 <script>
-    $(function() {
-      $('.success-msg').text("{{ session('message')}}");
-      $('#walletsuccess').removeClass('fade');
-      $('#walletsuccess').modal('show');
-    });
+      $(function() {
+            toastr.success('{{ session('message') }}', {
+                timeOut: 1000,
+                fadeOut: 1000,
+            });
+        });
 </script>
 @endif
 @if(session()->has('msg'))
-    <div class="alert alert-danger">
-        {{ session()->get('msg') }}
-    </div>
+<script>
+$(function() {
+  toastr.error('{{ session('msg') }}', {
+      timeOut: 1000,
+      fadeOut: 1000,
+  });
+});
+</script>
 @endif
 <div style="margin-top: 30px;">
 <h4 class="fw-bold py-3 mb-4" style="margin-top:-49px;font-size:16px;color:black;">

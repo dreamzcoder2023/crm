@@ -93,14 +93,25 @@
         </script>
     @endif
     @if (session()->has('message'))
-        <div class="alert alert-success">
-            {{ session()->get('message') }}
-        </div>
+
+    <script>
+          $(function() {
+                toastr.success('{{ session('message') }}', {
+                    timeOut: 1000,
+                    fadeOut: 1000,
+                });
+            });
+    </script>
     @endif
-    @if (session()->has('msg'))
-        <div class="alert alert-danger">
-            {{ session()->get('msg') }}
-        </div>
+    @if(session()->has('msg'))
+    <script>
+    $(function() {
+      toastr.error('{{ session('msg') }}', {
+          timeOut: 1000,
+          fadeOut: 1000,
+      });
+    });
+    </script>
     @endif
 
     <div class="card" style="margin-top: -13px;">

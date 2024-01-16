@@ -100,7 +100,7 @@
 
             @if($user->image != '' || $user->image != null)
             <input type="hidden" id="image_status" name="image_status" value="{{ $user->image }}">
-            <img src="{{url('public/images/'.$user->image)}}" width="50px" height="50px">
+            <img src="{{url('images/'.$user->image)}}" width="50px" height="50px">
             @endif
             <label id="job_title-error" class="error" for="basic-default-job_title">Profile photo is required</label>
           </div>

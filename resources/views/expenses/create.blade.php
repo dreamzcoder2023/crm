@@ -3,6 +3,20 @@
 @section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
+
+@if (session()->has('expenses-popup'))
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+<script>
+      $(function() {
+    toastr.success('{{ session('expenses-popup') }}', {
+        timeOut: 1000,
+        fadeOut: 1000,
+    });
+});
+</script>
+@endif
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
 
 <!-- Basic Layout & Basic with Icons -->

@@ -150,8 +150,8 @@ class ExpensesController extends Controller
     $minus = abs($project->wallet - $request->paid_amt);
     $project['wallet'] = $minus;
     $project->update();
-    return redirect()->route('expenses-history')
-      ->with('expenses-popup', 'open');
+    return redirect()->route('expenses-create')
+      ->with('expenses-popup', 'Expenses created successfully');
   }
   public function edit(Request $request)
   {
@@ -241,7 +241,7 @@ class ExpensesController extends Controller
     // print_r($input);exit;
     $expenses->update($input);
     return redirect()->route('expenses-history')
-      ->with('expenses-popup', 'open');
+      ->with('expenses-popup', 'Expenses updated successfully');
   }
   public function insufficientamt(Request $request)
   {
@@ -294,7 +294,7 @@ class ExpensesController extends Controller
     //dd($expenses);
     $expenses->update();
     return redirect()->route('expenses-history')
-      ->with('expenses-popup', 'open');
+      ->with('expenses-popup', 'Unpaid amount updated successfully');
   }
 
   public function expensedelete(Request $request)

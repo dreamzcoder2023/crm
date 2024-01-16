@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css">
 
 
 <style>
@@ -86,29 +87,45 @@
             integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
         <script>
-            $(function() {
-                $('.success-msg').text('Expenses Updated Successfully')
-                $('#walletsuccess').removeClass('fade');
-                $('#walletsuccess').modal('show');
+              $(function() {
+            toastr.success('{{ session('expenses-popup') }}', {
+                timeOut: 1000,
+                fadeOut: 1000,
             });
+        });
         </script>
     @endif
     @if (session()->has('message'))
-        <div class="alert alert-success">
-            {{ session()->get('message') }}
-        </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <script>
+        $(function() {
+            toastr.success('{{ session('message') }}', {
+                timeOut: 1000,
+                fadeOut: 1000,
+            });
+        });
+    </script>
     @endif
-    @if (session()->has('msg'))
-        <div class="alert alert-danger">
-            {{ session()->get('msg') }}
-        </div>
-    @endif
+
+        @if (session()->has('msg'))
+
+    <script>
+        $(function() {
+            toastr.error('{{ session('msg') }}', {
+                timeOut: 1000,
+                fadeOut: 1000,
+            });
+        });
+    </script>
+        @endif
 
     <div class="card" style="margin-top: -10px;">
         <div class="card-header">
             <div class="container justify-content-start">
                 <div class="row aa">
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
                             <option value="">Select category</option>
                             @foreach ($category as $category)
@@ -118,8 +135,8 @@
                             @endforeach
                         </select>
                     </div>
-                    
-                    <div class="col-md-4">
+
+                    <div class="col-md-2">
                         <select class="form-group selectpicker" name="project_id" id="project_id" data-live-search="true">
                             <option value="">Select Project</option>
                             @foreach ($project as $project)
@@ -129,9 +146,9 @@
                             @endforeach
                         </select>
                     </div>
-                
+
                     @role('Admin')
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <select class="form-group selectpicker" name="user_id" id="user_id" data-live-search="true">
                                 <option value="">Select Member</option>
                                 @foreach ($user as $user)
@@ -142,22 +159,22 @@
                             </select>
                         </div>
                     @endrole
-                
-                    <div class="col-md-2">
+
+                    <div class="col-md-3">
                         <span>
                             <label>From:&nbsp;</label>
                             <input type="date" class="form-control bb" id="from_date" name="from_date" value="{{ $from_date }}"
                                 style="width: 144px; display: initial;">
                         </span>
                     </div>
-                
-                    <div class="col-md-2">
+
+                    <div class="col-md-3">
                         <label>To</label>
                         <input type="date" class="form-control" id="to_date" name="to_date" value="{{ $to_date1 }}"
                             style="width: 144px; display: initial;">
                     </div>
-                
-                    <div class="col-md-2">
+                  </div>
+                    <div style="float: right">
                         <a href="{{ route('expenses-history') }}" class="me-3">
                             <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30" width="30">
                         </a>
@@ -168,8 +185,8 @@
                             style="background-color: red; border-radius:6px;"><i class="fa fa-file-pdf-o" aria-hidden="true"
                                 style="color:white"></i></button>
                     </div>
-                </div>
-                
+
+
             </div>
         </div>
     </div>

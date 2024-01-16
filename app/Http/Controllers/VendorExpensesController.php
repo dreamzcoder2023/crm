@@ -143,7 +143,7 @@ class VendorExpensesController extends Controller
     $labour = Vendor::find($request->vendor_id);
     $labour['advance_amt'] = abs($labour->advance_amt + $extra_amt);
     $labour->update();
-    return redirect()->route('vendor-expenses-index')
+    return redirect()->route('vendor-expenses-create')
       ->with('expenses-popup', 'Vendor Expenses Added Successfully');
   }
   public function vendor_salary(Request $request)

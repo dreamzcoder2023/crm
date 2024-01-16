@@ -72,6 +72,7 @@ Route::put('/user/update/{id}', [UserController::class, 'update'])->name('user.u
 Route::put('/user/jobupdate/{id}', [UserController::class, 'jobupdate'])->name('user.jobupdate');
 Route::get('/user/delete/{id}',[UserController::class,'userdelete'])->name('user-delete');
 Route::get('/phoneunique',[UserController::class,'phoneunique'])->name('phoneunique');
+Route::post('/profile_photo_upload',[UserController::class,'profile_photo_upload'])->name('profile_photo_upload');
 
 // category list routes started
 Route::get('/category', [CategoryController::class, 'index'])->name('category-index');
