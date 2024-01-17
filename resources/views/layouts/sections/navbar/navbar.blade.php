@@ -175,11 +175,11 @@
 
   }
 
-  @media (min-width: 576px) {
+  @media (max-width: 576px) {
 
     .navvv {
 
-      margin-top: -68px !important;
+      margin-top: -17px !important;
       margin-left: -34px !important;
     }
   }
@@ -252,7 +252,7 @@ $navbarDetached = ($navbarDetached ?? '');
       </div>
       @endif
 
-      <div class="navbar-nav-right d-flex align-items-center " id="navbar-collapse">
+      <div class="navbar-nav-right d-flex align-items-center navvv" id="navbar-collapse">
         <!-- Search -->
         <!-- <div class="navbar-nav align-items-center">
           <div class="nav-item d-flex align-items-center">
@@ -261,7 +261,7 @@ $navbarDetached = ($navbarDetached ?? '');
           </div>
         </div> -->
         <!-- /Search -->
-        <ul class="navbar-nav flex-row align-items-center ms-auto navvv">
+        <ul class="navbar-nav flex-row align-items-center ms-auto ">
 
           <!-- Place this tag where you want the button to render. -->
           <!-- <li class="nav-item lh-1 me-3">

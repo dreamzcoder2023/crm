@@ -107,11 +107,11 @@ $(function() {
           @canany(['role-edit', 'role-delete'])
           <td>
             @can('role-edit')
-            <a class="" href="{{ route('roles.edit',$role->id) }}"><i class="fa fa-edit" style="font-size:24px"></i></a>
+            <a class="" href="{{ route('roles.edit',$role->id) }}"><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
             @endcan
             @can('role-delete')
             @if(!in_array($role->id,$user))
-              <a data-toggle="modal" href="javascript:void(0)" data-id="{{$role->id}}" class="deleteRole"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i></a><br/>
+              <a data-toggle="modal" href="javascript:void(0)" data-id="{{$role->id}}" class="deleteRole"><i class="bi bi-trash" style="font-size:24px; color:red"></i></a><br/>
             @endif
             @endcan
           </td>

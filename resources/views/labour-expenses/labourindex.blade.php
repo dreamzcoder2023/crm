@@ -98,8 +98,8 @@
                             <td>{{ $user->advance_amt }}</td>
                             @can('labour expenses-labour advance amount edit')
                                 <td>
-                                    <a class="" href="{{ route('advanceform', $user->id) }}"><i class="fa fa-edit"
-                                            style="font-size:24px"></i></a>
+                                    <a class="" href="{{ route('advanceform', $user->id) }}"><i class="bi bi-pencil-square"
+                                            style="font-size:24px;color:green"></i></a>
                                 </td>
                             @endcan
                         </tr>

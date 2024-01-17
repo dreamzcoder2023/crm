@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css">
 
 <style>
   @media only screen and (max-width:320px){
@@ -59,19 +59,17 @@ td, th {
     <div class="card-header">
         <div class="container text-center">
           <div style="float: right"> <!-- Reduce the column size from 1 to 2 -->
-            <button type="button" class="btn btn-light" id="clientsummary-export" style="background-color: green;"><i class="fa fa-file-excel-o"
-              aria-hidden="true" style="color:white"></i></button>
+            <button type="button" class="btn btn-light" id="clientsummary-export" ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
          <!-- Reduce the column size from 1 to 2 -->
-            <button type="button" class="btn btn-light" id="clientsummary-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
-              style="color:white"></i></button>
-        
+            <button type="button" class="btn btn-light" id="clientsummary-pdf" ><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
+
             <a href="{{route('client-summary')}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
-                    alt="slack" class="me-3" height="40" width="40"></a>
+                    alt="slack" class="me-3" height="25" width="25"></a>
         </div>
             <div class="row aa">
 
-              
-            
+
+
 
             <div class="col-md-3"><select class="form-group selectpicker" name="project_id"
               id="project_id" data-live-search="true">
@@ -103,7 +101,7 @@ td, th {
                 <input type="date" class="form-control" id="to_date" name="to_date"
                     value="{{ $to_date1 }}" style="width: 144px;display:initial;">
             </div>
-               
+
             </div>
         </div>
     </div>
@@ -153,7 +151,11 @@ td, th {
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker();
+        });
   $(document).ready(function() {
 var data =  new DataTable('#client_summary_listing_table', {
   "lengthMenu": [15, 50, 100],

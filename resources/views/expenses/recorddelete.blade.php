@@ -90,20 +90,18 @@
             <div class="container text-center">
               <div style="float: right">
                 <a href="{{ route('expenses-delete_record') }}"><img
-                        src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="slack" class="me-3"
+                        src="{{ asset('assets/img/icons/clearfilter.png') }}"  style="height: 25px;width:25px;" alt="slack" class="me-3"
                         height="40" width="40"></a>
            <!-- Reduce the column size from 1 to 2 -->
                 <button type="button" class="btn btn-light" id="expense-export"
-                    style="background-color: green;"><i class="fa fa-file-excel-o"
-                    aria-hidden="true" style="color:white"></i></button>
+                    ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""> </button>
             <!-- Reduce the column size from 1 to 2 -->
                 <button type="button" class="btn btn-light" id="expense-pdf"
-                    style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
-                    style="color:white"></i></button>
+                    ><img src="{{ asset('assets/img/icons/file.png') }}"  style="height: 25px;width:25px;" alt=""></button>
             </div>
                 <div class="row aa">
 
-                    
+
 
                     <div class="col-md-2">
                         <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
@@ -143,7 +141,7 @@
                         <input type="date" class="form-control" id="to_date" name="to_date"
                             value="{{ $to_date1 }}" style="width: 144px;display:initial;">
                     </div>
-                    
+
                 </div>
             </div>
         </div>

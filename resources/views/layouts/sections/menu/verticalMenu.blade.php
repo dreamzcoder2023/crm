@@ -317,7 +317,7 @@
                             <a href="{{ route('stage-index') }}" class="menu-link">
                                 {{-- <img src="{{ asset('assets/img/icons/project-management.png') }}" alt="slack"
                                     class="me-3" height="20"> --}}
-                                <div class="dark" style="margin-left: -10px;">Stages</div>
+                                <div class="dark">Stages</div>
                             </a>
                         </li>
                     @endcan

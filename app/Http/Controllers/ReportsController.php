@@ -43,7 +43,7 @@ class ReportsController extends Controller
           if($user_filter != 'undefined' && $user_filter != ''){
             $clients = $clients->where('wallet.client_id',$user_filter);
           }
-        
+
         $clients = $clients->get();
        //dd($clients);
         $project = ProjectDetails::where('project_status',0)->get();
@@ -54,7 +54,7 @@ class ReportsController extends Controller
     }
     public function payment_summary(Request $request)
     {
-   
+
 
         $expenses = ProjectDetails::leftjoin('wallet','wallet.project_id','=','project_details.id')->leftjoin('expenses','project_details.id', 'expenses.project_id')
                 // ->where('expenses.project_id', '!=', null)
@@ -75,7 +75,7 @@ class ReportsController extends Controller
       if($from != '' && $to_date != ''){
         $project = $project->whereBetween('wallet.current_date', [$from,$to_date]);
     }
- 
+
       if($user_filter != 'undefined' && $user_filter != ''){
         $project = $project->where('wallet.client_id',$user_filter);
       }
@@ -100,7 +100,7 @@ class ReportsController extends Controller
     if($category_filter != 'undefined' && $category_filter != ''){
       $project = $project->where('expenses.category_id',$category_filter);
     }
- 
+
       if($user_filter != 'undefined' && $user_filter != ''){
         $project = $project->where('expenses.user_id',$user_filter);
       }
@@ -141,14 +141,14 @@ class ReportsController extends Controller
           if($user_filter != 'undefined' && $user_filter != ''){
             $clients = $clients->where('wallet.client_id',$user_filter);
           }
-        
+
         $clients = $clients->get();
         $pdf = PDF::loadView('reports.clientsummarypdf', compact('clients'));
 
         return $pdf->download('clientsummary.pdf');
     }
     public function payment_income_export(Request $request){
-    
+
       $user_filter = $request->user_id;
       $from_date = $request->from_date;
       $to_date1 = $request->to_date;
@@ -168,7 +168,7 @@ class ReportsController extends Controller
       if($from != '' && $to_date != ''){
         $project = $project->whereBetween('wallet.current_date', [$from,$to_date]);
     }
- 
+
       if($user_filter != 'undefined' && $user_filter != ''){
         $project = $project->where('wallet.client_id',$user_filter);
       }
@@ -207,7 +207,7 @@ class ReportsController extends Controller
     if($category_filter != 'undefined' && $category_filter != ''){
       $project = $project->where('expenses.category_id',$category_filter);
     }
- 
+
       if($user_filter != 'undefined' && $user_filter != ''){
         $project = $project->where('expenses.user_id',$user_filter);
       }

@@ -105,11 +105,11 @@ $(function() {
              @canany(['payment-edit','payment-delete'])
             <td>
             @can(['payment-edit'])
-            <a class="" href="{{ route('payment-edit',$payment->id) }}"><i class="fa fa-edit" style="font-size:24px"></i></a>
+            <a class="" href="{{ route('payment-edit',$payment->id) }}"><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
          @endcan
             @can('payment-delete')
             @if(!in_array($payment->id,$wallet) && !in_array($payment->id,$transfer) && !in_array($payment->id,$expenses))
-            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$payment->id}}" class="deletepayment"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
+            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$payment->id}}" class="deletepayment"><i class="bi bi-trash" style="font-size:24px; color:red"></i> </a><br/>
             @endif
             @endcan
           </td>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css">
 <style>
   @media only screen and (max-width:320px){
     .aa{
@@ -58,7 +58,7 @@ td, th {
         <div class="container text-center">
             <div class="row aa">
                 <div class="col">
-                <select class="form-control" name="user_id" id="user_id">
+                <select class="form-control selectpicker" data-live-search="true" name="user_id" id="user_id">
                         <option value="">Select Client</option>
                         @foreach($user as $user)
                         <option value="{{$user->id}}"{{$user->id == $user_filter ? 'selected' : ''}}>{{$user->first_name}} {{$user->last_name}} - {{$user->name}}</option>
@@ -79,14 +79,14 @@ td, th {
                          >
                 </div>
                 <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-success" id="paymentincome-export">Excel</button>
+                    <button type="button" class="btn btn-light" id="paymentincome-export"><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 </div>
                 <div class="col-1"> <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-primary" id="paymentincome-pdf">Pdf</button>
+                    <button type="button" class="btn btn-light" id="paymentincome-pdf"><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 </div>
                 <div class="col">
                     <a href="{{route('payment-income',$id)}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
-                            alt="slack" class="me-3" height="40" width="40"></a>
+                            alt="slack" class="me-3" height="25" width="25"></a>
                 </div>
 
             </div>
@@ -136,7 +136,11 @@ td, th {
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker();
+        });
   $(document).ready(function() {
 var data =  new DataTable('#payment_income_listing_table', {
   "lengthMenu": [15, 50, 100],

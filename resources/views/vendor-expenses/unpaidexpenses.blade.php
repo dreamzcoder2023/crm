@@ -118,11 +118,9 @@
                             width="30">
                     </a>
                 <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="expense-export" style="background-color: green;"><i class="fa fa-file-excel-o"
-                        aria-hidden="true" style="color:white"></i></button>
+                    <button type="button" class="btn btn-light" id="expense-export" ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="expense-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
-                        style="color:white"></i></button>
+                    <button type="button" class="btn btn-light" id="expense-pdf" ><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 </div>
                 <div class="row aa">
 
@@ -240,8 +238,8 @@
                                 @canany(['vendor expenses-unpaid edit'])
                             <td>
                               @can('vendor expenses-unpaid edit')
-                                    <a class="" href="{{ route('vendor-expenses-unpaid-edit', $expense->id) }}"><i class="fa fa-edit"
-                                            style="font-size:24px"></i></a>
+                                    <a class="" href="{{ route('vendor-expenses-unpaid-edit', $expense->id) }}"><i class="bi bi-pencil-square"
+                                            style="font-size:24px;color:green"></i></a>
                               @endcan
 
                             </td>

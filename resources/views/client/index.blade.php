@@ -111,11 +111,11 @@ td, th {
               <a  href="{{route('client-show',$client->id)}}" data-id="{{$client->id}}" class=""><i class="bi bi-view-list" style="font-size:24px"></i></a>
               @endcan
               @can('client-edit')
-              <a class="" href="{{ route('client-edit',$client->id) }}"><i class="fa fa-edit" style="font-size:24px"></i></a>
+              <a class="" href="{{ route('client-edit',$client->id) }}"><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
         @endcan
         @can('client-delete')
         @if(!in_array($client->id,$project) && !in_array($client->id,$wallet))
-            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$client->id}}" class="deleteClient"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
+            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$client->id}}" class="deleteClient"><i class="bi bi-trash" style="font-size:24px; color:red"></i> </a><br/>
             @endif
             @endcan
         </td>

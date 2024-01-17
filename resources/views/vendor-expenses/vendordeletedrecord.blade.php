@@ -103,18 +103,16 @@
             <div class="container justify-content-start">
                 <div style="float: right"><!-- Reduce the column size from 1 to 2 -->
                     <a href="{{ route('vendor-expenses-delete_record') }}" class="me-3">
-                        <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="30"
-                            width="30">
+                        <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="25"
+                            width="25">
                     </a>
                 <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="expense-export" style="background-color: green;"><i class="fa fa-file-excel-o"
-                        aria-hidden="true" style="color:white"></i></button>
+                    <button type="button" class="btn btn-light" id="expense-export" ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="expense-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
-                        style="color:white"></i></button>
+                    <button type="button" class="btn btn-light" id="expense-pdf" ><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 </div>
                 <div class="row aa">
-                 
+
 
                 <div class="col-md-2">
                     <select class="form-group selectpicker" name="category_id" id="category_id"
@@ -157,7 +155,7 @@
                     <input type="date" class="form-control" id="to_date" name="to_date"
                         value="{{ $to_date1 }}" style="width: 144px;display:initial;">
                 </div>
-                   
+
                 </div>
             </div>
         </div>

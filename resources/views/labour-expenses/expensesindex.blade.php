@@ -106,12 +106,10 @@
                     </a>
                <!-- Reduce the column size from 1 to 2 -->
                     <button type="button" class="btn btn-light" id="expense-export"
-                        style="background-color: green;"><i class="fa fa-file-excel-o"
-                        aria-hidden="true" style="color:white"></i></button>
+                        ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
                  <!-- Reduce the column size from 1 to 2 -->
                     <button type="button" class="btn btn-light" id="expense-pdf"
-                        style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
-                        style="color:white"></i></button>
+                        ><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 </div>
                 <div class="row aa">
 
@@ -170,7 +168,7 @@
                 <thead>
                     <tr>
                         <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
-                                    class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a></th>
+                          class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
                         <th>Paid date</th>
                         <th>Category <br />Name</th>
                         <th>Project Name</th>
@@ -229,11 +227,11 @@
                                 <td>
                                     @can('labour expenses-edit')
                                         <a class="" href="{{ route('labour-expenses-edit', $expense->id) }}"><i
-                                                class="fa fa-edit" style="font-size:24px"></i></a>
+                                          class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
                                     @endcan
                                     @can('labour expenses-delete')
                                         <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
-                                            data-id="{{ $expense->id }}" class="deleteExpense"><i class="fa fa-trash-o"
+                                            data-id="{{ $expense->id }}" class="deleteExpense"><i class="bi bi-trash"
                                                 style="font-size:24px; color:red"></i> </a><br />
                                     @endcan
 

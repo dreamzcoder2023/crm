@@ -119,11 +119,12 @@ $(function() {
         <a  href="{{route('user-show',$user->id)}}" data-id="{{$user->id}}" class=""><i class="bi bi-eye" style="font-size:20px"></i></a>
         @endcan
           @can(['user-edit'])
-        <a class="" @if($role->model_id == Auth::user()->id) href="{{ route('user-edit',$user->id) }}" @else disabled @endif><i class="fa fa-edit" style="font-size:20px"></i></a>
+        <a class="" @if($role->model_id == Auth::user()->id) href="{{ route('user-edit',$user->id) }}" @else disabled @endif><i class="bi bi-pencil-square" style="font-size:20px;color:green"></i></a>
         @endcan
         @can('user-delete')
         <input type="hidden" value="{{$user->id}}" id="user_id">
-        <a data-toggle="modal" href="javascript:void(0)" data-id="{{$user->id}}" class="deleteUser"><i class="fa fa-trash-o" style="font-size:20px; color:red"></i> </a><br/>
+        <a data-toggle="modal" href="javascript:void(0)" data-id="{{$user->id}}" class="deleteUser"><i class="bi bi-trash" style="font-size:20px; color:red"></i> </a><br/>
+
         @endcan
       </td>
       @endcanany

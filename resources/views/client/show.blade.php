@@ -79,7 +79,7 @@ td, th {
                 </div>
                 <div class="col">
                     <a href="{{route('client-show',$client_id)}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
-                            alt="slack" class="me-3" height="40" width="40"></a>
+                            alt="slack" class="me-3" height="25" width="25"></a>
                 </div>
             </div>
         </div>

@@ -36,7 +36,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 20, .08), 0 1px 2px rgba(0, 0, 20, .08);
         border: 0;
         border-radius: 0.5rem;
-        width: 300px;
+        width: 220px;
     }
 
     .icon-shape {
@@ -113,7 +113,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h4 class="mb-0">Project Name</h4>
+                            <h4 class="mb-0" style="font-size:17px">Project Name</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary rounded-2"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="18" height="18"
@@ -124,7 +124,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold">{{ $project?->project_name }}</h3>
+                        <h3 class="fw-bold" style="font-size:21px">{{ $project?->project_name }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -135,7 +135,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h4 class="mb-0">Unpaid Amount</h4>
+                            <h4 class="mb-0" style="font-size:17px">Unpaid Amount</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary rounded-2"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="18" height="18"
@@ -146,7 +146,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold">{{ $project?->unpaid }}</h3>
+                        <h3 class="fw-bold" style="font-size:21px">{{ $project?->unpaid }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -157,7 +157,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h4 class="mb-0">Advance Amount</h4>
+                            <h4 class="mb-0" style="font-size:17px">Advance Amount</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary rounded-2"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="18" height="18"
@@ -168,7 +168,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold">{{ $project?->advance_amt }}</h3>
+                        <h3 class="fw-bold" style="font-size:21px">{{ $project?->advance_amt }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -179,7 +179,7 @@
               <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                       <div>
-                          <h4 class="mb-0">Settle Amount</h4>
+                          <h4 class="mb-0" style="font-size:17px">Settle Amount</h4>
                       </div>
                       <div class="icon-shape icon-md bg-light-primary text-primary rounded-2"><svg
                               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="18" height="18"
@@ -190,7 +190,7 @@
                           </svg></div>
                   </div>
                   <div>
-                      <h3 class="fw-bold">{{$project?->unpaid - $project?->advance_amt }}</h3>
+                      <h3 class="fw-bold" style="font-size:21px">{{$project?->unpaid - $project?->advance_amt }}</h3>
                       {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                   </div>
               </div>

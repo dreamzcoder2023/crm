@@ -118,11 +118,11 @@ $(function() {
         <a  href="" data-id="{{$user->id}}" class=""><i class="bi bi-eye" style="font-size:24px"></i></a>
         @endcan --}}
           @can(['labour-edit'])
-        <a class=""  href="{{ route('labour-edit',$user->id) }}" ><i class="fa fa-edit" style="font-size:24px"></i></a>
+        <a class=""  href="{{ route('labour-edit',$user->id) }}" ><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
         @endcan
         @can('labour-delete')
         <input type="hidden" value="{{$user->id}}" id="user_id">
-        <a data-toggle="modal" href="javascript:void(0)" data-id="{{$user->id}}" class="deleteUser"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
+        <a data-toggle="modal" href="javascript:void(0)" data-id="{{$user->id}}" class="deleteUser"><i class="bi bi-trash" style="font-size:24px; color:red"></i> </a><br/>
         @endcan
       </td>
       @endcanany

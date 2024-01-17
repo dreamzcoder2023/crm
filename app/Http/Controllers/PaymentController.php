@@ -20,7 +20,7 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
-        $payments = Payment::orderBy('id','desc');
+        $payments = Payment::where('active_status',1)->where('delete_status',0)->orderBy('id','desc')->get();
         $wallet = Wallet::where('active_status',1)->where('delete_status',0)->pluck('payment_mode')->toArray();
         $expenses = Expenses::pluck('payment_mode')->toArray();
         $transfer = Transfer::pluck('payment_mode')->toArray();

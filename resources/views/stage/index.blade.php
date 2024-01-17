@@ -105,11 +105,11 @@ $(function() {
              @canany(['stage-edit','stage-delete'])
             <td>
             @can(['stage-edit'])
-            <a class="" href="{{ route('stage-edit',$stage->id) }}"><i class="fa fa-edit" style="font-size:24px"></i></a>
+            <a class="" href="{{ route('stage-edit',$stage->id) }}"><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
           @endcan
           @can('stage-delete')
           @if(!in_array($stage->id,$wallet))
-            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$stage->id}}" class="deleteStage"><i class="fa fa-trash-o" style="font-size:24px; color:red"></i> </a><br/>
+            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$stage->id}}" class="deleteStage"><i class="bi bi-trash" style="font-size:24px; color:red"></i> </a><br/>
            @endif
             @endcan
           </td>

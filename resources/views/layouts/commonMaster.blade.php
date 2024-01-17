@@ -12,6 +12,7 @@
 
   <!-- laravel CRUD token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Canonical SEO -->
   <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -36,6 +37,7 @@
   <!--- link bootstrap --->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
 
   <!--- link bootstrap --->
   @include('layouts/sections/styles')
@@ -44,7 +46,7 @@
   <!-- Include Scripts for customizer, helper, analytics, config -->
   @include('layouts/sections/scriptsIncludes')
   <style>
-    @media (min-width: 576px) {
+    @media (max-width: 576px) {
 
       .mob {
         display: flex;
@@ -52,7 +54,7 @@
         align-items: stretch;
         justify-content: stretch;
         position: fixed;
-         left: 99px;
+         left: 159px !important;
         bottom: 0;
       }
     }
@@ -70,11 +72,14 @@
       max-width: 100px;
       max-height: 100px;
     }
+    body{
 
+    }
+*{
+  font-family: 'Comfortaa', sans-serif !important;
 
-    /* *{
-  font-size: 13px !important;
-} */
+}
+   
     .image-container {
       /* position: relative; */
       /* display: inline-block; */
@@ -83,12 +88,13 @@
     }
 
     .mob {
-      display: flex;
+      display:  flex;
+      width:470px !important;
       flex-direction: column;
       align-items: stretch;
       justify-content: stretch;
       position: fixed;
-      left: 1156px ;
+      left: 1019px ;
       bottom: 0;
     }
 
@@ -160,7 +166,7 @@
 
         </div>
         <p id="image_upload" style="display:none">Image is uploading ... </p>
-        <p id="image_uploaded" style="display:none">Image is uploaded <img height="20px" width="20px" src="{{asset('assets/img/icons/check-icon-right-mark.jpg')}}" ></p>
+        <p id="image_uploaded" style="display:none">Image is uploaded <i class="bi bi-check-lg" style="color: green;"></i></p>
       </div>
 
       <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> {{Auth::user()->first_name}} {{Auth::user()->last_name}}</b></h6>

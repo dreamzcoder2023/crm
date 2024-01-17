@@ -127,11 +127,11 @@ $(function() {
             @endcan
 
             @can('project-edit')
-            <a class="" href="{{ route('project-edit',$project->id) }}"><i class="fa fa-edit" style="font-size:20px"></i></a>
+            <a class="" href="{{ route('project-edit',$project->id) }}"><i class="bi bi-pencil-square" style="font-size:20px;color:green"></i></a>
         @endcan
         @can('project-delete')
         @if(!in_array($project->id,$wallet) && !in_array($project->id,$expenses))
-            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$project->id}}" class="deleteProject"><i class="fa fa-trash-o" style="font-size:20px; color:red"></i> </a><br/>
+            <a data-toggle="modal" href="javascript:void(0)" data-id="{{$project->id}}" class="deleteProject"><i class="bi bi-trash" style="font-size:20px; color:red"></i> </a><br/>
            @endif
             @endcan
         </td>

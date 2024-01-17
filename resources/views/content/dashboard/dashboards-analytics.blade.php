@@ -390,7 +390,7 @@ up -->
         <div class="row">
           <div class="col text-center">
             <!-- Initially centered text -->
-            <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;">
+            <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;font-size:12px;width:120px;">
             Today Clock-in Members</span>
             <!-- Hidden member information -->
             <span class="h3 font-bold mb-0 member-info" style="font-size:22px; font-weight:900;color:skyblue">{{ $clocked_in }}</span>
@@ -410,7 +410,7 @@ up -->
           <div class="row">
             <div class="col text-center">
               <!-- Initially centered text -->
-              <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;">
+              <span class="h6 font-semibold text-muted text-sm d-block mb-2" style="color: black !important;margin-top:10px; font-weight:600 !important;text-align:center;font-size:12px;width:120px;">
                 Today Not clocked-in Members</span>
               <!-- Hidden member information -->
               <span class="h3 font-bold mb-0 member-info" style="font-size:22px; font-weight:900;color:#ffc107">{{ $clocked_out }}</span>

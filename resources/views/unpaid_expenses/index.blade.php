@@ -108,11 +108,9 @@ $(function() {
         <div class="container text-center">
           <div style="float: right"> <!-- Reduce the column size from 1 to 2 -->
             <a href="{{route('unpaid-history')}}"><img src="{{asset('assets/img/icons/clearfilter.png')}}"
-              alt="slack" class="me-3" height="40" width="40"></a>
-              <button type="button" class="btn btn-light" id="unpaidexpense-export" style="background-color: green;"><i class="fa fa-file-excel-o"
-                aria-hidden="true" style="color:white"></i></button>
-              <button type="button" class="btn btn-light" id="unpaidexpense-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
-                style="color:white"></i></button>
+              alt="slack" class="me-3" height="25" width="25"></a>
+              <button type="button" class="btn btn-light" id="unpaidexpense-export" ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
+              <button type="button" class="btn btn-light" id="unpaidexpense-pdf" ><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
 
             </div>
             <div class="row aa">
@@ -226,7 +224,7 @@ $(function() {
          @canany(['expenses-unpaid edit'])
         <td>
         @can('expenses-unpaid edit')
-        <a class="" href="{{ route('unpaid-create',$expense->id) }}"><i class="fa fa-edit" style="font-size:24px"></i></a>
+        <a class="" href="{{ route('unpaid-create',$expense->id) }}"><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
         @endcan
       </td>
       @endcanany

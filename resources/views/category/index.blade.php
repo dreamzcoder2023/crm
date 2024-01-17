@@ -119,13 +119,13 @@
                                 <td>
                                   @if($category->name != "salary")
                                     @can(['category-edit'])
-                                        <a class="" href="{{ route('category-edit', $category->id) }}"><i class="fa fa-edit"
-                                                style="font-size:24px"></i></a>
+                                        <a class="" href="{{ route('category-edit', $category->id) }}"><i class="bi bi-pencil-square"
+                                                style="font-size:24px;color:green"></i></a>
                                     @endcan
                                     @can('category-delete')
                                         @if (!in_array($category->id, $categorynot))
                                             <a data-toggle="modal" href="javascript:void(0)" data-id="{{ $category->id }}"
-                                                class="deleteCategory"><i class="fa fa-trash-o"
+                                                class="deleteCategory"><i class="bi bi-trash"
                                                     style="font-size:24px; color:red"></i> </a><br />
                                         @endif
                                     @endcan

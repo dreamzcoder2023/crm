@@ -106,15 +106,13 @@
                             width="30">
                     </a>
                 <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="expense-export" style="background-color: green;"><i class="fa fa-file-excel-o"
-                        aria-hidden="true" style="color:white"></i></button>
+                    <button type="button" class="btn btn-light" id="expense-export" ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
                <!-- Reduce the column size from 1 to 2 -->
-                    <button type="button" class="btn btn-light" id="expense-pdf" style="background-color: red;"><i class="fa fa-file-pdf-o" aria-hidden="true"
-                        style="color:white"></i></button>
+                    <button type="button" class="btn btn-light" id="expense-pdf" ><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
                 </div>
                 <div class="row aa">
-                 
-                
+
+
                     <div class="col-md-2">
                         <select class="form-group selectpicker" name="category_id" id="category_id"
                             data-live-search="true">
@@ -156,7 +154,7 @@
                           value="{{ $to_date1 }}" style="width: 144px;display:initial;">
                   </div>
 
-                   
+
                 </div>
             </div>
         </div>
