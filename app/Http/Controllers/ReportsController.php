@@ -56,7 +56,7 @@ class ReportsController extends Controller
     {
 
 
-        $expenses = ProjectDetails::leftjoin('wallet','wallet.project_id','=','project_details.id')->leftjoin('expenses','project_details.id', 'expenses.project_id')
+        $expenses = ProjectDetails::leftjoin('wallet','wallet.project_id','=','project_details.id')->leftjoin('expenses','project_details.id', 'expenses.project_id')->whereNull('expenses.deleted_at')
                 // ->where('expenses.project_id', '!=', null)
         // })
         ->selectRaw('project_details.id as projectid,project_details.name as project_name,project_details.advance_amt,SUM(expenses.amount) as paid_amt1,expenses.*')->groupBy('project_details.id')->get();
@@ -93,7 +93,7 @@ class ReportsController extends Controller
       $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date.' '.'00:00:00') : '';
       $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date.' '.'23:59:59') : '';
 
-      $project = Expenses::leftjoin('users','users.id','=','expenses.user_id')->leftjoin('category','category.id','=','expenses.category_id')->leftjoin('payment','payment.id','=','expenses.payment_mode')->where('expenses.project_id',$request->id)->select('expenses.*','category.name as category_name','users.first_name','users.last_name','payment.name as payment_name');
+      $project = Expenses::leftjoin('users','users.id','=','expenses.user_id')->leftjoin('category','category.id','=','expenses.category_id')->leftjoin('payment','payment.id','=','expenses.payment_mode')->where('expenses.project_id',$request->id)->whereNull('expenses.deleted_at')->select('expenses.*','category.name as category_name','users.first_name','users.last_name','payment.name as payment_name');
       if($from != '' && $to_date != ''){
         $project = $project->whereBetween('wallet.current_date', [$from,$to_date]);
     }

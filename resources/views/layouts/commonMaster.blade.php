@@ -79,7 +79,7 @@
   font-family: 'Comfortaa', sans-serif !important;
 
 }
-   
+
     .image-container {
       /* position: relative; */
       /* display: inline-block; */
@@ -171,7 +171,7 @@
 
       <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> {{Auth::user()->first_name}} {{Auth::user()->last_name}}</b></h6>
       <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> {{Auth::user()->roles->pluck('name')->first()}}</b></h6>
-      <a href="{{route('user-edit',Auth::user()->id)}}" type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="fa fa-edit" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</a>
+      <a href="{{route('user-edit',Auth::user()->id)}}" type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="bi bi-pencil-square" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</a>
 
       <div class="mob">
 
