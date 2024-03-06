@@ -158,7 +158,7 @@
     </div>
     <div class="offcanvas-body">
       <div class="image-container text-center">
-        <img class="round" id="profile-image" @if(Auth::user()->image!= '' || Auth::user()->image != null)  src="{{ url('images/'.Auth::user()->image) }}"  @else  src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" @endif alt="user" />
+        <img class="round" id="profile-image" @if(Auth::user()?->image!= '' || Auth::user()?->image != null)  src="{{ url('images/'.Auth::user()?->image) }}"  @else  src="{{asset('assets/img/icons/gray-user-profile-icon.png')}}" @endif alt="user" />
 
         <div id="refresh-image">
           <label for="image-input" class="plus-symbol">&#43;</label>
@@ -169,9 +169,11 @@
         <p id="image_uploaded" style="display:none">Image is uploaded <i class="bi bi-check-lg" style="color: green;"></i></p>
       </div>
 
-      <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> {{Auth::user()->first_name}} {{Auth::user()->last_name}}</b></h6>
-      <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> {{Auth::user()->roles->pluck('name')->first()}}</b></h6>
-      <a href="{{route('user-edit',Auth::user()->id)}}" type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="bi bi-pencil-square" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</a>
+      <h6 style="margin-top: 30px;color:#03BFCB; text-align:center">Name : <b style="color: black"> {{Auth::user()?->first_name}} {{Auth::user()?->last_name}}</b></h6>
+      <h6 style="color: #03BFCB; text-align:center;">Role : <b style="color: black;"> {{Auth::user()?->roles->pluck('name')->first()}}</b></h6>
+      @if(!empty(Auth::user()))
+      <a href="{{route('user-edit',Auth::user()?->id)}}" type="submit" class="btn btn-dark" style="margin-top:20px;width:120px;text-align:center !important;margin-left:50px;"><i class="bi bi-pencil-square" style="font-size:14px;color:aliceblue;"></i> &nbsp;Edit Profile</a>
+      @endif
 
       <div class="mob">
 
