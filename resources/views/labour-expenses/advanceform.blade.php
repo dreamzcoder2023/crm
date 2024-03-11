@@ -45,6 +45,8 @@
                                                 :{{ $labour->advance_amt }} </p>
                                             <label id="amount-error" class="error" for="basic-default-email">Amount is
                                                 required</label>
+                                                <label id="advance-error" class="error" for="basic-default-email">Amount is
+                                                    insufficient</label>
                                         </div>
                                         {{-- <div class="mb-3">
                                             <label class="form-label" for="basic-default-message">Amount
@@ -76,8 +78,7 @@
                                             <p class="project_unpaid_amt" style="color:blue"> </p>
                                             <label id="project-error" class="error" for="basic-default-email">Project is
                                                 required</label>
-                                            <label id="advance-error" class="error" for="basic-default-email">Amount is
-                                                insufficient</label>
+                                    
                                                 <label id="advance1-error" class="error" for="basic-default-email">Amount is
                                                   insufficient</label>
                                         </div>
@@ -169,19 +170,19 @@
             // } else {
             //     $('#gender-error').addClass('hide');
             // }
-            // if (parseInt(project_advance_amt) == 0) {
-            //     $('#advance-error').removeClass('hide');
-            //     console.log('hi');
-            // }else if(parseInt(project_advance_amt) < parseInt(amount)){
-            //   $('#advance-error').removeClass('hide');
-            //     console.log('else if hi');
+            if (parseInt(advance_amt) == 0) {
+                $('#advance-error').removeClass('hide');
+                console.log('hi');
+            }else if(parseInt(advance_amt) < parseInt(amount)){
+              $('#advance-error').removeClass('hide');
+                console.log('else if hi');
 
-            // } else {
-            //     $('#advance-error').addClass('hide');
-            //     advancename = true;
+            } else {
+                $('#advance-error').addClass('hide');
+                advancename = true;
 
-            //     console.log('else');
-            // }
+                console.log('else');
+            }
             if ( parseInt(project_unpaid_amt) == 0) {
                 $('#advance1-error').removeClass('hide');
             }else if( parseInt(project_unpaid_amt) < parseInt(amount)){
@@ -194,7 +195,7 @@
                 unpaidname = true;
                 console.log('else');
             }
-             if (amountname == true && projectname == true  && unpaidname == true) {
+             if (amountname == true && projectname == true  && unpaidname == true && advancename == true) {
                  document.getElementById("UnpaidSubmit").submit();
              }
         });

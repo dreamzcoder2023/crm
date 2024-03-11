@@ -100,7 +100,7 @@ $(function() {
         <div class="container text-center">
             <div class="row aa">
 
-            @role('Admin')
+      
                 <div class="col-md-2">
                     <select class="form-control selectpicker" name="user_id" id="user_id" data-live-search="true">
                         <option value="">Select Member</option>
@@ -109,7 +109,7 @@ $(function() {
                         @endforeach
                     </select>
                 </div>
-               @endrole
+     
                 <div class="col-md-4">
                    <h6> <span>From:&nbsp;&nbsp;</span>
                     <input type="date" class="form-control bb" id="from_date" name="from_date"
@@ -138,9 +138,9 @@ $(function() {
       <thead>
         <tr>
           <th>ID</th>
-          @role('Admin')
+     
           <th>From Member Name</th>
-          @endrole
+    
           <th>To Member Name</th>
           <th>Amount</th>
           <th>Payment Mode</th>
@@ -153,9 +153,9 @@ $(function() {
         @foreach($transfers as $transfer)
        <tr>
         <td>{{ $loop->index+1}}</td>
-        @role('Admin')
+    
         <td>{{$transfer->firstname}} {{$transfer->lastname}}</td>
-        @endrole
+ 
         <td>{{$transfer->first_name}} {{$transfer->last_name}}</td>
         <td>{{$transfer->amount}}</td>
         <td>{{$transfer->payment_name}}</td>

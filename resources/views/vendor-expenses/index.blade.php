@@ -186,8 +186,10 @@
             <table class="table " id="expenses_listing_table">
                 <thead>
                     <tr>
+                        @can('vendor expenses-Over all delete option')
                         <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
                           class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
+                          @endcan
                         <th>Paid date</th>
                         <th >Category <br/>Name</th>
                         <th>Project Name</th>
@@ -214,8 +216,10 @@
 
                     @foreach ($expenses as $expense)
                         <tr>
+                            @can('vendor expenses-Over all delete option')
                             <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
                               value="{{ $expense->id }}"></td>
+                              @endcan
                             <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br/> {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
 
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>

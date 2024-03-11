@@ -325,24 +325,32 @@ class LabourExpensesController extends Controller
     $labour['advance_amt'] = abs($labour->advance_amt - $request->extra_amt);
    // dd($labour);
     //  $labour['date'] = $request->current_date . ' ' . $request->time;
-    $labour->update();
-    $amount = $request->extra_amt;
-    foreach ($project as $project) {
 
-      $amount = abs($amount - $project->extra_amt);
+    $subamount = $request->extra_amt;
+    foreach ($project as $project) {
+      if($subamount > 0){
+        if($subamount <= $project->unpaid_amt){
+          $amount = 0;
+        }else{
+          $amount = abs($subamount - $project->unpaid_amt);
+        
+        }
       $input['labour_id'] = $request->labour_id;
       $input['expense_id'] = $project->id;
       $input['amount'] = $amount;
       AdvanceHistory::create($input);
-        if ($request->extra_amt <= $project->unpaid_amt) {
-          $project['unpaid_amt'] = abs($amount - $project->unpaid_amt);
+        if ($subamount <= $project->unpaid_amt) {
+          $project['unpaid_amt'] = abs($subamount - $project->unpaid_amt);
         } else {
           $project['unpaid_amt'] = 0;
         }
+        $subamount = $amount;
      // }
       $project['is_advance'] = Auth::user()->id;
      // dd($project);
       $project->update();
+    
+      }
     }
     foreach ($project_advance as $project) {
 
@@ -356,6 +364,7 @@ class LabourExpensesController extends Controller
    // dd($project);
       $project->update();
     }
+    $labour->update();
     return redirect()->route('labour-expenses-advance')->with('popup', 'open');
   }
   public function edit(Request $request)

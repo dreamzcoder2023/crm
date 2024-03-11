@@ -24,7 +24,7 @@ class TransferController extends Controller
       $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date.' '.'23:59:59') : '';
 
       if($role == 1){
-        $transfers = Transfer::join('users','users.id','=','transferdetails.member_id')->join('users as user_table','user_table.id','=','transferdetails.user_id')->join('payment','payment.id','=','transferdetails.payment_mode')->select('transferdetails.*','users.first_name','users.last_name','user_table.first_name as firstname','user_table.last_name as lastname','payment.name as payment_name');
+        $transfers = Transfer::leftjoin('users','users.id','=','transferdetails.member_id')->leftjoin('users as user_table','user_table.id','=','transferdetails.user_id')->leftjoin('payment','payment.id','=','transferdetails.payment_mode')->select('transferdetails.*','users.first_name','users.last_name','user_table.first_name as firstname','user_table.last_name as lastname','payment.name as payment_name');
 
         if($from != '' && $to_date != ''){
           $transfers = $transfers->whereBetween('current_date', [$from,$to_date]);
@@ -36,7 +36,7 @@ class TransferController extends Controller
         $transfers = $transfers->orderBy('transferdetails.id','desc')->get();
       }
       else{
-        $transfers = Transfer::join('users','users.id','=','transferdetails.member_id')->where('user_id',$auth);
+        $transfers = Transfer::leftjoin('users','users.id','=','transferdetails.member_id')->leftjoin('users as to','to.id','=','transferdetails.user_id')->where('users.id',$auth)->orWhere('to.id',$auth)->select('transferdetails.*','to.id as from_id','users.first_name','users.last_name','to.first_name as firstname','to.last_name as lastname');
         if($from != '' && $to_date != ''){
           $transfers = $transfers->whereBetween('current_date', [$from,$to_date]);
 
