@@ -31,6 +31,9 @@
   border-radius: 50%;
   animation: l5 1s infinite linear alternate;
 }
+.bootstrap-select.form-control {
+  border : 1px solid #ced4da !important;
+}
 </style>
 @php
 /* Display elements */
