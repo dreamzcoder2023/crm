@@ -176,7 +176,7 @@ $(function() {
 
 <p class='text-end' style="margin-top:30px;
     margin-right: 249px;
-    font-size: medium;"><b>Total Amount:</b>{{$role == 1 ? App\Models\Transfer::sum('amount') : App\Models\Transfer::where('user_id',Auth::user()->id)->sum('amount')}}
+    font-size: medium;"><b>Total Amount:</b>{{ $sum }}
 <br/>&nbsp;</p>
 <div id="walletsuccess" class="modal fade" >
 	<div class="modal-dialog modal-confirm modal-sm">

@@ -44,8 +44,9 @@ class TransferController extends Controller
         $transfers = $transfers->orderBy('transferdetails.id','desc')->get();
       }
       $user = User::join('model_has_roles','model_has_roles.model_id','=','users.id')->join('roles','roles.id','=','model_has_roles.role_id')->where(['users.active_status' => 1 ,'users.delete_status' => 0])->select('users.*','roles.name')->get();
+      $sum = $transfers->sum('amount');
 
-        return view('transfer.index',['transfers' => $transfers,'role' => $role,'user' =>$user,'user_filter' => $user_filter,'from_date' => $request->from_date ,'to_date1' => $request->to_date]);
+        return view('transfer.index',['transfers' => $transfers,'role' => $role,'user' =>$user,'user_filter' => $user_filter,'from_date' => $request->from_date ,'to_date1' => $request->to_date,'sum' => $sum]);
     }
 
     public function create(Request $request){
