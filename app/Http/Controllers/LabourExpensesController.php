@@ -50,10 +50,10 @@ class LabourExpensesController extends Controller
           DB::Raw("'{$weekStartDate->format('Y-m-d')}' as week_start_date"),
           DB::Raw("'{$weekStartDate->copy()->endOfWeek(Carbon::SATURDAY)->format('Y-m-d')}' as week_end_date"),
         ])
+        ->whereNull('w.deleted_at')
         ->whereBetween('w.current_date', [$start_date, $end_date])
         ->groupBy('week_start_date')
         ->get();
-
       $project = DB::table('expenses as w')->whereNotNull('w.labour_id')
         ->select([
           DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
@@ -71,7 +71,7 @@ class LabourExpensesController extends Controller
       }
     }
 
-    // dd($recordsData);
+  // dd($weekStartDates);
     //  // $labour = Expenses::whereBetween('current_date', [Carbon::now()->startOfWeek(Carbon::MONDAY), Carbon::now()->endOfWeek(Carbon::SATURDAY)])->get();
 
     $view = view('labour-expenses.index', ['start_labour_date' => $start_labour_date, 'current_year' => $currentYear])->render();
@@ -185,14 +185,14 @@ class LabourExpensesController extends Controller
   }
   public function labour_expenses_store(Request $request)
   {
-   //dd($request->all());
+  // dd($request->all());
    $start_date = (isset($request->start_date) && $request->start_date != 'undefined') ? ($request->start_date . ' ' . '00:00:00') : '';
    $end_date = (isset($request->end_date) && $request->end_date != 'undefined') ? ($request->end_date . ' ' . '23:59:59') : '';
     $user = Auth::user()->wallet;
     $labours = '';
     foreach ($request->labour_id as $labour) {
       $labours = Expenses::where(['labour_id' => $labour, 'project_id' => $request->project_id])->whereBetween('current_date', [$start_date, $end_date])->get();
-    //  dd($labours);
+      //dd($labours);
       foreach ($labours as $labours) {
         if($user > 0 ){
         if ($labours->unpaid_amt > 0) {
