@@ -505,7 +505,7 @@
 
             var from_date = $('#from_date').val();
             var end_date = $('#to_date').val();
-            var url = '{{ route('expenses-export') }}';
+            var url = '{{ route('vendor-unpaid-expenses-export') }}';
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
@@ -517,7 +517,7 @@
 
             var from_date = $('#from_date').val();
             var end_date = $('#to_date').val();
-            var url = '{{ route('expenses-pdf') }}';
+            var url = '{{ route('vendor-unpaid-expenses-pdf') }}';
             window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });

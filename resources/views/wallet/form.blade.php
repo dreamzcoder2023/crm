@@ -14,6 +14,7 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="mb-3">
+                            <input type="hidden" id="wallet-balance" value="{{ Auth::user()->wallet }}"
                             <label class="form-label" for="client">Client Name</label>
                             <select class="form-control" name="client_id" id="client_id">
                                 <option value="">Select client</option>
@@ -37,6 +38,7 @@
                             <label class="form-label" for="amount">Amount</label>
                             <input type="text" onkeypress="allowNumbersOnly(event)" id="amount" name="amount" class="form-control" placeholder="Enter amount" value="" />
                             <label id="amount-error" class="error hide" for="amount">Amount is required</label>
+                            <label id="amount-sufficient-error" class="error hide" for="amount">Amount is insufficient</label>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="payment_mode">Payment Mode</label>
@@ -108,7 +110,11 @@
             var amount = $('#amount').val();
             var payment = $('#payment_mode').val();
             var type = $('.gender:checked').length;
-            var clientname = false,projectname = false, amountname = false,paymentname = false, typename = false;
+            var type_id = $('.gender:checked').val();
+            var balance = $('#wallet-balance').val();
+            console.log(type_id);
+            console.log(balance);
+            var clientname = false,projectname = false, amountname = false,paymentname = false, typename = false,typeidname = false;
 console.log(type);
             // Validation
             if (client === '') {
@@ -141,9 +147,20 @@ console.log(type);
                 $('#gender-error').addClass('hide');
                 typename = true;
             }
+            if(type_id == 1){
+                if(parseInt(amount) <= parseInt(balance)){
+                    typeidname = true;
+                    $('#amount-sufficient-error').addClass('hide');
+                }else{
+                    $('#amount-sufficient-error').removeClass('hide');
+                }
+            }else{
+                typeidname = true;
+                    $('#amount-sufficient-error').addClass('hide');
+            }
 
             // Submit the form if all fields are valid
-            if (clientname == true && projectname == true && amountname == true && paymentname == true && typename == true) {
+            if (clientname == true && projectname == true && amountname == true && paymentname == true && typename == true && typeidname == true) {
                 document.getElementById("walletSubmit").submit();
             }
         });

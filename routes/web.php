@@ -244,6 +244,10 @@ Route::get('/vendor-expenses-pdf',[VendorExpensesController::class,'vendor_expen
 Route::get('/vendor-expenses-export',[VendorExpensesController::class,'vendor_expense_export'])->name('vendor-expenses-export');
 Route::get('/vendor-delete-expenses-pdf',[VendorExpensesController::class,'vendor_delete_expense_pdf'])->name('vendor-delete-expenses-pdf');
 Route::get('/vendor-delete-expenses-export',[VendorExpensesController::class,'vendor_delete_expense_export'])->name('vendor-delete-expenses-export');
+Route::get('/vendor-unpaid-expenses-export',[VendorExpensesController::class,'unpaid_expenses_export'])->name('vendor-unpaid-expenses-export');
+Route::get('/vendor-unpaid-expenses-pdf',[VendorExpensesController::class,'unpaid_expenses_pdf'])->name('vendor-unpaid-expenses-pdf');
+
+
 //vendor ended
 });
 

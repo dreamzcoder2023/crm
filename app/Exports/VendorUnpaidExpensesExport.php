@@ -11,7 +11,7 @@ use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
+class VendorUnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
 {
 
 
@@ -34,7 +34,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
             'Category Name',
             'Paid Date',
             'Project Name',
-            'Vendor Name',
+            'Labour Name',
             'Amount',
             'Paid Amount',
             'Unpaid Amount',
@@ -55,18 +55,18 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-      $expenses = Expenses::whereNotNull('expenses.vendor_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('vendor_details as l', 'l.id', '=', 'expenses.vendor_id')
-      ->leftJoin('project_details', function ($join) {
-        $join->on('project_details.id', 'expenses.project_id')
-          ->where('expenses.project_id', '!=', null);
-      });
+        $expenses = Expenses::whereNotNull('expenses.vendor_id')->where('expenses.unpaid_amt', '!=', 0)->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('vendor_details as l','l.id','=','expenses.vendor_id')
+        ->leftJoin('project_details', function ($join) {
+          $join->on('project_details.id', 'expenses.project_id')
+            ->where('expenses.project_id', '!=', null);
+        });
 
 
-    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
+      $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+        ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
 
-    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
-    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
+        $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
+        $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
       if ($this->from != '' ) {
         $expenses = $expenses->wheredate('current_date', '>=',$this->from);
         //   ->toSql();
@@ -86,7 +86,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
         //dd($expenses);exit;
       }
       if ($this->user_filter != 'undefined' && $this->user_filter != '') {
-        $expenses = $expenses->where('expenses.vendor_id', $this->user_filter);
+        $expenses = $expenses->where('expenses.user_id', $this->user_filter);
       }
 
       // //dd($expenses);
@@ -106,7 +106,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
            $row->category_name,
            $row->current_date,
            $row->project_name,
-           $row->vendor_name,
+           $row->labour_name,
            $row->amount,
            $row->paid_amt,
            $row->unpaid_amt,

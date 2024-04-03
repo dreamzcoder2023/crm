@@ -20,7 +20,7 @@
 
 }
 .dataTables_length select {
-  width: 120px;
+  width: 120px; 
 }
 .table-responsive{
   margin-top:5px;

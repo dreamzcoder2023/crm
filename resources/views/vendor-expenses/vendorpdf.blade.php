@@ -46,7 +46,7 @@
         <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A')}}</td>
         <td style="width:30px">{{$expense->category_name ? $expense->category_name : '--'}}</td>
         <td style="width:30px">{{$expense->project_name ? $expense->project_name : '--'}}</td>
-        <td>{{ $expense->labour_name }}</td>
+        <td>{{ $expense->vendor_name }}</td>
         <td>{{$expense->amount}}</td>
 
         <td>{{$expense->payment_name}}</td>
