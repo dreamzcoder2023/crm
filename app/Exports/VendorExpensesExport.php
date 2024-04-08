@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use DB;
+use DB;use Carbon\Carbon;
 use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -33,6 +33,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
         return[
             'Category Name',
             'Paid Date',
+            'Paid Time',
             'Project Name',
             'Vendor Name',
             'Amount',
@@ -104,7 +105,8 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
         $unpaid_amt1 = !empty($unpaid_amt) ? $unpaid_amt->updated_at : $row->current_date;
         $fields = [
            $row->category_name,
-           $row->current_date,
+           Carbon::parse($row->current_date)->format('d/m/Y'),
+           Carbon::parse($row->current_date)->format('H:i A'),
            $row->project_name,
            $row->vendor_name,
            $row->amount,

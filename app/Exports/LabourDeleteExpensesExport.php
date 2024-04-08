@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use DB;
+use Carbon\Carbon;
 use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -33,6 +34,7 @@ class LabourDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
         return[
             'Category Name',
             'Paid Date',
+            'Paid Time',
             'Project Name',
             'Reason',
             'Labour Name',
@@ -103,7 +105,8 @@ class LabourDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
         $unpaid_amt1 =  $row->current_date;
         $fields = [
            $row->category_name,
-           $unpaid_amt1,
+           Carbon::parse($unpaid_amt1)->format('d/m/Y'),
+           Carbon::parse($unpaid_amt1)->format('H:i A'),
            $row->project_name,
            $row->reason,
            $row->labour_name,

@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use DB;
 use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ExportExpenses implements FromCollection, WithHeadings, WithMapping
@@ -34,6 +35,7 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         return[
             'Category Name',
             'Paid Date',
+            'Paid Time',
             'Project Name',
             'Amount',
             'Paid Amount',
@@ -51,6 +53,7 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         return[
         'Category Name',
         'Paid Date',
+        'paid Time',
         'Project Name',
         'Amount',
         'Paid Amount',
@@ -121,7 +124,8 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         if($this->role == 1){
         $fields = [
            $row->category_name,
-           $unpaid_amt1,
+           Carbon::parse($unpaid_amt1)->format('d/m/Y'),
+           Carbon::parse($unpaid_amt1)->format('H:i A'),
            $row->project_name,
            $row->amount,
            $row->paid_amt,
@@ -139,7 +143,8 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
     }else{
         $fields = [
             $row->category_name,
-            $unpaid_amt1,
+            Carbon::parse($unpaid_amt1)->format('d/m/Y'),
+           Carbon::parse($unpaid_amt1)->format('H:i A'),
             $row->project_name,
             $row->amount,
             $row->paid_amt,
