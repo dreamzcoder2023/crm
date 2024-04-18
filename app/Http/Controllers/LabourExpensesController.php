@@ -383,7 +383,7 @@ class LabourExpensesController extends Controller
   {
     $user_id = Auth::user()->id;
     $input = $request->all();
-    //dd($input);
+  //  dd($input);
     $input['editedBy'] = $user_id;
     $input['current_date'] = $request->current_date . ' ' . $request->time;
 
@@ -453,6 +453,7 @@ $labour['advance_amt'] = $labour->advance_amt + $minus1;
     // exit;
     $input['extra_amt'] = $extra_amt;
     $input['unpaid_amt'] =  $unpaid_amt;
+    //dd($input);
     $labour->update();
     $expenses->update($input);
     return redirect()->route('labour-expenses-history')

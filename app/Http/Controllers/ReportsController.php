@@ -56,10 +56,10 @@ class ReportsController extends Controller
     {
 
 
-        $expenses = ProjectDetails::where('project_details.delete_status',0)->leftjoin('wallet','wallet.project_id','=','project_details.id')->leftjoin('expenses','project_details.id', 'expenses.project_id')->whereNull('expenses.deleted_at')
+        $expenses = ProjectDetails::where('project_details.delete_status',0)->leftjoin('expenses','project_details.id', 'expenses.project_id')->whereNull('expenses.deleted_at')
                 // ->where('expenses.project_id', '!=', null)
         // })
-        ->selectRaw('project_details.id as projectid,project_details.name as project_name,project_details.advance_amt,SUM(expenses.amount) as paid_amt1,expenses.*')->groupBy('project_details.id')->get();
+        ->selectRaw('project_details.id as projectid,project_details.name as project_name,project_details.advance_amt,SUM(expenses.paid_amt) as paid_amt1,expenses.*')->groupBy('project_details.id')->get();
        //dd($expenses);
         return view('reports.paymentsummary',compact('expenses'));
     }
