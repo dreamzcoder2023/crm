@@ -94,7 +94,7 @@ td, th {
     </div>
 </div>
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 22px auto; height:250px">
+<div class="card" style="max-width: 1200px; margin: 22px auto;">
   <!-- <h5 class="card-header">Table Basic</h5> -->
   <input type="hidden" name="id" value="{{$id}}" id="id">
   <div class="table-responsive text-nowrap">
