@@ -93,8 +93,12 @@ class ExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
-
-    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    if($from != '' || $to_date != ''){
+    $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
+    }
+    else{
+      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    }
 
 
 
@@ -403,8 +407,14 @@ class ExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
+    if($from != '' || $to_date != ''){
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
+      }
+      else{
+      
 
     $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+      }
 
 
 
@@ -502,8 +512,14 @@ class ExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
+    if($from != '' || $to_date != ''){
+      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
+      }
+      else{
+        $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+      }
 
-    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+   
 
     $pdf = PDF::loadView('expenses.expensepdf', compact('expenses'));
 
@@ -575,8 +591,12 @@ class ExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
-
+    if($from != '' || $to_date != ''){
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
+      }
+      else{
     $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+      }
     $customPaper = array(0, 0, 567.00, 283.80);
     $pdf = PDF::loadView('expenses.deleteexpensepdf', compact('expenses'));
 
