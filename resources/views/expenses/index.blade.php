@@ -203,10 +203,16 @@ overflow:auto !important;
             <table class="table " id="expenses_listing_table">
                 <thead>
                     <tr>
-                    @can('expenses-Over all delete option')
-                        <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
-                          class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
-                          @endcan
+                        @can('expenses-Over all delete option')
+                            <th>
+                                <!-- Debugging Statement -->
+                                <script>console.log('User has expenses-Over all delete option permission');</script>
+                                <a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled">
+                                    <i class="bi bi-trash" style="font-size:24px; color:red"></i>
+                                </a>
+                            </th>
+                        @endcan
+                        
                         <th>Paid date</th>
                         <th>Category <br /> Name</th>
                         <th>Project Name</th>
@@ -217,77 +223,74 @@ overflow:auto !important;
                         <th style="width:30px">Description</th>
                         <th>Image</th>
                         <th>Payment Mode</th>
-
-
+            
                         @role('Admin')
                             <th>Added By</th>
-
                             <th>Edited By</th>
                         @endrole
-
+            
                         @canany(['expenses-delete', 'expenses-edit'])
                             <th>Action</th>
                         @endcanany
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-
                     @foreach ($expenses as $expense)
                         <tr>
                             @can('expenses-Over all delete option')
-                            <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
-                                    value="{{ $expense->id }}">
-                            </td>
+                                <td>
+                                    <input type="checkbox" class="expense_id" name="expense_id" id="expense_id" value="{{ $expense->id }}">
+                                </td>
                             @endcan
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br />
-                                {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
 
+                          
+                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br /> {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
                             <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                             <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                             <td>
                                 @if ($expense->unpaid_amt != 0)
-                                    <b><a href="{{ route('unpaidex-create', $expense->id) }}"
-                                        style="color:red">{{ $expense->unpaid_amt }}</a></b> @else<b>
-                                        <p style="color:red">{{ $expense->unpaid_amt }}</p>
-                                    </b>
+                                    <b><a href="{{ route('unpaidex-create', $expense->id) }}" style="color:red">{{ $expense->unpaid_amt }}</a></b>
+                                @else
+                                    <b><p style="color:red">{{ $expense->unpaid_amt }}</p></b>
                                 @endif
                             </td>
                             <td><b><span style="color:#840eef;">{{ $expense->extra_amt }}</span></b></td>
                             <td style="width:30px">{{ $expense->description ? $expense->description : '--' }}</td>
-
                             <td>
                                 @if ($expense->image != '' || $expense->image != null)
                                     <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
                                 @else
                                     --
                                 @endif
+                            </td>
                             <td>{{ $expense->payment_name }}</td>
-
+            
                             @role('Admin')
                                 <td>{{ $expense->first . '' . $expense->last }}</td>
                                 <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
                             @endrole
-
+            
                             @canany(['expenses-edit', 'expenses-delete'])
                                 <td>
                                     @can('expenses-edit')
-                                        <a class="" href="{{ route('expenses-edit', $expense->id) }}"><i
-                                          class="bi bi-pencil-square"style="font-size:24px;color:green"></i></a>
+                                        <a class="" href="{{ route('expenses-edit', $expense->id) }}">
+                                            <i class="bi bi-pencil-square" style="font-size:24px;color:green"></i>
+                                        </a>
                                     @endcan
                                     @can('expenses-delete')
-                                        <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
-                                            data-id="{{ $expense->id }}" class="deleteExpense"><i class="bi bi-trash"
-                                                style="font-size:24px; color:red"></i> </a><br />
+                                        <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}" data-id="{{ $expense->id }}" class="deleteExpense">
+                                            <i class="bi bi-trash" style="font-size:24px; color:red"></i>
+                                        </a><br />
                                     @endcan
                                 </td>
                             @endcanany
                         </tr>
                     @endforeach
-
                 </tbody>
             </table>
+            
         </div>
     </div>
 
@@ -408,7 +411,8 @@ overflow:auto !important;
         $(document).ready(function() {
             var data = new DataTable('#expenses_listing_table', {
                 "lengthMenu": [15, 50, 100],
-                processing: true,
+                "order": [] 
+              //  processing: true,
 
             });
         });
