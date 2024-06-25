@@ -118,7 +118,7 @@
   function amountcheck(amount){
       console.log(amount,"amount check");
         $.ajax({
-        url : "{{ route('amount-check') }}",
+        url : "{{ route('transfer.amount-check') }}",
         data : {'amount' : amount},
         type : 'GET',
         dataType : 'json',

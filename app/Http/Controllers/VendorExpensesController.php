@@ -474,30 +474,70 @@ class VendorExpensesController extends Controller
     return view('vendor-expenses.advanceform',['labour' => $labour,'project' => $project]);
   }
   public function advance_store(Request $request){
-    //  dd($request->all());
+    // dd($request->all());
      $project = Expenses::where(['vendor_id' => $request->labour_id,'project_id' => $request->project_id ])->get();
      $labour = Vendor::where('id',$request->labour_id)->first();
      $labour['advance_amt'] = abs($labour->advance_amt - $request->extra_amt);
    //  $labour['date'] = $request->current_date . ' ' . $request->time;
-     $labour->update();
-     $amount = $request->extra_amt;
-     foreach($project as $project){
+    
+     $subamount = $request->extra_amt;
+    // dd($project);
+    if($request->gender == 2){
+    foreach ($project as $project) {
+      if($subamount > 0){
+        if($subamount <= $project->unpaid_amt){
+          $amount = 0;
+        }else{
+          $amount = abs($subamount - $project->unpaid_amt);
+        
+        }
+      $input['labour_id'] = $request->labour_id;
+      $input['expense_id'] = $project->id;
+      $input['amount'] = $amount;
+      AdvanceHistory::create($input);
+        if ($subamount <= $project->unpaid_amt) {
+          $project['unpaid_amt'] = abs($subamount - $project->unpaid_amt);
+        } else {
+          $project['unpaid_amt'] = 0;
+        }
+        $subamount = $amount;
+     // }
+      $project['is_advance'] = Auth::user()->id;
+     // dd($project);
+      $project->update();
+    
+      }
+    }
+    $project_advance = Expenses::where(['vendor_id' => $request->labour_id ])->get();
+   // dd($project_advance);
+    foreach ($project_advance as $project) {
+       if ($project->extra_amt > 0) {
+        if ($request->extra_amt <= $project->extra_amt) {
+          $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
+        } else {
+          $project['extra_amt'] = 0;
+        }
+       }
+   // dd($project);
+      $project->update();
+    }
+  }
+    if($request->gender == 1){
+      $project_advance = Expenses::where(['vendor_id' => $request->labour_id,'project_id' => $request->project_id ])->get();
+    foreach ($project_advance as $project) {
 
-       $amount = abs($amount-$project->extra_amt);
-       $input['vendor_id'] = $request->labour_id;
-       $input['expense_id'] = $project->id;
-       $input['amount'] = $project->extra_amt;
-       AdvanceHistory::create($input);
-       if($request->extra_amt <= $project->extra_amt){
-       // dd($request->extra_amt);
-         $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
+       if ($project->extra_amt > 0) {
+        if ($request->extra_amt <= $project->extra_amt) {
+          $project['extra_amt'] = abs($request->extra_amt - $project->extra_amt);
+        } else {
+          $project['extra_amt'] = 0;
+        }
        }
-       else{
-         $project['extra_amt'] = 0;
-       }
-       $project['is_advance'] = Auth::user()->id;
-       $project->update();
-     }
+   // dd($project);
+      $project->update();
+    }
+    }
+    $labour->update();
     return redirect()->route('vendor-expenses-advance-history')->with('popup','open');
   }
   public function vendor_project_amount(Request $request){

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Hash;
 
 class TransferController extends Controller
 {
@@ -82,12 +82,11 @@ class TransferController extends Controller
        $wallet = Auth::user()->wallet;
       // $wallet = User::where('id', $request->user_id)->first();
        $amount = $request->amount;
-
+       $wal_amt = (int)$wallet;
        $response = true;
-       if (($wallet->wallet >= 0) && ($amount <= $wallet->wallet)) {
+       if (($wal_amt >= 0) && ($amount <= $wallet)) {
          $response = false;
        }
        return response()->json($response);
       }
 }
-

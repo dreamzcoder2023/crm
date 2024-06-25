@@ -131,7 +131,7 @@ Route::post('/wallet/store',[WalletController::class,'store'])->name('wallet.sto
 Route::get('/transfer',[TransferController::class,'index'])->name('transfer-history');
 Route::get('/transfer-create',[TransferController::class,'create'])->name('transfer-create');
 Route::post('/transfer/store',[TransferController::class,'store'])->name('transfer.store');
-Route::get('/amountcheck',[TransferController::class,'insufficientamt'])->name('amount-check');
+Route::get('/transfer/amountcheck',[TransferController::class,'insufficientamt'])->name('transfer.amount-check');
 // transfer details ended
 
 // expenses started

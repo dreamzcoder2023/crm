@@ -25,6 +25,7 @@
       <div class="card-body">
 <form name="UnpaidSubmit" action="{{route('unpaid.store')}}" id="UnpaidSubmit" method="post" >
             @csrf
+            <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}">
   <div class="col-xl">
     <div class="card mb-4" style="margin-top:30px;">
       <div class="card-body">
@@ -33,9 +34,10 @@
           <div class="mb-3">
             <label class="form-label" for="basic-default-email">Paid amount</label>
 
-              <input  type="text" onkeypress="allowNumbersOnly(event)" id="amount" name="unpaid_amt" class="form-control" placeholder="Enter amount"  value="{{$unpaid->unpaid_amt}}"/>
+              <input  type="text" oninput="amountcheck(this.value)" onkeypress="allowNumbersOnly(event)" id="amount" name="unpaid_amt" class="form-control" placeholder="Enter amount"  value="{{$unpaid->unpaid_amt}}"/>
               <label id="amount-error" class="error" for="basic-default-email">Amount is required</label>
-
+              <input type="hidden" class="amount-check-error" value=""><br>
+              <label id="amount-check-error" class="error" for="basic-default-phone">Insufficient Balance</label>
           </div>
 
 
@@ -68,6 +70,8 @@
 <script>
   $(document).ready(function(){
     $('.error').addClass('hide');
+    var amount = $('#amount').val();
+    amountcheck(amount);
   });
   function allowNumbersOnly(e) {
     var key = e.key;
@@ -79,6 +83,7 @@
     e.preventDefault();
 
   var amount = $('#amount').val();
+  var test = $('.amount-check-error').val();
 
   console.log('amount',amount);
   var amountname=false;
@@ -90,9 +95,27 @@
       $('#amount-error').addClass('hide');
       amountname = true;
     }
-    if( amountname == true ){
+    if( amountname == true &&(test == false || test == "false") ){
       document.getElementById("UnpaidSubmit").submit();
     }
   });
+  function amountcheck(amount){
+    var user_id = $('#user_id').val();
+      console.log(amount,"amount check");
+        $.ajax({
+        url : "{{ route('amount-check') }}",
+        data : {'amount' : amount,'user_id' : user_id},
+        type : 'GET',
+        dataType : 'json',
+        success : function(result){
+          console.log("result",result);
+          $('.amount-check-error').val(result);
+          if(result == true)
+             $('#amount-check-error').removeClass('hide');
+          else
+          $('#amount-check-error').addClass('hide');
+        }
+    });
+    }
 </script>
 @endsection

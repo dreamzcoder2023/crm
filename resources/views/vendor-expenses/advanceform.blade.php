@@ -147,7 +147,7 @@
 
             var amountname = false,
                 projectname = false,
-                advancename = false,
+                advancename = false, gendername= false,
                 unpaidname = false;
 
             if (amount == "") {
@@ -166,6 +166,7 @@
                 $('#gender-error').removeClass('hide');
             } else {
                 $('#gender-error').addClass('hide');
+                gendername = true;
             }
             if (type == 1  && parseInt(project_advance_amt) == 0) {
                 $('#advance-error').removeClass('hide');
@@ -192,7 +193,7 @@
                 unpaidname = true;
                 console.log('else');
             }
-             if (amountname == true && projectname == true &&  advancename == true) {
+             if (amountname == true && projectname == true &&  advancename == true && gendername == true) {
                  document.getElementById("UnpaidSubmit").submit();
              }
         });
