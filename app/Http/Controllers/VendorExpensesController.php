@@ -205,11 +205,18 @@ class VendorExpensesController extends Controller
       $project['wallet'] = $minus;
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt + $minus1);
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+  //    if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+   //     $extra_amt = abs($request->paid_amt - $request->amount);
+   //   }
+    //  if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+     //   $unpaid_amt = abs($request->amount - $request->paid_amt);
+     // }
+     if($request->amount < $request->paid_amt){
         $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = 0;
+      }else{
         $unpaid_amt = abs($request->amount - $request->paid_amt);
+        $extra_amt = 0;
       }
     } else {
 
@@ -222,28 +229,46 @@ class VendorExpensesController extends Controller
 
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt - $minus1);
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+  //    if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+   //     $extra_amt = abs($request->paid_amt - $request->amount);
+    //  }
+    //  if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+     //   $unpaid_amt = abs($request->amount - $request->paid_amt);
+     // }
+     // if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
+      //  $extra_amt = abs($request->paid_amt - $request->amount);
+     // }
+     // if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
+       // $unpaid_amt = abs($request->amount - $request->paid_amt);
+      //}
+    
+         if($request->amount < $request->paid_amt){
         $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = 0;
+      }else{
         $unpaid_amt = abs($request->amount - $request->paid_amt);
-      }
-      if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
-        $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
-        $unpaid_amt = abs($request->amount - $request->paid_amt);
+        $extra_amt = 0;
       }
     }
-
     // exit;
     $input['extra_amt'] = $extra_amt;
     $input['unpaid_amt'] =  $unpaid_amt;
-    // print_r($input);exit;
-    $expenses->update($input);
+   
+   
+  $labour = Vendor::find($request->vendor_id);
+       if($input['extra_amt'] <= $expenses->extra_amt){  
+        $amt_add = $expenses->extra_amt - $input['extra_amt'];
+    $labour['advance_amt'] = abs($labour->advance_amt - $amt_add);
+    }else{
+      $amt_add =  $input['extra_amt'] - $expenses->extra_amt;
+     $labour['advance_amt'] = abs($labour->advance_amt + $amt_add);
+     }
+    // print_r($labour);exit;
+    $labour->update();
+     $expenses->update($input);
     return redirect()->route('vendor-expenses-index')
-      ->with('expenses-popup', 'Vendor Detail Updated Successfully');
-  }
+      ->with('expenses-popup', 'Vendor Detail Updated Successfully'); 
+       }
   public function vendordelete(Request $request)
   {
     $expense = Expenses::find($request->id);
@@ -473,7 +498,7 @@ class VendorExpensesController extends Controller
     })->leftjoin('project_details', 'project_details.id', '=', 'expenses.project_id')->select('project_details.*')->groupBy('project_details.id')->get();
     return view('vendor-expenses.advanceform',['labour' => $labour,'project' => $project]);
   }
-  public function advance_store(Request $request){
+   public function advance_store(Request $request){
     // dd($request->all());
      $project = Expenses::where(['vendor_id' => $request->labour_id,'project_id' => $request->project_id ])->get();
      $labour = Vendor::where('id',$request->labour_id)->first();

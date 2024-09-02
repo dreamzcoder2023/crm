@@ -419,11 +419,18 @@ class LabourExpensesController extends Controller
       $project['wallet'] = $minus;
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt + $minus1);
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+    //  if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+    //    $extra_amt = abs($request->paid_amt - $request->amount);
+     // }
+     // if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+     //   $unpaid_amt = abs($request->amount - $request->paid_amt);
+     // }
+        if($request->amount < $request->paid_amt){
         $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = 0;
+      }else{
         $unpaid_amt = abs($request->amount - $request->paid_amt);
+        $extra_amt = 0;
       }
 $labour = Labour::where('id',$expenses->labour_id)->first();
 $labour['advance_amt'] = $labour->advance_amt + $minus1;
@@ -436,17 +443,24 @@ $labour['advance_amt'] = $labour->advance_amt + $minus1;
 
       $project->update();
       $input['paid_amt'] = $expenses->paid_amt - $minus1;
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+   //   if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+    //    $extra_amt = abs($request->paid_amt - $request->amount);
+     // }
+     // if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+      //  $unpaid_amt = abs($request->amount - $request->paid_amt);
+     // }
+     // if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
+      //  $extra_amt = abs($request->paid_amt - $request->amount);
+     // }
+     // if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
+      //  $unpaid_amt = abs($request->amount - $request->paid_amt);
+     // }
+        if($request->amount < $request->paid_amt){
         $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = 0;
+      }else{
         $unpaid_amt = abs($request->amount - $request->paid_amt);
-      }
-      if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
-        $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
-        $unpaid_amt = abs($request->amount - $request->paid_amt);
+        $extra_amt = 0;
       }
       $labour = Labour::where('id',$expenses->labour_id)->first();
       $labour['advance_amt'] = $labour->advance_amt - $minus1;

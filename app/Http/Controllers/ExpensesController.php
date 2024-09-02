@@ -166,7 +166,7 @@ class ExpensesController extends Controller
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
-    $datetime = explode(' ', $expense->current_date);
+    $datetime = explode(' ', $expense?->current_date);
     $current_date = $datetime[0];
     $current_time = $datetime[1];
     return view('expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time]);
@@ -211,11 +211,18 @@ class ExpensesController extends Controller
       $project['wallet'] = $minus;
       $project->update();
       $input['paid_amt'] = $expenses->paid_amt + $minus1;
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+    //  if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+    //    $extra_amt = abs($request->paid_amt - $request->amount);
+    //  }
+    //  if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+      //  $unpaid_amt = abs($request->amount - $request->paid_amt);
+     // }
+        if($request->amount < $request->paid_amt){
         $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = 0;
+      }else{
         $unpaid_amt = abs($request->amount - $request->paid_amt);
+        $extra_amt = 0;
       }
     } else {
 
@@ -228,17 +235,24 @@ class ExpensesController extends Controller
 
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt - $minus1);
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+   //   if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+   //     $extra_amt = abs($request->paid_amt - $request->amount);
+   //   }
+   //   if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+    //    $unpaid_amt = abs($request->amount - $request->paid_amt);
+    //  }
+     // if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
+     //   $extra_amt = abs($request->paid_amt - $request->amount);
+     // }
+     // if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
+       // $unpaid_amt = abs($request->amount - $request->paid_amt);
+     // }
+        if($request->amount < $request->paid_amt){
         $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+        $unpaid_amt = 0;
+      }else{
         $unpaid_amt = abs($request->amount - $request->paid_amt);
-      }
-      if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
-        $extra_amt = abs($request->paid_amt - $request->amount);
-      }
-      if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
-        $unpaid_amt = abs($request->amount - $request->paid_amt);
+        $extra_amt = 0;
       }
     }
 
@@ -254,6 +268,7 @@ class ExpensesController extends Controller
   {
     $wallet = User::where('id', $request->user_id)->first();
     $amount = $request->amount;
+
     $response = true;
     if (($wallet->wallet >= 0) && ($amount <= $wallet->wallet)) {
       $response = false;

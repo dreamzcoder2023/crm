@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+
 
 class TransferController extends Controller
 {
@@ -90,3 +90,4 @@ class TransferController extends Controller
        return response()->json($response);
       }
 }
+
