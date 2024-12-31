@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 <style>
   @media only screen and (max-width:320px){
     .aa{
@@ -222,11 +222,13 @@ $(function() {
         @endrole
 
          @canany(['expenses-unpaid edit'])
-        <td>
+       
         @can('expenses-unpaid edit')
+        <td>
         <a class="" href="{{ route('unpaid-create',$expense->id) }}"><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
-        @endcan
       </td>
+        @endcan
+      
       @endcanany
        </tr>
        @endforeach
@@ -310,11 +312,26 @@ $(function() {
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
           $(document).ready(function() {
-            $('.selectpicker').selectpicker();
+           // $('.selectpicker').selectpicker();
         });
+        $('#category_id').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: '100%',
+    });
+    $('#project_id').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: '100%',
+    });
+    $('#user_id').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: '100%',
+    });
   $(document).ready(function() {
 var data =  new DataTable('#unpaid_expenses_listing_table', {
   "lengthMenu": [15, 50, 100],
@@ -371,22 +388,23 @@ var url = '{{ route("unpaid-delete") }}';
       });
       $(document).ready(function(){
           $('#unpaid-popup').modal('hide');
-          var category=[];
-          var amount =[];
-          var project=[];
-          var user =[];
-          var from_date=[];
-          var end_date=[];
+      });
+          // var category=[];
+          // var amount =[];
+          // var project=[];
+          // var user =[];
+          // var from_date=[];
+          // var end_date=[];
 
 
       $('#category_id').change(function(){
 
-        project =$('#project_id').find(":selected").val();
-         category =$('#category_id').find(":selected").val();
-         user =$('#user_id').find(":selected").val();
-         amount =$('#amount_id').find(":selected").val();
-         from_date=$('#from_date').val();
-         end_date = $('#to_date').val();
+       var project =$('#project_id').find(":selected").val();
+        var category =$('#category_id').find(":selected").val();
+       var  user =$('#user_id').find(":selected").val();
+         var amount =$('#amount_id').find(":selected").val();
+        var from_date=$('#from_date').val();
+        var end_date = $('#to_date').val();
         if(category != ''){
           reset_table(from_date,end_date,category,project,user);
         }
@@ -405,12 +423,12 @@ var url = '{{ route("unpaid-delete") }}';
       // });
       $('#project_id').change(function(){
 
-         project =$('#project_id').find(":selected").val();
-         category =$('#category_id').find(":selected").val();
-         user =$('#user_id').find(":selected").val();
-         amount =$('#amount_id').find(":selected").val();
-         from_date=$('#from_date').val();
-         end_date = $('#to_date').val();
+        var project =$('#project_id').find(":selected").val();
+        var category =$('#category_id').find(":selected").val();
+        var user =$('#user_id').find(":selected").val();
+        var amount =$('#amount_id').find(":selected").val();
+        var from_date=$('#from_date').val();
+        var end_date = $('#to_date').val();
         console.log('project',project);
         console.log('category',category);
         console.log('from_date',from_date);
@@ -421,12 +439,12 @@ var url = '{{ route("unpaid-delete") }}';
       });
       $('#user_id').change(function(){
 
-         user =$('#user_id').find(":selected").val();
-         project =$('#project_id').find(":selected").val();
-         category =$('#category_id').find(":selected").val();
-         amount =$('#amount_id').find(":selected").val();
-         from_date=$('#from_date').val();
-         end_date = $('#to_date').val();
+        var user =$('#user_id').find(":selected").val();
+        var project =$('#project_id').find(":selected").val();
+        var category =$('#category_id').find(":selected").val();
+        var amount =$('#amount_id').find(":selected").val();
+        var from_date=$('#from_date').val();
+        var end_date = $('#to_date').val();
         console.log(user);
         if(user != ''){
           reset_table(from_date,end_date,category,project,user);
@@ -434,12 +452,12 @@ var url = '{{ route("unpaid-delete") }}';
       });
       $('#from_date').change(function(){
 
-        user =$('#user_id').find(":selected").val();
-        project =$('#project_id').find(":selected").val();
-        category =$('#category_id').find(":selected").val();
-        amount =$('#amount_id').find(":selected").val();
-        from_date=$('#from_date').val();
-        end_date = $('#to_date').val();
+       var user =$('#user_id').find(":selected").val();
+       var project =$('#project_id').find(":selected").val();
+      var  category =$('#category_id').find(":selected").val();
+       var amount =$('#amount_id').find(":selected").val();
+       var from_date=$('#from_date').val();
+       var end_date = $('#to_date').val();
        console.log(from_date);
        if(from_date != ''){
          reset_table(from_date,end_date,category,project,user);
@@ -447,12 +465,12 @@ var url = '{{ route("unpaid-delete") }}';
      });
      $('#to_date').change(function(){
 
-        user =$('#user_id').find(":selected").val();
-        project =$('#project_id').find(":selected").val();
-        category =$('#category_id').find(":selected").val();
-        amount =$('#amount_id').find(":selected").val();
-        from_date=$('#from_date').val();
-        end_date = $('#to_date').val();
+      var  user =$('#user_id').find(":selected").val();
+      var  project =$('#project_id').find(":selected").val();
+       var category =$('#category_id').find(":selected").val();
+      var  amount =$('#amount_id').find(":selected").val();
+      var  from_date=$('#from_date').val();
+      var  end_date = $('#to_date').val();
        console.log(end_date);
        if(end_date != ''){
          reset_table(from_date,end_date,category,project,user);
@@ -466,7 +484,7 @@ var url = '{{ route("unpaid-delete") }}';
       window.location.href=url+'?from_date='+from_date+'&to_date='+to_date+'&category_id='+category+'&project_id='+project+'&user_id='+user;
    }
 
-  });
+//  });
   $('#unpaidexpense-export').click(function(){
     console.log('test');
     var user =$('#user_id').find(":selected").val();

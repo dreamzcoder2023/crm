@@ -126,8 +126,8 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         if($this->role == 1){
         $fields = [
            $row->category_name,
-            Carbon::parse($unpaid_amt1)->format('m/d/Y'),
-           Carbon::parse($unpaid_amt1)->format('H:i A'),
+            Carbon::parse($row->current_date)->format('m/d/Y'),
+           Carbon::parse($row->current_date)->format('H:i A'),
            $row->project_name,
            $row->amount,
            $row->paid_amt,
@@ -145,8 +145,8 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
     }else{
         $fields = [
             $row->category_name,
-             Carbon::parse($unpaid_amt1)->format('m/d/Y'),
-           Carbon::parse($unpaid_amt1)->format('H:i A'),
+             Carbon::parse($row->current_date)->format('m/d/Y'),
+           Carbon::parse($row->current_date)->format('H:i A'),
             $row->project_name,
             $row->amount,
             $row->paid_amt,

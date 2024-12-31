@@ -63,9 +63,9 @@ class LabourExpensesController extends Controller
           DB::Raw('p.id as project_id'),
         ])
         ->whereNull('w.deleted_at')
-        ->leftJoin('project_details as p', 'p.id', '=', 'w.project_id')
+        ->leftJoin('labour_details as p', 'p.id', '=', 'w.labour_id')
         ->whereBetween('w.current_date', [$start_date, $end_date])
-        ->groupBy('project_id')
+        ->groupBy('w.labour_id')
         ->get();
       if (!$records->isEmpty()) {
         $start_labour_date[] = ['records' => $records, 'project' => $project];
@@ -136,26 +136,26 @@ class LabourExpensesController extends Controller
     $start_date = (isset($request->start_date) && $request->start_date != 'undefined') ? ($request->start_date . ' ' . '00:00:00') : '';
     $end_date = (isset($request->end_date) && $request->end_date != 'undefined') ? ($request->end_date . ' ' . '23:59:59') : '';
 
-    $project = DB::table('expenses as e')->leftjoin('project_details as p', 'p.id', '=', 'e.project_id')->where('e.project_id', $request->project_id)->wheredate('e.current_date','>=',$start_date)->wheredate('e.current_date','<=',$end_date)->select([
+    $project = DB::table('expenses as e')->leftjoin('labour_details as p', 'p.id', '=', 'e.labour_id')->where('e.labour_id', $request->project_id)->wheredate('e.current_date','>=',$start_date)->wheredate('e.current_date','<=',$end_date)->select([
       DB::Raw('SUM(e.unpaid_amt) as unpaid'),
       DB::Raw('SUM(e.extra_amt) as advance_amt'),
       DB::Raw('e.*'),
       DB::Raw('p.name as project_name')
     ])->whereNull('e.deleted_at')->first();
   // dd($project);
-    $labour = Expenses::leftJoin('labour_details', 'labour_details.id', '=', 'expenses.labour_id')
-      ->where('expenses.project_id', $request->project_id)
+    $labour = Expenses::leftJoin('project_details', 'project_details.id', '=', 'expenses.project_id')
+      ->where('expenses.labour_id', $request->project_id)
       ->whereNotNull('expenses.labour_id')
       ->whereNull('expenses.deleted_at')
       ->whereBetween('expenses.current_date', [$start_date, $end_date])
-      ->groupBy('expenses.labour_id')
+      ->groupBy('expenses.project_id')
       ->select([
         DB::Raw('SUM(expenses.unpaid_amt) as unpaid_amt'),
         DB::Raw('SUM(expenses.extra_amt) as advance_amt'),
         DB::Raw('expenses.amount'),
         // Add other columns you need, aggregating where necessary
-        DB::Raw('labour_details.name as labour_name'),
-        DB::Raw('labour_details.id as labour_id'),
+        DB::Raw('project_details.name as labour_name'),
+        DB::Raw('project_details.id as labour_id'),
       ])->get();
       $labour_disable = $labour->where('unpaid_amt','>',0)->count();
      // dd($labour_disable);

@@ -23,7 +23,7 @@
 
     <!-- ! Hide app brand if navbar-full -->
     <div class="app-brand demo">
-        <a href="{{ url('/') }}" class="app-brand-link">
+        <a href="{{ url('/dashboard') }}" class="app-brand-link">
             <span class="app-brand-logo demo">
                 <img src="{{ asset('assets/img/icons/logo12.png') }}" class="img-fluid" alt="Layout container"
                     style="width: 205px;margin-left:5px;margin-top:-1px;">

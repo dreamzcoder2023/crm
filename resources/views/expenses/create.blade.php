@@ -3,7 +3,9 @@
 @section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 @if (session()->has('expenses-popup'))
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"
     integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
@@ -129,6 +131,9 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 <script>
  $(document).ready(function(){
     $('.error').addClass('hide');
@@ -136,6 +141,16 @@
     $('.addcategory').hide();
 
   });
+  $('#project_id').select2({
+        placeholder: "Select project",
+        allowClear: true,
+        width: '100%',
+    });
+    $('#category_id').select2({
+        placeholder: "Select category",
+        allowClear: true,
+        width: '100%',
+    });
   function allowNumbersOnly(e) {
     var key = e.key;
     if (isNaN(key) || key === ' ' || key === null) {

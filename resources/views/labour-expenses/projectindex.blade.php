@@ -218,13 +218,13 @@
                     @foreach ($labour as $labour)
                         <tr>
                             <td><input type="checkbox" name="labour_id[]" class="days" id="{{ $labour->labour_id }}"
-                                    {{ $labour->unpaid_amt <= 0 ? 'disabled' : '' }} value="{{ $labour->labour_id }}"></td>
+                                    {{ $labour->unpaid_amt <= 0 ? 'disabled' : '' }} value="{{ $labour->labour_id }}" data-unpaid="{{ $labour->unpaid_amt }}"></td>
                             <td><a style="text-decoration: none" href="javascript:void(0)" class="labour_details_weekly"
                                     style="cursor:pointer" data-start_week="{{ $start_date }}"
                                     data-end_week="{{ $end_date }}"
                                     data-labour_id="{{ $labour->labour_id }}">{{ $labour->labour_name }}</a></td>
                             <td>{{ $labour->amount }} </td>
-                            <td>{{ $labour->unpaid_amt }}
+                            <td>{{ $labour->unpaid_amt }}</td>
                             <td>{{ $labour->advance_amt }}</td>
                         </tr>
                     @endforeach
@@ -237,6 +237,7 @@
     </div>
     <button class="btn btn-primary" id="advance_submit" data-start_week="{{ $start_date }}"
         data-end_week="{{ $end_date }}" data-project_id = "{{ $project?->project_id }}" data-wallet="{{ Auth::user()->wallet }}" disabled>Submit</button>
+        <div class="float-right" style=""><span><b>Unpaid amount:</b> <span class="total_un_amt">0</span></span></div>
     <!--/ Basic Bootstrap Table -->
 
 
@@ -275,16 +276,22 @@
 
             $('#select_all').on('click', function() {
                 if (this.checked) {
+                    var amt = 0;
                     $('.days').each(function() {
                         this.checked = true;
+                        var unpaid = parseInt($(this).attr('data-unpaid'), 10);
+                         amt += unpaid;
+                         
                     });
                     $('#advance_submit').prop('disabled', false);
-                   
+                    $('.total_un_amt').text(amt);
+                    console.log('amt',amt); 
                 } else {
                     $('.days').each(function() {
                         this.checked = false;
                     });
                     $('#advance_submit').prop('disabled', true);
+                    $('.total_un_amt').text(0);
                 }
                 checkWalletAndUnpaid();
             });
@@ -303,6 +310,14 @@
                 } else {
                     $('#select_all').prop('checked', false);
                 }
+                var amt = 0;
+                $('.days:checked').each(function() {
+                        this.checked = true;
+                        var unpaid = parseInt($(this).attr('data-unpaid'), 10);
+                         amt += unpaid;
+                         
+                    });
+                    $('.total_un_amt').text(amt);
                 checkWalletAndUnpaid();
             });
             $('.labour_details_weekly').click(function() {

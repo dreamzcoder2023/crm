@@ -92,9 +92,11 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
     }
         if($this->from != '' && $this->to_date != ''){
           $expenses = $expenses->whereBetween('current_date', [$this->from,$this->to_date]);
-        //   ->toSql();
+          // ->toSql();
         //  // $bindings = $expenses->getBindings();
-        //   print_r($expenses);
+        // print_r($this->auth);
+        //   print_r($this->from);
+        //   print_r($this->to_date);
         //  exit;
 
         }
@@ -109,10 +111,10 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
           $expenses = $expenses->where('expenses.user_id',$this->user_filter);
         }
 
-        //dd($expenses);
+       // dd($expenses);
 
   $expenses = $expenses->orderBy('expenses.id','desc')->get();
-
+//dd($expenses);
 
         return collect($expenses);
     }
@@ -123,8 +125,8 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         if($this->role == 1){
         $fields = [
            $row->category_name,
-           Carbon::parse($unpaid_amt1)->format('m/d/Y'),
-           Carbon::parse($unpaid_amt1)->format('H:i A'),
+           Carbon::parse($row->current_date)->format('m/d/Y'),
+           Carbon::parse($row->current_date)->format('H:i A'),
            $row->project_name,
            $row->amount,
            $row->paid_amt,
@@ -142,8 +144,8 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
     }else{
         $fields = [
             $row->category_name,
-            Carbon::parse($unpaid_amt1)->format('m/d/Y'),
-           Carbon::parse($unpaid_amt1)->format('H:i A'),
+            Carbon::parse($row->current_date)->format('m/d/Y'),
+           Carbon::parse($row->current_date)->format('H:i A'),
             $row->project_name,
             $row->amount,
             $row->paid_amt,

@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
 
 <style>
@@ -399,12 +399,10 @@ overflow:auto !important;
     </script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $('.selectpicker').selectpicker();
-        });
+      
         $(document).ready(function() {
             var data = new DataTable('#expenses_listing_table', {
                 "lengthMenu": [15, 50, 100],
@@ -412,6 +410,21 @@ overflow:auto !important;
 order:[],
             });
         });
+        $('#category_id').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: '100%',
+    });
+    $('#project_id').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: '100%',
+    });
+    $('#user_id').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: '100%',
+    });
         $("document").ready(function() {
             var roleid;
             var user;
@@ -459,22 +472,23 @@ order:[],
         });
         $(document).ready(function() {
             $('#unpaid-popup').modal('hide');
-            var category = [];
-            var amount = [];
-            var project = [];
-            var user = [];
-            var from_date = [];
-            var end_date = [];
+        });
+            // var category = [];
+            // var amount = [];
+            // var project = [];
+            // var user = [];
+            // var from_date = [];
+            // var end_date = [];
 
 
             $('#category_id').change(function() {
 
-                project = $('#project_id').find(":selected").val();
-                category = $('#category_id').find(":selected").val();
-                user = $('#user_id').find(":selected").val();
+               var project = $('#project_id').find(":selected").val();
+              var  category = $('#category_id').find(":selected").val();
+                var user = $('#user_id').find(":selected").val();
                 // amount =$('#amount_id').find(":selected").val();
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
+              var  from_date = $('#from_date').val();
+              var  end_date = $('#to_date').val();
                 if (category != '') {
                     reset_table(from_date, end_date, category, project, user, );
                 }
@@ -493,12 +507,12 @@ order:[],
             // });
             $('#project_id').change(function() {
 
-                project = $('#project_id').find(":selected").val();
-                category = $('#category_id').find(":selected").val();
-                user = $('#user_id').find(":selected").val();
+                var project = $('#project_id').find(":selected").val();
+               var category = $('#category_id').find(":selected").val();
+               var user = $('#user_id').find(":selected").val();
                 // amount =$('#amount_id').find(":selected").val();
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
+               var from_date = $('#from_date').val();
+               var end_date = $('#to_date').val();
                 console.log('project', project);
                 console.log('category', category);
                 console.log('from_date', from_date);
@@ -509,12 +523,12 @@ order:[],
             });
             $('#user_id').change(function() {
 
-                user = $('#user_id').find(":selected").val();
-                project = $('#project_id').find(":selected").val();
-                category = $('#category_id').find(":selected").val();
+               var user = $('#user_id').find(":selected").val();
+                var project = $('#project_id').find(":selected").val();
+                var category = $('#category_id').find(":selected").val();
                 //amount =$('#amount_id').find(":selected").val();
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
+               var from_date = $('#from_date').val();
+               var end_date = $('#to_date').val();
                 console.log(user);
                 if (user != '') {
                     reset_table(from_date, end_date, category, project, user);
@@ -522,12 +536,12 @@ order:[],
             });
             $('#from_date').change(function() {
 
-                user = $('#user_id').find(":selected").val();
-                project = $('#project_id').find(":selected").val();
-                category = $('#category_id').find(":selected").val();
+              var  user = $('#user_id').find(":selected").val();
+              var  project = $('#project_id').find(":selected").val();
+              var  category = $('#category_id').find(":selected").val();
                 // amount =$('#amount_id').find(":selected").val();
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
+              var  from_date = $('#from_date').val();
+              var  end_date = $('#to_date').val();
                 console.log(from_date);
                 if (from_date != '') {
                     reset_table(from_date, end_date, category, project, user);
@@ -535,12 +549,12 @@ order:[],
             });
             $('#to_date').change(function() {
 
-                user = $('#user_id').find(":selected").val();
-                project = $('#project_id').find(":selected").val();
-                category = $('#category_id').find(":selected").val();
+               var user = $('#user_id').find(":selected").val();
+               var project = $('#project_id').find(":selected").val();
+               var category = $('#category_id').find(":selected").val();
                 //amount =$('#amount_id').find(":selected").val();
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
+               var from_date = $('#from_date').val();
+               var end_date = $('#to_date').val();
                 console.log(end_date);
                 if (end_date != '') {
                     reset_table(from_date, end_date, category, project, user);
@@ -556,7 +570,7 @@ order:[],
                     category + '&project_id=' + project + '&user_id=' + user;
             }
 
-        });
+       // });
         $('#expense-export').click(function() {
             console.log('test');
             var user = $('#user_id').find(":selected").val();
