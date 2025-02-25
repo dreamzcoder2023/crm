@@ -104,8 +104,12 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
           $expenses = $expenses->where('expenses.user_id',$this->user_filter);
         }
 
-
-  $expenses = $expenses->onlyTrashed()->orderBy('expenses.id','desc')->get();
+        if($this->from != '' && $this->to_date != '' ){
+          $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
+  
+         }else{
+          $expenses = $expenses->onlyTrashed()->orderBy('expenses.id','desc')->get();
+         }
 
         return collect($expenses);
     }

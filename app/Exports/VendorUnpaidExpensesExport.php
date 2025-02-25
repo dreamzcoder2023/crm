@@ -94,8 +94,13 @@ class VendorUnpaidExpensesExport implements FromCollection, WithHeadings, WithMa
       // if ($this->amount != '' && $this->amount != 'undefined') {
       //   $expenses = $expenses->orderBy('expenses.amount', $this->amount)->get();
       // }
+      if($this->from != '' && $this->to_date != '' ){
+        $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
 
-      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+       }else{
+        $expenses = $expenses->orderBy('expenses.id','desc')->get();
+       }
+     // $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
 
         return collect($expenses);
     }

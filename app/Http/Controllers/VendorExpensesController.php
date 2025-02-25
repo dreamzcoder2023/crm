@@ -88,7 +88,11 @@ class VendorExpensesController extends Controller
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
 
-    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    if($from != '' && $to_date != ''){
+      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
+    }else{
+      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    }
 
 
 
@@ -350,8 +354,12 @@ class VendorExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
-
-    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+    if($from != '' && $to_date != ''){
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
+    }else{
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+    }
+    //$expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
 
 
 
@@ -637,8 +645,13 @@ class VendorExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
+    if($this->from != '' && $this->to_date != '' ){
+      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
 
-    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+     }else{
+      $expenses = $expenses->orderBy('expenses.id','desc')->get();
+     }
+   // $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
     $pdf = PDF::loadView('vendor-expenses.vendorpdf', compact('expenses'));
 
     return $pdf->download('vendor-expenses.pdf');
@@ -724,8 +737,14 @@ class VendorExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
+    if($this->from != '' && $this->to_date != '' ){
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
 
-    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+     }else{
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.id','desc')->get();
+     }
+
+   // $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
     $pdf = PDF::loadView('vendor-expenses.deletepdf', compact('expenses'));
 
     return $pdf->download('vendor-delete-expenses.pdf');
@@ -829,7 +848,7 @@ class VendorExpensesController extends Controller
     }
     if ($project_filter != 'undefined' && $project_filter != '') {
       $expenses = $expenses->where('expenses.project_id', $project_filter);
-      //dd($expenses);exit;
+      //dd($expenses);exit; 
     }
     if ($user_filter != 'undefined' && $user_filter != '') {
       $expenses = $expenses->where('expenses.user_id', $user_filter);
@@ -839,8 +858,13 @@ class VendorExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
+    if($this->from != '' && $this->to_date != '' ){
+      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
 
-    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+     }else{
+      $expenses = $expenses->orderBy('expenses.id','desc')->get();
+     }
+   // $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
     $pdf = PDF::loadView('vendor-expenses.vendorpdf', compact('expenses'));
 
     return $pdf->download('vendor-unpaid-expenses.pdf');

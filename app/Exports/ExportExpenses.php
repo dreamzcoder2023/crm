@@ -112,8 +112,12 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         }
 
        // dd($expenses);
+       if($this->from != '' && $this->to_date != '' ){
+        $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
 
-  $expenses = $expenses->orderBy('expenses.id','desc')->get();
+       }else{
+        $expenses = $expenses->orderBy('expenses.id','desc')->get();
+       }
 //dd($expenses);
 
         return collect($expenses);

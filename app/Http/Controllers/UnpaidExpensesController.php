@@ -90,7 +90,11 @@ if($request->amount != '' && $request->amount != 'undefined'){
        $expenses = $expenses->orderBy('expenses.amount',$request->amount)->get();
 }
 
-  $expenses = $expenses->orderBy('expenses.id','desc')->get();
+if($from != '' && $to_date != ''){
+  $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
+}else{
+  $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+}
 
 
 
@@ -231,8 +235,13 @@ if($request->amount != '' && $request->amount != 'undefined'){
         $expenses = $expenses->where('expenses.user_id',$user_filter);
       }
 
+      if($this->from != '' && $this->to_date != '' ){
+        $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
 
-            $expenses = $expenses->orderBy('expenses.id','desc')->get();
+       }else{
+        $expenses = $expenses->orderBy('expenses.id','desc')->get();
+       }
+          //  $expenses = $expenses->orderBy('expenses.id','desc')->get();
             $pdf = PDF::loadView('unpaid_expenses.unpaidpdf', compact('expenses'));
 
             return $pdf->download('unpaid-expenses.pdf');

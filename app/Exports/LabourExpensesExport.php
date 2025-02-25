@@ -95,7 +95,12 @@ class LabourExpensesExport implements FromCollection, WithHeadings, WithMapping
       //   $expenses = $expenses->orderBy('expenses.amount', $this->amount)->get();
       // }
 
-      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+      if($this->from != '' && $this->to_date != '' ){
+        $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
+
+       }else{
+        $expenses = $expenses->orderBy('expenses.id','desc')->get();
+       }
 
         return collect($expenses);
     }

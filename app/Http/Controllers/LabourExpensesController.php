@@ -277,8 +277,11 @@ class LabourExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
-
-    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    if($from != '' && $to_date != ''){
+      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
+    }else{
+      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    }
 //dd($expenses);
 
 
@@ -554,8 +557,11 @@ $labour['advance_amt'] = $labour->advance_amt + $minus1;
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
-
-    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+    if($from != '' && $to_date != ''){
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
+    }else{
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+    }
 
 
 
@@ -652,8 +658,14 @@ $labour['advance_amt'] = $labour->advance_amt + $minus1;
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
+    if($this->from != '' && $this->to_date != '' ){
+      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
 
-    $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+     }else{
+      $expenses = $expenses->orderBy('expenses.id','desc')->get();
+     }
+
+   // $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
 
     $pdf = PDF::loadView('labour-expenses.expensepdf', compact('expenses'));
 
@@ -723,8 +735,13 @@ $labour['advance_amt'] = $labour->advance_amt + $minus1;
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
+    if($this->from != '' && $this->to_date != '' ){
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
 
-    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+     }else{
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.id','desc')->get();
+     }
+   // $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
     $pdf = PDF::loadView('labour-expenses.deletepdf', compact('expenses'));
 
     return $pdf->download('labour-delete-expenses.pdf');
