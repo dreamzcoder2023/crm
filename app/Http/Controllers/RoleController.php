@@ -25,10 +25,17 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-
-        $roles = Role::orderBy('id','desc')->latest()->get();
+        $search = $request->search;
+        $paginate = $request->paginate ?? 15;
+        if(!empty($search)){
+           // dd($search);
+           $roles = Role::where('name','like','%'.$search.'%')->orderBy('id','desc')->latest()->paginate($paginate);
+        }else{
+            $roles = Role::orderBy('id','desc')->latest()->paginate($paginate);
+        }
+        
         $user = FacadesDB::table('model_has_roles')->pluck('role_id')->toArray();
-        return view('roles.index',compact('roles','user'));
+        return view('roles.index',compact('roles','user','paginate','search'));
     }
 
     /**

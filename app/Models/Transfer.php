@@ -8,6 +8,6 @@ class Transfer extends Model
 { 
 
     protected $table = 'transferdetails';
-    protected $fillable = ['id','amount','member_id','user_id','current_date','description','history','payment_mode'];
+    protected $fillable = ['id','amount','member_id','user_id','current_date','description','history','payment_mode','is_vendor','vendor_id'];
 } 
 ?>

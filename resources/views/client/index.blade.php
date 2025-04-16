@@ -81,9 +81,38 @@ td, th {
   </div></div></div>
 <!-- Basic Bootstrap Table -->
 <div class="card" style="max-width: 1200px; margin: 40px auto;top:-32px;">
+  <form id="submit-form">     
+  <div class="d-flex justify-content-between align-items-center m-2">
+          
+    <div class="d-flex justify-content-center align-items-center">
+        <span class="me-2">Showing:</span>
+        <select class="form-control me-2" style="width:50%" name="paginate" id="showing_result" onchange="submitform()">
+            <option value="15" {{ request('paginate') == 15 ? 'selected' : '' }}>15</option>
+            <option value="50" {{ request('paginate') == 50 ? 'selected' : '' }}>50</option>
+            <option value="100" {{ request('paginate') == 100 ? 'selected' : '' }}>100</option>
+        </select>
+      
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+        {{-- <form method="post" action="{{ route('roles.index') }}" class="d-flex align-items-center">  --}}
+        <span class="me-2">Search:</span>
+        <input type="text" name="search" id="search" value="{{ $search }}" class="form-control me-2"
+            style="width: 200px;">
+
+        <button class="btn btn-primary me-2 client_search" type="submit">
+            <i class="bx bx-search" style="font-size: 18px;"></i>
+        </button>
+        <a class="btn btn-danger" href="{{ route('client-index') }}">
+            <i class="bx bx-x-circle" style="font-size: 18px;"></i>
+        </a>
+        {{-- </form> --}}
+    </div>
+    
+</div>
+</form>
   <!-- <h5 class="card-header">Table Basic</h5> -->
   <div class="table-responsive text-nowrap">
-    <table class="table" id="client_listing_table">
+    <table class="table" id="">
       <thead>
         <tr>
           <th>ID</th>
@@ -125,6 +154,9 @@ td, th {
 
       </tbody>
     </table>
+    <div class="paginatestyle  mt-4" style="align-items:center;justify-content:center">
+      {{ $clients->links('pagination::bootstrap-5') }}
+  </div>
   </div>
 </div>
 <!--/ Basic Bootstrap Table -->
@@ -193,6 +225,19 @@ var url = '{{ route("client-delete",":id",) }}';
       window.location.href=url1;
 });
 });
+$('.client_search').click(function() {
+                var search = $('#search').val();
+                var url = "{{ route('client-index') }}";
+                window.location.href = url + '?search=' + search;
+            });
+function submitform(){
+  $('#submit-form').submit();
+}
+            // $('#showing_result').change(function() {
+            //     var paginate = $(this).find(':selected').val();
+            //     var url = "{{ route('client-index') }}";
+            //     window.location.href = url + '?paginate=' + paginate;
+            // });
 </script>
 
 @endsection

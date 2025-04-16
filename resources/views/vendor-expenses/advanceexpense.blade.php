@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
+
 <style>
   @media only screen and (max-width:320px){
     .aa{
@@ -65,9 +66,38 @@
 
 <!-- Basic Bootstrap Table -->
 <div class="card" style="max-width: 1200px;top:-28px;">
+  <form >     
+    <div class="d-flex justify-content-between align-items-center m-2">
+            
+      <div class="d-flex justify-content-center align-items-center">
+          <span class="me-2">Showing:</span>
+          <select class="form-control me-2" style="width:50%" name="paginate" id="showing_result" onchange="submitform()">
+              <option value="15" {{ request('paginate') == 15 ? 'selected' : '' }}>15</option>
+              <option value="50" {{ request('paginate') == 50 ? 'selected' : '' }}>50</option>
+              <option value="100" {{ request('paginate') == 100 ? 'selected' : '' }}>100</option>
+          </select>
+        
+      </div>
+      <div class="d-flex justify-content-center align-items-center">
+          {{-- <form method="post" action="{{ route('roles.index') }}" class="d-flex align-items-center">  --}}
+          <span class="me-2">Search:</span>
+          <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control me-2"
+              style="width: 200px;">
+  
+          <button class="btn btn-primary me-2 " type="submit">
+              <i class="bx bx-search" style="font-size: 18px;"></i>
+          </button>
+          <a class="btn btn-danger" href="{{ route('vendor-expenses-advance-history') }}">
+              <i class="bx bx-x-circle" style="font-size: 18px;"></i>
+          </a>
+          {{-- </form> --}}
+      </div>
+      
+  </div>
+  </form>
   <!-- <h5 class="card-header">Table Basic</h5> -->
   <div class="table-responsive text-nowrap">
-    <table class="table" id="user_listing_table">
+    <table class="table" id="">
       <thead>
         <tr>
           <th>ID</th>
@@ -91,7 +121,7 @@
         <td>{{$user->advance_amt}}</td>
         @can('vendor expenses-vendor advance amount edit')
         <td>
-        <a class=""  href="{{ route('vendor-advanceform',$user->id) }}" ><i class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
+        <a class=""  href="{{ route('vendor.vendor-history',$user->id) }}" data-toggle="tooltip" data-placement="bottom" title="History"><i class="bi bi-clock-history"></i></a>
         </td>
         @endcan
        </tr>
@@ -99,6 +129,9 @@
 
       </tbody>
     </table>
+    <div class="paginatestyle  mt-4" style="align-items:center;justify-content:center">
+      {{ $users->links('pagination::bootstrap-5') }}
+  </div>
   </div>
 </div>
 <!--/ Basic Bootstrap Table -->

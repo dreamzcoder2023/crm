@@ -28,7 +28,7 @@
                     <form name="UnpaidSubmit" action="{{ route('vendor-expenses-unpaid-store') }}" id="UnpaidSubmit"
                         method="post">
                         @csrf
-                        <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}">
+                        <input type="hidden" name="user_id" id="user_id" value="{{ $unpaid->vendor_id }}">
                         <div class="col-xl">
                             <div class="card mb-4" style="margin-top:30px;">
                                 <div class="card-body">
@@ -118,11 +118,11 @@
             }
         });
         function amountcheck(amount){
-    var user_id = $('#user_id').val();
+         var user_id = $('#user_id').val();
       console.log(amount,"amount check");
         $.ajax({
-        url : "{{ route('amount-check') }}",
-        data : {'amount' : amount,'user_id' : user_id},
+        url : "{{ route('vendor-insufficent') }}",
+        data : {'amount' : amount,'vendor_id' : user_id},
         type : 'GET',
         dataType : 'json',
         success : function(result){

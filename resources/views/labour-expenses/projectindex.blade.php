@@ -113,7 +113,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h4 class="mb-0" style="font-size:17px">Project Name</h4>
+                            <h4 class="mb-0" style="font-size:17px">Labour Name</h4>
                         </div>
                         <div class="icon-shape icon-md bg-light-primary text-primary rounded-2"><svg
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="18" height="18"
@@ -124,7 +124,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold" style="font-size:21px">{{ $project?->project_name }}</h3>
+                        <h3 class="fw-bold" style="font-size:21px">{{ $labour?->labour_name }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -146,7 +146,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold" style="font-size:21px">{{ $project?->unpaid }}</h3>
+                        <h3 class="fw-bold" style="font-size:21px">{{ $labour?->unpaid }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -168,7 +168,7 @@
                             </svg></div>
                     </div>
                     <div>
-                        <h3 class="fw-bold" style="font-size:21px">{{ $project?->advance_amt }}</h3>
+                        <h3 class="fw-bold" style="font-size:21px">{{ $labour?->advance_amt }}</h3>
                         {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                     </div>
                 </div>
@@ -190,7 +190,7 @@
                           </svg></div>
                   </div>
                   <div>
-                      <h3 class="fw-bold" style="font-size:21px">{{$project?->unpaid - $project?->advance_amt }}</h3>
+                      <h3 class="fw-bold" style="font-size:21px">{{$labour?->unpaid - $labour?->advance_amt }}</h3>
                       {{-- <p class="mb-0"><span classname="text-dark me-2">2</span> Completed</p> --}}
                   </div>
               </div>
@@ -215,17 +215,17 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
 
-                    @foreach ($labour as $labour)
+                    @foreach ($project as $project)
                         <tr>
-                            <td><input type="checkbox" name="labour_id[]" class="days" id="{{ $labour->labour_id }}"
-                                    {{ $labour->unpaid_amt <= 0 ? 'disabled' : '' }} value="{{ $labour->labour_id }}" data-unpaid="{{ $labour->unpaid_amt }}"></td>
+                            <td><input type="checkbox" name="project_id[]" class="days" id="{{ $project->project_id }}"
+                                    {{ $project->unpaid_amt <= 0 ? 'disabled' : '' }} value="{{ $project->project_id }}" data-unpaid="{{ $project->unpaid_amt }}"></td>
                             <td><a style="text-decoration: none" href="javascript:void(0)" class="labour_details_weekly"
                                     style="cursor:pointer" data-start_week="{{ $start_date }}"
-                                    data-end_week="{{ $end_date }}"
-                                    data-labour_id="{{ $labour->labour_id }}">{{ $labour->labour_name }}</a></td>
-                            <td>{{ $labour->amount }} </td>
-                            <td>{{ $labour->unpaid_amt }}</td>
-                            <td>{{ $labour->advance_amt }}</td>
+                                    data-end_week="{{ $end_date }}" data-labour_id="{{ $labour->labour_id }}"
+                                    data-project_id="{{ $project->project_id }}">{{ $project->project_name }}</a></td>
+                            <td>{{ $project->amount }} </td>
+                            <td>{{ $project->unpaid_amt }}</td>
+                            <td>{{ $project->advance_amt }}</td>
                         </tr>
                     @endforeach
 
@@ -236,7 +236,7 @@
         </div>
     </div>
     <button class="btn btn-primary" id="advance_submit" data-start_week="{{ $start_date }}"
-        data-end_week="{{ $end_date }}" data-project_id = "{{ $project?->project_id }}" data-wallet="{{ Auth::user()->wallet }}" disabled>Submit</button>
+        data-end_week="{{ $end_date }}" data-labour_id = "{{ $labour?->labour_id }}" data-wallet="{{ Auth::user()->wallet }}" disabled>Submit</button>
         <div class="float-right" style=""><span><b>Unpaid amount:</b> <span class="total_un_amt">0</span></span></div>
     <!--/ Basic Bootstrap Table -->
 
@@ -323,6 +323,7 @@
             $('.labour_details_weekly').click(function() {
                 var start_date = $(this).attr('data-start_week');
                 var end_date = $(this).attr('data-end_week');
+                var project_id = $(this).attr('data-project_id');
                 var labour_id = $(this).attr('data-labour_id');
                 $('.preloader').css('display', 'block');
                 $.ajax({
@@ -332,7 +333,8 @@
                     data: {
                         start_date: start_date,
                         end_date: end_date,
-                        labour_id: labour_id
+                        project_id : project_id,
+                        labour_id : labour_id
                     },
                     dataType: 'json',
                     success: function(html) {
@@ -351,7 +353,7 @@
                 });
                 var start_date = $(this).attr('data-start_week');
                 var end_date = $(this).attr('data-end_week');
-                var project_id = $(this).attr('data-project_id')
+                var labour_id = $(this).attr('data-labour_id')
                 console.log('val', val);
                 $.ajax({
                     headers: {
@@ -360,10 +362,10 @@
                     type: "post",
                     url: "{{ route('labour-expenses-store') }}",
                     data: {
-                        labour_id: val,
+                        project_id: val,
                         end_date: end_date,
                         start_date: start_date,
-                        project_id: project_id
+                        labour_id: labour_id
                     },
                     dataType: 'json',
                     success: function(html) {

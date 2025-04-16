@@ -84,16 +84,16 @@
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      @foreach ($week_data['project'] as $project)
+                                      @foreach ($week_data['labour'] as $labour)
                                           <tr>
                                               <td>
                                                   <a style="text-decoration: none" href="javascript:void(0)" class="projectunpaid" style="cursor:pointer"
                                                       data-start_week="{{ $record->week_start_date }}"
                                                       data-end_week="{{ $record->week_end_date }}"
-                                                      data-project_id="{{ $project->project_id }}"> {{ $project->project_name }} </a>
+                                                      data-project_id="{{ $labour->labour_id }}"> {{ $labour->labour_name }} </a>
                                               </td>
-                                              <td>{{ $project->unpaid_amt }}</td>
-                                              <td>{{ $project->advance_amt }}</td>
+                                              <td>{{ $labour->unpaid_amt }}</td>
+                                              <td>{{ $labour->advance_amt }}</td>
                                           </tr>
                                       @endforeach
                                   </tbody>
@@ -139,7 +139,7 @@
         var project_id = $(this).attr('data-project_id');
         $('.preloader').css('display', 'block');
         var url = '{{ route('labour-expenses-project') }}';
-            window.location.href = url + '?project_id=' + project_id + '&start_date=' + start_date + '&end_date=' +end_date;
+            window.location.href = url + '?labour_id=' + project_id + '&start_date=' + start_date + '&end_date=' +end_date;
     });
     $('#year').change(function(){
       var year = $(this).val();

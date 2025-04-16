@@ -355,6 +355,16 @@
                             </a>
                         </li>
                     @endcan
+                    @can('vendor-history')
+                    <li class="menu-item {{ \Request::route()->getName() == 'vendor-history' ? 'active open' : '' }}">
+                        <a href="{{ route('transfer.vendor.history') }}" class="menu-link">
+                            {{-- <img src="{{ asset('assets/img/icons/wallet.png') }}" alt="slack" class="me-3"
+                                height="20"> --}}
+                            <!-- <i class="menu-icon tf-icons bi bi-currency-exchange"></i> -->
+                            <div class="dark">Vendor History</div>
+                        </a>
+                    </li>
+                @endcan
                 </ul>
             </li>
         @endcan

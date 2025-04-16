@@ -79,7 +79,7 @@
     @endif
     <div style="margin-top: 30px;">
         <h4 class="fw-bold py-3 mb-4" style="margin-top:-49px;font-size:16px;color:black">
-            <span class="fw-light">Category
+            <span class="fw-light">Category</span>
         </h4>
         <div class="row" style="position:absolute; top:90px; right:50px ">
             <div class="col-md-12">

@@ -235,6 +235,7 @@
         });
         $('#vendor_id').change(function() {
             var id = $(this).val();
+            var paid_amt = $('#paid_amt').val();
             $.ajax({
                 url: "{{ route('vendor-salary') }}",
                 data: {
@@ -247,6 +248,7 @@
                     // $('#amount').val(result.salary);
                      $('.advance_amt').text('Advance Amount :' + result.advance_amt);
                      $('.advance_amt').removeClass('hide');
+                     amountcheck(paid_amt);
                 }
             });
 
@@ -332,11 +334,11 @@
 
         function amountcheck(amount) {
             console.log(amount, "amount check");
-            var user_id = $('#user_id').val();
+            var vendor_id = $('#vendor_id').val();
             $.ajax({
-                url: "{{ route('amount-check') }}",
+                url: "{{ route('vendor-insufficent') }}",
                 data: {
-                    'amount': amount,'user_id' : user_id
+                    'amount': amount,'vendor_id' : vendor_id
                 },
                 type: 'GET',
                 dataType: 'json',

@@ -198,6 +198,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+@if (session()->has('success'))
+        <script>
+            $(function() {
+                toastr.success('{{ session('success') }}', {
+                    timeOut: 1000,
+                    fadeOut: 1000,
+                });
+            });
+        </script>
+    @endif
+    @if (session()->has('error'))
+        <script>
+            $(function() {
+                toastr.error('{{ session('error') }}', {
+                    timeOut: 1000,
+                    fadeOut: 1000,
+                });
+            });
+        </script>
+    @endif
 <script>
   toastr.options = {
     "closeButton": false,

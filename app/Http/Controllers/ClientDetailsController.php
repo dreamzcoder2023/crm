@@ -19,11 +19,21 @@ class ClientDetailsController extends Controller
      */
     public function index(Request $request)
     {
-        //return view('roles.index');
-        $clients = ClientDetails::where('active_status',1)->where('delete_status',0)->orderBy('id','desc')->get();
+        $search = $request->search;
+        $paginate = $request->paginate??15;
+        // if(!empty($search)){
+        //     $clients = ClientDetails::where('active_status',1)->where('delete_status',0)->where('first_name','like','%'.$search.'%')
+        //              ->orWhere('last_name','like','%'.$search.'%')   
+        //              ->orWhere('company_name','like','%'.$search.'%')
+        //              ->orWhere('email','like','%'.$search.'%')
+        //              ->orderBy('id','desc')->paginate($paginate)->withQueryString();
+        // }else{
+            $clients = ClientDetails::where('active_status',1)->where('delete_status',0)->orderBy('id','desc')->paginate($paginate);
+       // }
+        
         $project = ProjectDetails::where('active_status',1)->where('delete_status',0)->pluck('client_id')->toArray();
         $wallet = Wallet::where('active_status',1)->where('delete_status',0)->pluck('client_id')->toArray();
-        return view('client.index',compact('clients','project','wallet'));
+        return view('client.index',compact('clients','project','wallet','search','paginate'));
     }
 
     /**

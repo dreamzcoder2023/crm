@@ -20,7 +20,7 @@ class ProjectDetailsController extends Controller
      */
     public function index(Request $request)
     {
-        //return view('roles.index');
+        
         $projects = ProjectDetails::join('clientdetails','clientdetails.id','=','project_details.client_id')->where('project_details.active_status',1)->where('project_details.delete_status',0)->select('project_details.*','clientdetails.first_name as first_name','clientdetails.last_name as last_name')->orderBy('project_details.id','desc')->get();
         $expenses = Expenses::pluck('project_id')->toArray();
         $wallet = Wallet::where('active_status',1)->where('delete_status',0)->pluck('project_id')->toArray();

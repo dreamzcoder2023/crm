@@ -727,7 +727,7 @@ up -->
         </div>
       </div>
       <div class="card-body">
-        <ul class="p-0 m-0">
+        <ul class="p-0 m-0" style="height:450px;overflow:scroll;">
           @foreach ($transfer_history as $transfer)
           <li class="d-flex mb-4 pb-1">
 

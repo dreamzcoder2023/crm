@@ -132,6 +132,7 @@ Route::get('/transfer',[TransferController::class,'index'])->name('transfer-hist
 Route::get('/transfer-create',[TransferController::class,'create'])->name('transfer-create');
 Route::post('/transfer/store',[TransferController::class,'store'])->name('transfer.store');
 Route::get('/transfer/amountcheck',[TransferController::class,'insufficientamt'])->name('transfer.amount-check');
+Route::get('vendor-history',[TransferController::class,'vendor_history'])->name('transfer.vendor.history');
 // transfer details ended
 
 // expenses started
@@ -247,6 +248,9 @@ Route::get('/vendor-delete-expenses-export',[VendorExpensesController::class,'ve
 Route::get('/vendor-unpaid-expenses-export',[VendorExpensesController::class,'unpaid_expenses_export'])->name('vendor-unpaid-expenses-export');
 Route::get('/vendor-unpaid-expenses-pdf',[VendorExpensesController::class,'unpaid_expenses_pdf'])->name('vendor-unpaid-expenses-pdf');
 
+Route::get('userdetails',[TransferController::class,'userDetail'])->name('transfer.userdetail');
+Route::get('vendor-insufficent',[VendorExpensesController::class,'vendor_insufficant'])->name('vendor-insufficent');
+Route::get('/vendorhistory/{id}',[VendorExpensesController::class,'vendor_history'])->name('vendor.vendor-history');
 
 //vendor ended
 });
@@ -309,6 +313,6 @@ Route::get('/form/layouts-horizontal', $controller_path . '\form_layouts\Horizon
 // tables
 Route::get('/tables/basic', $controller_path . '\tables\Basic@index')->name('tables-basic');
 Route::get('/test', function () {
-  return view('example');
+  return view('content.dashboard.dashboards-crm');
 })->name('test');
 

@@ -64,7 +64,7 @@ class UserController extends Controller
         }
         //print_r($request->file('image'));exit;
             $user = User::create($input);
-            $user->assignRole($request->input('roles'));
+            
             return redirect()->route('user-edit',['id' => $user->id,'tab'=> 'job-info']);
 
     }

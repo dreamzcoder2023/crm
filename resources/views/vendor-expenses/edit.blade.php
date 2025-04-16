@@ -19,7 +19,7 @@
 
     <!-- Basic Layout & Basic with Icons -->
     <h4 class="fw-bold py-3 mb-4">
-        <span class="text-muted fw-light">Edit Labour Expenses
+        <span class="text-muted fw-light">Edit Vendor Expenses
     </h4>
     <div class="row">
         <!-- Basic Layout -->
@@ -32,7 +32,7 @@
                         method="post" enctype="multipart/form-data">
                         @csrf
                         {{ method_field('PUT') }}
-                        <input type="hidden" name="user_id" id="user_id" value="{{$expense->user_id}}">
+                        <input type="hidden" name="user_id" id="user_id" value="{{$expense->vendor_id}}">
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3 " id="here">
@@ -80,7 +80,7 @@
                                     <input type="text" id="amount" name="amount" class="form-control"
                                         placeholder="Enter amount"
                                         onkeypress="allowNumbersOnly(event)"  value="{{$expense->amount}}"/>
-                                        <p style="color:blue">wallet balance : {{$expense->wallet}}</p>
+                                        {{-- <p style="color:blue">wallet balance : {{$expense->wallet}}</p> --}}
                                     <p class="advance_amt" style="color:blue">Advance Amount: {{ $expense->advance_amt }}</p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
@@ -329,9 +329,9 @@
             console.log(amount, "amount check");
             var user_id = $('#user_id').val();
             $.ajax({
-                url: "{{ route('amount-check') }}",
+                url: "{{ route('vendor-insufficent') }}",
                 data: {
-                    'amount': amount,'user_id' : user_id
+                    'amount': amount,'vendor_id' : user_id
                 },
                 type: 'GET',
                 dataType: 'json',

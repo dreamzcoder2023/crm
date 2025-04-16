@@ -59,8 +59,8 @@ class LabourExpensesController extends Controller
         ->select([
           DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
           DB::Raw('SUM(w.extra_amt) as advance_amt'),
-          DB::Raw('p.name as project_name'),
-          DB::Raw('p.id as project_id'),
+          DB::Raw('p.name as labour_name'),
+          DB::Raw('p.id as labour_id'),
         ])
         ->whereNull('w.deleted_at')
         ->leftJoin('labour_details as p', 'p.id', '=', 'w.labour_id')
@@ -68,7 +68,7 @@ class LabourExpensesController extends Controller
         ->groupBy('w.labour_id')
         ->get();
       if (!$records->isEmpty()) {
-        $start_labour_date[] = ['records' => $records, 'project' => $project];
+        $start_labour_date[] = ['records' => $records, 'labour' => $project];
       }
     }
 
@@ -133,18 +133,19 @@ class LabourExpensesController extends Controller
   }
   public function labour_expense_project(Request $request)
   {
+   // dd($request->all());
     $start_date = (isset($request->start_date) && $request->start_date != 'undefined') ? ($request->start_date . ' ' . '00:00:00') : '';
     $end_date = (isset($request->end_date) && $request->end_date != 'undefined') ? ($request->end_date . ' ' . '23:59:59') : '';
 
-    $project = DB::table('expenses as e')->leftjoin('labour_details as p', 'p.id', '=', 'e.labour_id')->where('e.labour_id', $request->project_id)->wheredate('e.current_date','>=',$start_date)->wheredate('e.current_date','<=',$end_date)->select([
+    $labour = DB::table('expenses as e')->leftjoin('labour_details as p', 'p.id', '=', 'e.labour_id')->where('e.labour_id', $request->labour_id)->wheredate('e.current_date','>=',$start_date)->wheredate('e.current_date','<=',$end_date)->select([
       DB::Raw('SUM(e.unpaid_amt) as unpaid'),
       DB::Raw('SUM(e.extra_amt) as advance_amt'),
       DB::Raw('e.*'),
-      DB::Raw('p.name as project_name')
+      DB::Raw('p.name as labour_name')
     ])->whereNull('e.deleted_at')->first();
   // dd($project);
-    $labour = Expenses::leftJoin('project_details', 'project_details.id', '=', 'expenses.project_id')
-      ->where('expenses.labour_id', $request->project_id)
+    $project = Expenses::leftJoin('project_details', 'project_details.id', '=', 'expenses.project_id')
+      ->where('expenses.labour_id', $request->labour_id)
       ->whereNotNull('expenses.labour_id')
       ->whereNull('expenses.deleted_at')
       ->whereBetween('expenses.current_date', [$start_date, $end_date])
@@ -154,10 +155,11 @@ class LabourExpensesController extends Controller
         DB::Raw('SUM(expenses.extra_amt) as advance_amt'),
         DB::Raw('expenses.amount'),
         // Add other columns you need, aggregating where necessary
-        DB::Raw('project_details.name as labour_name'),
-        DB::Raw('project_details.id as labour_id'),
+        DB::Raw('project_details.name as project_name'),
+        DB::Raw('project_details.id as project_id'),
       ])->get();
-      $labour_disable = $labour->where('unpaid_amt','>',0)->count();
+      //dd($project);
+      $labour_disable = $project->where('unpaid_amt','>',0)->count();
      // dd($labour_disable);
     return view('labour-expenses.projectindex', ['project' => $project, 'labour' => $labour, 'start_date' => $request->start_date, 'end_date' => $request->end_date,'labour_disable' => $labour_disable]);
   }
@@ -168,6 +170,7 @@ class LabourExpensesController extends Controller
     $end_date = (isset($request->end_date) && $request->end_date != 'undefined') ? ($request->end_date . ' ' . '23:59:59') : '';
     $weekSummary = DB::table('expenses as w')->leftjoin('labour_details as l', 'l.id', '=', 'w.labour_id')
       ->where('w.labour_id',$request->labour_id)
+      ->where('w.project_id',$request->project_id)
       ->select([
         DB::Raw('SUM(w.unpaid_amt) as unpaid_amt'),
         DB::Raw('SUM(w.extra_amt) as advance_amt'),
@@ -186,24 +189,24 @@ class LabourExpensesController extends Controller
   }
   public function labour_expenses_store(Request $request)
   {
-   //dd($request->all());
+  // dd($request->all());
    $start_date = (isset($request->start_date) && $request->start_date != 'undefined') ? ($request->start_date . ' ' . '00:00:00') : '';
    $end_date = (isset($request->end_date) && $request->end_date != 'undefined') ? ($request->end_date . ' ' . '23:59:59') : '';
     $user = Auth::user()->wallet;
-    $labours = '';
-    foreach ($request->labour_id as $labour) {
-      $labours = Expenses::where(['labour_id' => $labour, 'project_id' => $request->project_id])->whereBetween('current_date', [$start_date, $end_date])->get();
+    $projects = '';
+    foreach ($request->project_id as $project) {
+      $projects = Expenses::where(['project_id' => $project, 'labour_id' => $request->labour_id])->whereBetween('current_date', [$start_date, $end_date])->get();
     //  dd($labours);
-      foreach ($labours as $labours) {
+      foreach ($projects as $projects) {
         if($user > 0 ){
-        if ($labours->unpaid_amt > 0) {
-          $labours['paid_amt'] = abs($labours->unpaid_amt + $labours->paid_amt);
+        if ($projects->unpaid_amt > 0) {
+          $projects['paid_amt'] = abs($projects->unpaid_amt + $projects->paid_amt);
           $wallet = User::find(Auth::user()->id);
-          $wallet['wallet'] = abs($wallet->wallet - $labours->unpaid_amt);
+          $wallet['wallet'] = abs($wallet->wallet - $projects->unpaid_amt);
           $wallet->update();
-          $labours['unpaid_amt'] = 0;
+          $projects['unpaid_amt'] = 0;
 
-          $labours->update();
+          $projects->update();
         }
       }else{
         return response()->json('error');

@@ -12,9 +12,11 @@ use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
 use App\Models\Payment;
 use App\Models\ProjectDetails;
+use App\Models\Transfer;
 use App\Models\User;
 use PDF;
 use App\Models\Vendor;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,76 +26,91 @@ class VendorExpensesController extends Controller
 {
   public function index(Request $request)
   {
-    $category_filter = $request->category_id;
-    $project_filter = $request->project_id;
-    $user_filter = $request->user_id;
-    //$from1 = now()->format('Y-m-d');
-
-    // if($request->from_date != ''){
-    //   $from = $request->from_date.' '.'00:00:00';
-    // }
-    // else{
-    //   $from = $from1.' '.'00:00:00';
-    // }
-
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
-
-
-    // print_r($from);
-    // print_r($to_date);
-    // exit;
-
-
-
+    //dd($request->search);
+    $from = null;
+    $to = null;
+    
+    if (!empty($request->date_range)) {
+        [$from, $to] = array_map('trim', explode('-', $request->date_range));
+    
+        $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+        $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+    
+    $paginate = $request->paginate ?? 10;
     $auth = Auth::user()->id;
-    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
-
-    $expenses = Expenses::whereNotNull('expenses.vendor_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('vendor_details as l', 'l.id', '=', 'expenses.vendor_id')
-      ->leftJoin('project_details', function ($join) {
-        $join->on('project_details.id', 'expenses.project_id')
-          ->where('expenses.project_id', '!=', null);
+    
+    $role = DB::table('model_has_roles')
+        ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+        ->where('model_has_roles.model_id', $auth)
+        ->pluck('roles.id')
+        ->first();
+    
+    $expenses = Expenses::whereNotNull('expenses.vendor_id')
+        ->leftJoin('category', 'category.id', '=', 'expenses.category_id')
+        ->leftJoin('vendor_details as l', 'l.id', '=', 'expenses.vendor_id')
+        ->leftJoin('project_details', function ($join) {
+            $join->on('project_details.id', '=', 'expenses.project_id')
+                ->whereNotNull('expenses.project_id');
+        })
+        ->leftJoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+        ->leftJoin('users', 'users.id', '=', 'expenses.editedBy')
+        ->leftJoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')
+        ->leftJoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance')
+        ->where(['category.active_status' => 1, 'category.delete_status' => 0])
+        ->select('expenses.*', 
+        'category.name as category_name', 
+        'project_details.name as project_name', 
+        'payment.name as payment_name', 
+        'users.first_name', 'users.last_name', 
+        'users_add.first_name as first','users_add.last_name as last', 
+        'l.name as vendor_name',
+         'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last')
+        ->when($from, function ($query, $from) {
+            $query->whereDate('expenses.current_date', '>=', $from);
+        })
+        ->when($to, function ($query, $to) {
+            $query->whereDate('expenses.current_date', '<=', $to);
+        })
+        ->when($request->category_id, function ($query, $category_id) {
+            $query->where('expenses.category_id', $category_id);
+        })
+        ->when($request->project_id, function ($query, $project_id) {
+            $query->where('expenses.project_id', $project_id);
+        })
+        ->when($request->user_id, function ($query, $user_id) {
+            $query->where('expenses.vendor_id', $user_id);
+        })
+        ->when($request->search, function ($query, $search) {
+          $query->where(function ($q) use ($search) {
+              $q->where('category.name', 'like', "%$search%")
+                ->orWhere('project_details.name', 'like', "%$search%")
+                ->orWhere('payment.name', 'like', "%$search%")
+                ->orWhere(DB::raw("CONCAT(users.first_name, ' ', users.last_name)"), 'like', "%$search%")
+                ->orWhere(DB::raw("CONCAT(users_add.first_name, ' ', users_add.last_name)"), 'like', "%$search%")
+                ->orWhere(DB::raw("CONCAT(labour_ad.first_name, ' ', labour_ad.last_name)"), 'like', "%$search%")
+                ->orWhere('users.first_name', 'like', "%$search%")
+                ->orWhere('users.last_name', 'like', "%$search%")
+                ->orWhere('users_add.first_name', 'like', "%$search%")
+                ->orWhere('users_add.last_name', 'like', "%$search%")
+                ->orWhere('l.name', 'like', "%$search%")
+                ->orWhere('labour_ad.first_name', 'like', "%$search%")
+                ->orWhere('labour_ad.last_name', 'like', "%$search%")
+                ->orWhere('expenses.amount','like',"%$search%")
+                ->orWhere('expenses.paid_amt','like',"%$search%")
+                ->orWhere('expenses.unpaid_amt','like',"%$search%")
+                ->orWhere('expenses.extra_amt','like',"%$search%")
+                ->orWhere('expenses.description','like',"%$search%");
+          });
       });
-
-
-    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-
-    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
-    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
-    if ($from != '') {
-      $expenses = $expenses->wheredate('current_date', '>=', $from);
-      //   ->toSql();
-      //  // $bindings = $expenses->getBindings();
-      //   print_r($expenses);
-      //  exit;
-
+    
+    
+    if ($from && $to) {
+        $expenses = $expenses->orderBy('expenses.current_date', 'desc')->paginate($paginate);
+    } else {
+        $expenses = $expenses->orderBy('expenses.id', 'desc')->paginate($paginate);
     }
-    if ($to_date != '') {
-      $expenses = $expenses->wheredate('current_date', '<=', $to_date);
-    }
-    if ($category_filter != 'undefined' && $category_filter != '') {
-      $expenses = $expenses->where('expenses.category_id', $category_filter);
-    }
-    if ($project_filter != 'undefined' && $project_filter != '') {
-      $expenses = $expenses->where('expenses.project_id', $project_filter);
-      //dd($expenses);exit;
-    }
-    if ($user_filter != 'undefined' && $user_filter != '') {
-      $expenses = $expenses->where('expenses.vendor_id', $user_filter);
-    }
-
-    //dd($expenses);
-    if ($request->amount != '' && $request->amount != 'undefined') {
-      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
-    }
-
-    if($from != '' && $to_date != ''){
-      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
-    }else{
-      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
-    }
-
+    
 
 
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
@@ -106,7 +123,7 @@ class VendorExpensesController extends Controller
     $advanced_amt = $expenses->sum('extra_amt');
     //dd($advanced_amt);
 
-    return view('vendor-expenses.index', ['expenses' => $expenses, 'category' => $category, 'category_filter' => $category_filter, 'from_date' => $request->from_date, 'to_date1' => $request->to_date, 'project' => $project, 'user' => $user, 'project_filter' => $project_filter, 'user_filter' => $user_filter, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
+    return view('vendor-expenses.index', ['expenses' => $expenses, 'category' => $category,  'project' => $project, 'user' => $user,  'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
   }
   public function create(Request $request)
   {
@@ -118,6 +135,7 @@ class VendorExpensesController extends Controller
   }
   public function store(Request $request)
   {
+    //dd($request->all());
     $user_id = Auth::user()->id;
     $input = $request->all();
     $input['user_id'] = $user_id;
@@ -128,7 +146,7 @@ class VendorExpensesController extends Controller
     } else {
       $unpaid_amt = abs($request->amount - $request->paid_amt);
     }
-    $input['extra_amt'] = $extra_amt;
+    $input['extra_amt'] = 0;
     $input['unpaid_amt'] = $unpaid_amt;
     $input['vendor_id'] = $request->vendor_id;
     $input['current_date'] = $request->current_date . ' ' . $request->time;
@@ -141,13 +159,14 @@ class VendorExpensesController extends Controller
       $input['image'] = "$profileImage";
     }
     $expenses = Expenses::create($input);
-    $project = User::find($user_id);
-    $minus = abs($project->wallet - $request->paid_amt);
-    $project['wallet'] = $minus;
-    $project->update();
-    $labour = Vendor::find($request->vendor_id);
-    $labour['advance_amt'] = abs($labour->advance_amt + $extra_amt);
-    $labour->update();
+    $vendor = Vendor::find($request->vendor_id);
+    //dd($vendor);
+    $minus = abs($vendor->advance_amt - $request->paid_amt);
+    $vendor['advance_amt'] = $minus;
+    $vendor->update();
+    // $labour = Vendor::find($request->vendor_id);
+    // $labour['advance_amt'] = abs($labour->advance_amt + $extra_amt);
+    // $labour->update();
     return redirect()->route('vendor-expenses-create')
       ->with('expenses-popup', 'Vendor Expenses Added Successfully');
   }
@@ -170,6 +189,7 @@ class VendorExpensesController extends Controller
   }
   public function update(Request $request)
   {
+    //dd($request->all());
     $user_id = Auth::user()->id;
     $input = $request->all();
     //dd($input);
@@ -202,11 +222,11 @@ class VendorExpensesController extends Controller
     if ($expenses->paid_amt < $request->paid_amt) {
 
 
-      $project = User::find($request->user_id);
+      $project = Vendor::find($request->user_id);
 
       $minus1 = abs($request->paid_amt - $expenses->paid_amt);
-      $minus = abs($project->wallet - $minus1);
-      $project['wallet'] = $minus;
+      $minus = abs($project->advance_amt - $minus1);
+      $project['advance_amt'] = $minus;
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt + $minus1);
   //    if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
@@ -225,11 +245,11 @@ class VendorExpensesController extends Controller
     } else {
 
 
-      $project = User::find($request->user_id);
+      $project = Vendor::find($request->user_id);
 
       $minus1 = abs($expenses->paid_amt - $request->paid_amt);
-      $minus =abs($project->wallet + $minus1);
-      $project['wallet'] = $minus;
+      $minus =abs($project->advance_amt + $minus1);
+      $project['advance_amt'] = $minus;
 
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt - $minus1);
@@ -255,20 +275,20 @@ class VendorExpensesController extends Controller
       }
     }
     // exit;
-    $input['extra_amt'] = $extra_amt;
+    $input['extra_amt'] = 0;
     $input['unpaid_amt'] =  $unpaid_amt;
    
    
-  $labour = Vendor::find($request->vendor_id);
-       if($input['extra_amt'] <= $expenses->extra_amt){  
-        $amt_add = $expenses->extra_amt - $input['extra_amt'];
-    $labour['advance_amt'] = abs($labour->advance_amt - $amt_add);
-    }else{
-      $amt_add =  $input['extra_amt'] - $expenses->extra_amt;
-     $labour['advance_amt'] = abs($labour->advance_amt + $amt_add);
-     }
-    // print_r($labour);exit;
-    $labour->update();
+  // $labour = Vendor::find($request->vendor_id);
+  //      if($input['extra_amt'] <= $expenses->extra_amt){  
+  //       $amt_add = $expenses->extra_amt - $input['extra_amt'];
+  //   $labour['advance_amt'] = abs($labour->advance_amt - $amt_add);
+  //   }else{
+  //     $amt_add =  $input['extra_amt'] - $expenses->extra_amt;
+  //    $labour['advance_amt'] = abs($labour->advance_amt + $amt_add);
+  //    }
+  //   // print_r($labour);exit;
+  //   $labour->update();
      $expenses->update($input);
     return redirect()->route('vendor-expenses-index')
       ->with('expenses-popup', 'Vendor Detail Updated Successfully'); 
@@ -461,7 +481,7 @@ class VendorExpensesController extends Controller
    return view('vendor-expenses.unpaidform',['unpaid' => $unpaid,'current_date' => $current_date,'current_time' => $current_time]);
   }
   public function unpaid_store(Request $request){
-
+   // dd($request->all());
     $user_id = Auth::user()->id;
     $input = $request->all();
     $extra_amt = 0;
@@ -469,9 +489,9 @@ class VendorExpensesController extends Controller
     $input['current_date'] = $request->current_date.' '.$request->time;
     $expenses_date = ExpensesUnpaidDate::create($input);
     // wallet minus
-    $user = User::find($user_id);
-    $minus = abs($user->wallet - $request->unpaid_amt);
-    $user['wallet'] = $minus;
+    $user = Vendor::find($request->user_id);
+    $minus = abs($user->advance_amt - $request->unpaid_amt);
+    $user['advance_amt'] = $minus;
     $user->update();
     // expense minus
     $expenses = Expenses::where('id',$request->expense_id)->first();
@@ -495,7 +515,14 @@ class VendorExpensesController extends Controller
     ->with('expenses-popup', 'Vendor Unpaid Amount Updated Successfully');
   }
   public function advance_expenses(Request $request){
-    $users = Vendor::latest()->get();
+    $paginate = $request->paginate??15;
+
+    $users = Vendor::when(request('search'),function($query,$search){
+      $query->where('name','like',"%$search%")
+      ->orWhere('phone','like',"%$search%")
+      ->orWhere('address','like',"%$search%")
+      ->orWhere('advance_amt','like',"%$search%");
+    })->latest()->paginate($paginate);
     return view('vendor-expenses.advanceexpense',['users' => $users]);
   }
   public function advance_form($id){
@@ -585,22 +612,16 @@ class VendorExpensesController extends Controller
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
-    //$from1 = now()->format('Y-m-d');
-
-    // if($request->from_date != ''){
-    //   $from = $request->from_date.' '.'00:00:00';
-    // }
-    // else{
-    //   $from = $from1.' '.'00:00:00';
-    // }
-
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
-
-
-    // print_r($from);
-    // print_r($to_date);
-    // exit;
+    $from = null;
+    $to = null;
+    
+    if (!empty($request->date_range)) {
+        [$from, $to] = array_map('trim', explode('-', $request->date_range));
+    
+        $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+        $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+  
 
 
 
@@ -615,37 +636,57 @@ class VendorExpensesController extends Controller
 
 
     $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-
-    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
-    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last');
-    if ($from != '') {
-      $expenses = $expenses->wheredate('current_date', '>=', $from);
-      //   ->toSql();
-      //  // $bindings = $expenses->getBindings();
-      //   print_r($expenses);
-      //  exit;
-
-    }
-    if ($to_date != '') {
-      $expenses = $expenses->wheredate('current_date', '<=', $to_date);
-    }
-    if ($category_filter != 'undefined' && $category_filter != '') {
-      $expenses = $expenses->where('expenses.category_id', $category_filter);
-    }
-    if ($project_filter != 'undefined' && $project_filter != '') {
-      $expenses = $expenses->where('expenses.project_id', $project_filter);
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])
+      ->leftjoin('users', 'users.id', '=', 'expenses.editedBy')
+                ->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')
+                ->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance')
+                ->select('expenses.*', 
+                'category.name as category_name', 
+                'project_details.name as project_name', 
+                'payment.name as payment_name', 
+                'users.first_name', 'users.last_name', 
+                'users_add.first_name as first', 'users_add.last_name as last', 
+                'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last')
+              ->when($from,function($query,$from){
+                $query->wheredate('current_date', '>=', $from);
+              })  
+              ->when($to,function($query,$to){
+                $query->wheredate('current_date', '<=', $to);
+              })
+      ->when($category_filter,function($query,$category_filter){
+      $query->where('expenses.category_id', $category_filter);
+    })
+    ->when($project_filter,function($query,$project_filter){
+      $query->where('expenses.project_id', $project_filter);
       //dd($expenses);exit;
-    }
-    if ($user_filter != 'undefined' && $user_filter != '') {
-      $expenses = $expenses->where('expenses.vendor_id', $user_filter);
-    }
+    })
+    ->when($user_filter,function($query,$user_filter){
+      $query->where('expenses.vendor_id', $user_filter);
+    })->when($request->search, function ($query, $search) {
+      $query->where(function ($q) use ($search) {
+          $q->where('category.name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search%")
+            ->orWhere(DB::raw("CONCAT(users.first_name, ' ', users.last_name)"), 'like', "%$search%")
+            ->orWhere(DB::raw("CONCAT(users_add.first_name, ' ', users_add.last_name)"), 'like', "%$search%")
+            ->orWhere(DB::raw("CONCAT(labour_ad.first_name, ' ', labour_ad.last_name)"), 'like', "%$search%")
+            ->orWhere('users.first_name', 'like', "%$search%")
+            ->orWhere('users.last_name', 'like', "%$search%")
+            ->orWhere('users_add.first_name', 'like', "%$search%")
+            ->orWhere('users_add.last_name', 'like', "%$search%")
+            ->orWhere('l.name', 'like', "%$search%")
+            ->orWhere('labour_ad.first_name', 'like', "%$search%")
+            ->orWhere('labour_ad.last_name', 'like', "%$search%")
+            ->orWhere('expenses.amount','like',"%$search%")
+            ->orWhere('expenses.paid_amt','like',"%$search%")
+            ->orWhere('expenses.unpaid_amt','like',"%$search%")
+            ->orWhere('expenses.extra_amt','like',"%$search%")
+            ->orWhere('expenses.description','like',"%$search%");
+      });
+  });
 
     //dd($expenses);
-    if ($request->amount != '' && $request->amount != 'undefined') {
-      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
-    }
-    if($this->from != '' && $this->to_date != '' ){
+    if($from != '' && $to != '' ){
       $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
 
      }else{
@@ -658,13 +699,22 @@ class VendorExpensesController extends Controller
   }
   public function vendor_expense_export(Request $request)
   {
+  //  dd($request->all());
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
+    $search = $request->search;
 
-
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+    $from = null;
+    $to = null;
+    
+    if (!empty($request->date_range)) {
+        [$from, $to] = array_map('trim', explode('-', $request->date_range));
+    
+        $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+        $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+    
 
 
 
@@ -672,7 +722,7 @@ class VendorExpensesController extends Controller
     $auth = Auth::user()->id;
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
-    return Excel::download((new VendorExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'vendor-expenses.xlsx');
+    return Excel::download((new VendorExpensesExport($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role,$search)), 'vendor-expenses.xlsx');
   }
   public function vendor_delete_expense_pdf(Request $request){
     $category_filter = $request->category_id;
@@ -869,6 +919,63 @@ class VendorExpensesController extends Controller
 
     return $pdf->download('vendor-unpaid-expenses.pdf');
 
+  }
+  public function vendor_insufficant(Request $request){
+    $vendor = Vendor::where('id',$request->vendor_id)->first();
+  //  dd($vendor);
+    $amount = $request->amount;
+    $wal_amt = (int)$vendor->advance_amt;
+    $response = true;
+    if (($wal_amt >= 0) && ($amount <= $wal_amt)) {
+      $response = false;
+    }
+    return response()->json($response);
+  }
+  public function vendor_history(Request $request,$id){
+   // dd($request->member_id);
+    $paginate = $request->paginate;
+    $vendor = Transfer::leftJoin('users', 'users.id', '=', 'transferdetails.user_id')
+    ->leftJoin('vendor_details', 'vendor_details.id', '=', 'transferdetails.vendor_id')
+    ->leftJoin('payment', 'payment.id', '=', 'transferdetails.payment_mode')
+    ->where('transferdetails.vendor_id','=',$id)
+    ->select(
+        'transferdetails.*',
+        'vendor_details.name as name',
+        'payment.name as payment_mode',
+        'users.first_name',
+        'users.last_name'
+    )
+    ->where('transferdetails.is_vendor', 1)
+    ->when($request->from_date, function ($query, $from_date) {
+        $query->whereDate('current_date', '>=', $from_date);
+    })
+    ->when($request->to_date, function ($query, $to_date) {
+        $query->whereDate('current_date', '<=', $to_date);
+    })
+    ->when($request->search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('users.first_name', 'like', "%$search%")
+              ->orWhere('users.last_name', 'like', "%$search%")
+              ->orWhere('transferdetails.amount', 'like', "%$search%")
+              ->orWhere('payment.name', 'like', "%$search%")
+              ->orWhere('transferdetails.description', 'like', "%$search%");
+        });
+    })->when($request->member_id, function($query, $member_id){
+      $query->where('users.id',$member_id);
+    });
+
+    if (Auth::user()->hasRole('Admin')) {
+      $vendor = $vendor->orderBy('transferdetails.id','DESC')
+      ->paginate($paginate);
+    } else {
+      $vendor = $vendor->where('transferdetails.is_vendor', 1)
+      ->where('user_id', Auth::user()->id)
+      ->orderBy('transferdetails.id', 'DESC')
+      ->paginate($paginate);
+    }
+    $sum = $vendor->sum('amount');
+    $user_list = User::latest()->get();
+    return view('vendor-expenses.vendorhistory', ['vendor' => $vendor, 'user_list' => $user_list, 'sum' => $sum,'id'=>$id]);
   }
 }
 
