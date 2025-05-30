@@ -13,9 +13,20 @@ class LabourController extends Controller
 {
   public function index(Request $request)
   {
-      //return view('roles.index');
+      $paginate = $request->paginate??15;
       $id = Auth::user()->id;
-      $users = Labour::latest()->get();
+      $users = Labour::leftjoin('labour_role','labour_role.id','=','labour_details.labour_role')
+      ->select('labour_details.*','labour_role.name as labour_role_name')
+      ->when(request('search'),function($query,$search){
+        $query->where(function ($q) use ($search) {
+          $q->where('labour_details.name', 'like', "%$search%")
+            ->orWhere('labour_details.job_title','like',"%$search%")
+            ->orWhere('labour_details.phone','like',"%$search%")
+            ->orWhere('labour_details.advance_amt','like',"%$search")
+            ->orWhere('labour_role.name','like',"%$search%")
+            ->orWhereRaw("CAST(labour_details.salary AS CHAR) LIKE ?", ["%$search%"]);
+      });
+      })->orderBy('labour_details.id','desc')->paginate($paginate)->withQueryString();
 
       return view('labour.index',compact('users'));
   }

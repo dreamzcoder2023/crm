@@ -18,7 +18,10 @@ class StageController extends Controller
      */
     public function index(Request $request)
     {
-        $stages = Stage::orderBy('id','desc')->where(['active_status' => 1, 'delete_status' =>0])->latest()->get();
+        $paginate = $request->paginate??15;
+        $stages = Stage::when(request('search'),function($query,$search){
+            $query->where('name','like',"%$search%");
+        })->orderBy('id','desc')->where(['active_status' => 1, 'delete_status' =>0])->paginate($paginate)->withQueryString();
         $wallet = Wallet::where('active_status',1)->where('delete_status',0)->pluck('stage_id')->toArray();
         return view('stage.index',compact('stages','wallet'));
     }

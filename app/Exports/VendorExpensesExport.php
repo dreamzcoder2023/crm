@@ -71,13 +71,13 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
     $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
     $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last')
     ->when($this->category_filter, function($query, $category_filter){
-      $query->where('expenses.category_id', $this->category_filter);
+      $query->where('expenses.category_id', $category_filter);
     })
     ->when($this->project_filter, function($query, $project_filter){
-      $query->where('expenses.project_id', $this->project_filter);
+      $query->where('expenses.project_id', $project_filter);
     })
     ->when($this->user_filter, function($query, $user_filter){
-      $query>where('expenses.vendor_id', $this->user_filter);
+      $query->where('expenses.vendor_id', $user_filter);
     })
     ->when($this->from, function($query, $from){
       $query->whereDate('current_date','>=',$from);

@@ -29,9 +29,9 @@ class RoleController extends Controller
         $paginate = $request->paginate ?? 15;
         if(!empty($search)){
            // dd($search);
-           $roles = Role::where('name','like','%'.$search.'%')->orderBy('id','desc')->latest()->paginate($paginate);
+           $roles = Role::where('name','like','%'.$search.'%')->orderBy('id','desc')->latest()->paginate($paginate)->withQueryString();
         }else{
-            $roles = Role::orderBy('id','desc')->latest()->paginate($paginate);
+            $roles = Role::orderBy('id','desc')->latest()->paginate($paginate)->withQueryString();
         }
         
         $user = FacadesDB::table('model_has_roles')->pluck('role_id')->toArray();

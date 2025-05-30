@@ -8,15 +8,16 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <style>
+    .dropdown-toggle {
+        width: 146px !important;
+    }
 
-    .dropdown-toggle{
-  width:146px !important;
-}
-.bs-caret::after{
-  color:#f7f7f7 !important;
-  content: "";
-  display:none !important;
-}
+    .bs-caret::after {
+        color: #f7f7f7 !important;
+        content: "";
+        display: none !important;
+    }
+
     #expenses_listing_table th,
     #expenses_listing_table td {
         width: 10%;
@@ -73,11 +74,13 @@
         padding: 5px;
         /* Reduce cell padding */
     }
+
     a.disabled {
         pointer-events: none;
         cursor: default;
         opacity: 0.5;
     }
+
     .card {
         margin-top: 30px;
         padding: 15px;
@@ -108,83 +111,88 @@
 
         <script>
             $(function() {
-              toastr.success('{{ session("expenses-popup") }}', {
-                            timeOut: 1000,
-                            fadeOut: 1000,
+                toastr.success('{{ session('expenses-popup') }}', {
+                    timeOut: 1000,
+                    fadeOut: 1000,
                 });
             });
         </script>
     @endif
     @if (session()->has('message'))
-
-    <script>
-          $(function() {
+        <script>
+            $(function() {
                 toastr.success('{{ session('message') }}', {
                     timeOut: 1000,
                     fadeOut: 1000,
                 });
             });
-    </script>
+        </script>
     @endif
-    @if(session()->has('msg'))
-    <script>
-    $(function() {
-      toastr.error('{{ session('msg') }}', {
-          timeOut: 1000,
-          fadeOut: 1000,
-      });
-    });
-    </script>
+    @if (session()->has('msg'))
+        <script>
+            $(function() {
+                toastr.error('{{ session('msg') }}', {
+                    timeOut: 1000,
+                    fadeOut: 1000,
+                });
+            });
+        </script>
     @endif
 
     <div class="card p-3">
-        <form>
+        <form id="submit-form">
             <div id="filter-section">
                 <!-- First Row: Filters + Search -->
                 <div class="row g-3 align-items-end">
                     <div class="col-md-1">
                         <label for="entries">Entities</label>
-                        <select id="entries" name="paginate" class="form-control">
+                        <select id="entries" name="paginate" class="form-control" onchange="submitform()">
                             <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
                             <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25</option>
                             <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50</option>
                             <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
                         </select>
                     </div>
-    
+
                     <div class="col-md-2">
                         <label for="category_id">Category</label>
                         <select id="category_id" name="category_id" class="form-control glass-dropdown">
                             <option value="">Select Category</option>
                             @foreach ($category as $category)
-                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option value="{{ $category->id }}"
+                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
-    
+
                     <div class="col-md-2">
                         <label for="project_id">Project</label>
                         <select id="project_id" name="project_id" class="form-control">
                             <option value="">Select Project</option>
                             @foreach ($project as $project)
-                                <option value="{{ $project->id }}" {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}</option>
+                                <option value="{{ $project->id }}"
+                                    {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
-    
+
                     <div class="col-md-2">
                         <label for="user_id">Member</label>
                         <select id="user_id" name="user_id" class="form-control">
                             <option value="">Select Member</option>
                             @foreach ($user as $member)
-                                <option value="{{ $member->id }}" {{ request('member_id') == $member->id ? 'selected' : '' }}>{{ $member->name }}</option>
+                                <option value="{{ $member->id }}"
+                                    {{ request('user_id') == $member->id ? 'selected' : '' }}>{{ $member->name }}</option>
                             @endforeach
                         </select>
                     </div>
-    
+
                     <div class="col-md-3">
                         <label for="date_range">Date Range</label>
-                        <input type="text" id="date_range" name="date_range" class="form-control" value="{{ request('date_range') }}">
+                        <input type="text" id="date_range" name="date_range" class="form-control"
+                            value="{{ request('date_range') }}">
                     </div>
                     {{-- <div class="col-md-2">
                         <label for="from_date">From Date</label>
@@ -195,28 +203,29 @@
                         <label for="to_date">To Date</label>
                         <input type="date" id="to_date" name="to_date" class="form-control" value="{{ request('to_date') }}">
                     </div> --}}
-    
+
                     <div class="col-md-2">
                         <label for="search">Search</label>
-                        <input type="text" id="search" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search">
+                        <input type="text" id="search" name="search" value="{{ request('search') }}"
+                            class="form-control" placeholder="Search">
                     </div>
                 </div>
-    
+
                 <!-- Second Row: Buttons -->
                 <div class="row g-2 mt-3">
                     <div class="col-md-12 text-end">
                         <div class="d-flex justify-content-end flex-wrap gap-2">
                             <button class="btn btn-primary client_search" type="submit">
-                                <i class="bx bx-search"></i> 
+                                <i class="bx bx-search"></i>
                             </button>
                             <a class="btn btn-danger" href="{{ route('vendor-expenses-index') }}">
-                                <i class="bx bx-x-circle"></i> 
+                                <i class="bx bx-x-circle"></i>
                             </a>
                             <button type="button" class="btn btn-success" id="expense-export">
-                                <i class="bi bi-file-earmark-excel-fill"></i> 
+                                <i class="bi bi-file-earmark-excel-fill"></i>
                             </button>
                             <button type="button" class="btn btn-danger" id="expense-pdf">
-                                <i class="bi bi-file-pdf"></i> 
+                                <i class="bi bi-file-pdf"></i>
                             </button>
                         </div>
                     </div>
@@ -224,10 +233,10 @@
             </div>
         </form>
     </div>
-    
-    
-    
-    
+
+
+
+
     <!-- Basic Bootstrap Table -->
     <div class="card " style="top:13px;">
         <!-- <h5 class="card-header">Table Basic</h5> -->
@@ -236,28 +245,28 @@
                 <thead>
                     <tr>
                         @can('vendor expenses-Over all delete option')
-                        <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
-                          class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
-                          @endcan
+                            <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
+                                        class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
+                        @endcan
                         <th>Paid date</th>
-                        <th >Category <br/>Name</th>
+                        <th>Category <br />Name</th>
                         <th>Project Name</th>
                         <th>Vendor Name</th>
                         <th>Amount</th>
                         <th>Paid</th>
                         <th>Unpaid</th>
-                        <th>Advanced <br/>Amount</th>
+                        <th>Advanced <br />Amount</th>
                         <th>Description</th>
                         <th>Image</th>
                         <th>Payment Mode</th>
 
-                            <th>Added By</th>
+                        <th>Added By</th>
 
-                            <th>Edited By</th>
-                            <th>Advance <br/>Edited By</th>
-                            @canany(['vendor expenses-delete','vendor expenses-edit'])
+                        <th>Edited By</th>
+                        <th>Advance <br />Edited By</th>
+                        @canany(['vendor expenses-delete', 'vendor expenses-edit'])
                             <th>Action</th>
-                            @endcanany
+                        @endcanany
 
                     </tr>
                 </thead>
@@ -266,20 +275,20 @@
                     @foreach ($expenses as $expense)
                         <tr>
                             @can('vendor expenses-Over all delete option')
-                            <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
-                              value="{{ $expense->id }}"></td>
-                              @endcan
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br/> {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
+                                <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
+                                        value="{{ $expense->id }}"></td>
+                            @endcan
+                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br />
+                                {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
 
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
-                            <td>{{ $expense->vendor_name  }}</td>
+                            <td>{{ $expense->vendor_name }}</td>
                             <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                             <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                             <td>
                                 @if ($expense->unpaid_amt != 0)
-                                    <b><a
-                                        style="color:red">{{ $expense->unpaid_amt }}</a></b> @else<b>
+                                <b><a style="color:red">{{ $expense->unpaid_amt }}</a></b> @else<b>
                                         <p style="color:red">{{ $expense->unpaid_amt }}</p>
                                     </b>
                                 @endif
@@ -291,26 +300,27 @@
                                     <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
                                 @else
                                     --
-                                @endif</td>
+                                @endif
+                            </td>
 
                             <td>{{ $expense->payment_name }}</td>
 
-                                <td>{{ $expense->first }} {{ $expense->last }}</td>
-                                <td>{{ $expense->first_name }} {{  $expense->last_name }}</td>
-                                <td>{{ $expense->labour_first}} {{ $expense->labour_last }}</td>
-                                @canany(['vendor expenses-delete','vendor expenses-edit'])
-                            <td>
-                              @can('vendor expenses-edit')
-                                    <a class="" href="{{ route('vendor-expenses-edit', $expense->id) }}"><i class="bi bi-pencil-square"
-                                            style="font-size:24px;color:green"></i></a>
-                              @endcan
-                              @can('vendor expenses-delete')
-                              <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
-                                data-id="{{ $expense->id }}" class="deleteExpense"><i class="bi bi-trash"
-                                    style="font-size:24px; color:red"></i> </a><br />
-                              @endcan
+                            <td>{{ $expense->first }} {{ $expense->last }}</td>
+                            <td>{{ $expense->first_name }} {{ $expense->last_name }}</td>
+                            <td>{{ $expense->labour_first }} {{ $expense->labour_last }}</td>
+                            @canany(['vendor expenses-delete', 'vendor expenses-edit'])
+                                <td>
+                                    @can('vendor expenses-edit')
+                                        <a class="" href="{{ route('vendor-expenses-edit', $expense->id) }}"><i
+                                                class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
+                                    @endcan
+                                    @can('vendor expenses-delete')
+                                        <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
+                                            data-id="{{ $expense->id }}" class="deleteExpense"><i class="bi bi-trash"
+                                                style="font-size:24px; color:red"></i> </a><br />
+                                    @endcan
 
-                            </td>
+                                </td>
                             @endcanany
 
                         </tr>
@@ -334,8 +344,8 @@
                     style="color: red;">{{ $unpaid_amt }}</span></b></span>
         <span class="d-inline ms-3"><b>Total Advanced Amount:</b><b><span style="color: #840eef;">
                     {{ $advanced_amt }}</span></b></span>
-                    <span class="d-inline ms-3"><b>Total Settle Amount:</b><b><span style="color: #800000;">
-                      {{ $unpaid_amt - $advanced_amt }}</span></b></span>
+        <span class="d-inline ms-3"><b>Total Settle Amount:</b><b><span style="color: #800000;">
+                    {{ $unpaid_amt - $advanced_amt }}</span></b></span>
     </p>
 
     <!--- modal popup for transfer -->
@@ -401,74 +411,78 @@
     </div>
 
     <!-- modal popup for delete role ended -->
- <!--- delete all confirmation -->
- <div class="modal fade" id="deleteAllModal" role="dialog">
-  <div class="modal-dialog modal-sm">
+    <!--- delete all confirmation -->
+    <div class="modal fade" id="deleteAllModal" role="dialog">
+        <div class="modal-dialog modal-sm">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-          <div class="modal-header">
-              <h4 class="modal-title">Confirmation</h4>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation</h4>
 
-          </div>
-          <div class="modal-body">
-              <p style="text-align: center;">Are you sure want to delete this?</p>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-primary yes-delete-all" data-dismiss="modal">Yes</button>
-              <button type="button" class="btn btn-danger no-delete-all" data-dismiss="modal">No</button>
-          </div>
-      </div>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align: center;">Are you sure want to delete this?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary yes-delete-all" data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-danger no-delete-all" data-dismiss="modal">No</button>
+                </div>
+            </div>
 
-  </div>
-</div>
-<!--- delete all confirmation -->
+        </div>
+    </div>
+    <!--- delete all confirmation -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-</script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-$(function() {
-  $('input[name="date_range"]').daterangepicker({
-    autoUpdateInput: false, // don't set default value
-    opens: 'left',
-    locale: {
-      cancelLabel: 'Clear'
-    }
-  });
+        function submitform() {
+            $('#submit-form').submit();
+        }
+        $(function() {
+            $('input[name="date_range"]').daterangepicker({
+                autoUpdateInput: false, // don't set default value
+                opens: 'left',
+                locale: {
+                    cancelLabel: 'Clear'
+                }
+            });
 
-  $('input[name="date_range"]').on('apply.daterangepicker', function(ev, picker) {
-    $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-  });
+            $('input[name="date_range"]').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format(
+                    'MM/DD/YYYY'));
+            });
 
-  $('input[name="date_range"]').on('cancel.daterangepicker', function(ev, picker) {
-    $(this).val('');
-  });
-});
+            $('input[name="date_range"]').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+            });
+        });
         $('#category_id').select2({
-        placeholder: "Select",
-        allowClear: true,
-        width: '100%',
-    });
-    $('#project_id').select2({
-        placeholder: "Select",
-        allowClear: true,
-        width: '100%',
-    });
-    $('#user_id').select2({
-        placeholder: "Select",
-        allowClear: true,
-        width: '100%',
-    });
-     
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
+        });
+        $('#project_id').select2({
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
+        });
+        $('#user_id').select2({
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
+        });
+
         $("document").ready(function() {
             var roleid;
             var user;
@@ -523,8 +537,8 @@ $(function() {
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = '{{ route('vendor-expenses-export') }}';
-            window.location.href = url + '?date_range='+date_range + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user+'&search='+search;
+            window.location.href = url + '?date_range=' + date_range + '&category_id=' +
+                category + '&project_id=' + project + '&user_id=' + user + '&search=' + search;
         });
         $('#expense-pdf').click(function() {
             console.log('test1');
@@ -535,8 +549,8 @@ $(function() {
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = '{{ route('vendor-expenses-pdf') }}';
-            window.location.href = url + '?date_range=' + date_range  + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user +'&search=' +search;
+            window.location.href = url + '?date_range=' + date_range + '&category_id=' +
+                category + '&project_id=' + project + '&user_id=' + user + '&search=' + search;
         });
         $('.expense_id').on('click', function() {
             if ($(this).is(':checked')) {
@@ -591,4 +605,3 @@ $(function() {
         // });
     </script>
 @endsection
-

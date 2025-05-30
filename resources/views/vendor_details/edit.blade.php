@@ -33,9 +33,6 @@
                     {{ method_field('PUT') }}
                     <div class="col-xl">
                         <div class="card mb-4" style="margin-top:30px;">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-
-                            </div>
 
                             <div class="card-body">
                                 <div class="row">

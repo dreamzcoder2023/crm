@@ -44,6 +44,24 @@ td, th {
   content: "";
   display:none !important;
 }
+.card {
+        margin-top: 30px;
+        padding: 15px;
+    }
+.paginatestyle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @media (max-width: 768px) {
+
+        #filter-section .col-md-3,
+        #filter-section .col-md-2,
+        #filter-section .col-md-1 {
+            margin-bottom: 10px;
+        }
+    }
   </style>
 @section('title','List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -95,7 +113,7 @@ $(function() {
     </ul> -->
     <!-- @endcan -->
   </div></div></div>
-  <div class="card">
+  {{-- <div class="card">
     <div class="card-header">
         <div class="container text-center">
             <div class="row aa">
@@ -129,6 +147,52 @@ $(function() {
             </div>
         </div>
     </div>
+</div> --}}
+<div class="card">
+<div id="filter-section" >
+  <div class="row">
+      <div class="col-md-1">
+          <form>
+              <label for="entries">Entities</label>
+              <select id="entries"  class="form-control">
+                  <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
+                  <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25</option>
+                  <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50</option>
+                  <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
+              </select>
+      </div>
+
+      <div class="col-md-3">
+        <label for="date_range">Date Range</label>
+        <input type="text" id="date_range" name="date_range" class="form-control" value="{{ request('date_range') }}">
+    </div>
+
+      <div class="col-md-2">
+          <label for="member">Member</label>
+          <select id="member" name="member_id" class="form-control">
+              <option value="">Select Member</option>
+              {{-- @foreach ($vendor_list as $member)
+                  <option value="{{ $member->id }}" {{ request('member_id') == $member->id ? 'selected' : '' }}>{{ $member->name }}</option>
+              @endforeach --}}
+          </select>
+      </div>
+
+      <div class="col-md-3">
+          <label for="search">Search</label>
+          <input type="text" id="search" name="search" value="{{ request('search') }}" class="form-control">
+      </div>
+  </div>
+
+  <div class="mt-3 text-end">
+      <button class="btn btn-primary client_search" type="submit">
+          <i class="bx bx-search"></i>
+      </button>
+      <a class="btn btn-danger" href="{{ route('transfer.vendor.history') }}">
+          <i class="bx bx-x-circle"></i>
+      </a>
+  </div>
+</form>
+</div>
 </div>
 <!-- Basic Bootstrap Table -->
 <div class="card"  style="max-width: 1200px; top:10px; height:550px">
@@ -156,7 +220,8 @@ $(function() {
     
         <td>{{$transfer->firstname}} {{$transfer->lastname}}</td>
  
-        <td>{{$transfer->first_name}} {{$transfer->last_name}}</td>
+        <td>{{  $transfer->first_name . ' ' . $transfer->last_name  }}
+        </td>
         <td>{{$transfer->amount}}</td>
         <td>{{$transfer->payment_name}}</td>
         <td>{{$transfer->description? $transfer->description : '--'}}</td>
@@ -166,6 +231,9 @@ $(function() {
 
       </tbody>
     </table>
+    <div class="paginatestyle mt-4">
+      {{ $transfers->links('pagination::bootstrap-5') }}
+  </div>
   </div>
 </div>
 <!--/ Basic Bootstrap Table -->
@@ -204,13 +272,13 @@ $(function() {
         $(document).ready(function() {
             $('.selectpicker').selectpicker();
         });
-  $(document).ready(function() {
-var data =  new DataTable('#transfer_listing_table', {
-  "lengthMenu": [15, 50, 100],
-  processing: true,
+//   $(document).ready(function() {
+// var data =  new DataTable('#transfer_listing_table', {
+//   "lengthMenu": [15, 50, 100],
+//   processing: true,
 
-});
-});
+// });
+// });
 $(document).ready(function(){
           $('#unpaid-popup').modal('hide');
           var user =[];

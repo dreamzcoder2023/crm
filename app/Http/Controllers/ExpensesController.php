@@ -19,6 +19,7 @@ use App\Exports\ExportExpenses;
 use App\Exports\DeleteExpensesExport;
 use App\Models\Labour;
 use App\Models\Vendor;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
@@ -26,84 +27,94 @@ class ExpensesController extends Controller
 {
   public function index(Request $request)
   {
-    $category_filter = $request->category_id;
-    $project_filter = $request->project_id;
-    $user_filter = $request->user_id;
-    //$from1 = now()->format('Y-m-d');
+    //dd($request->all());
+    $from = null;
+    $to = null;
+    $tab = $request->tab??1;
+    if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
 
-    // if($request->from_date != ''){
-    //   $from = $request->from_date.' '.'00:00:00';
-    // }
-    // else{
-    //   $from = $from1.' '.'00:00:00';
-    // }
-
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
-
-
-    // print_r($from);
-    // print_r($to_date);
-    // exit;
-
-
-
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+    //dd($from,$to);
+    $paginate = $request->paginate ?? 10;
     $auth = Auth::user()->id;
-    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
-
+    $role =  Auth::user()->roles[0]['name'];
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
+      })->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])
+      ->when($from, function ($query, $from) {
+        $query->whereDate('current_date', '>=', $from);
+      })
+      ->when($to, function ($query, $to) {
+        $query->whereDate('current_date', '<=', $to);
+      })
+      ->when(request('category_id'), function ($query, $category_id) {
+        $query->where('expenses.category_id', $category_id);
+      })
+      ->when(request('project_id'), function ($query, $project_id) {
+        $query->where('expenses.project_id', $project_id);
+      })
+      ->when(request('user_id'), function ($query, $user_id) {
+        $query->where('expenses.user_id', $user_id);
       });
-
-
-    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-    if ($role != 1) {
+      if($tab == 1){
+        $expenses = $expenses->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
+      }
+      if($tab == 2){
+        $expenses = $expenses->whereNotNull('expenses.labour_id');
+      } 
+      if($tab == 3){
+        $expenses = $expenses->whereNotNull('expenses.vendor_id');
+      }
+    if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')
+        ->when(request('search'), function ($query, $search) {
+          $query->where(function ($q) use ($search) {
+            $q->where('category.name', 'like', "%$search%")
+              ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('payment.name', 'like', "%$search%")
+              ->orWhere('users.first_name', 'like', "%$search%")
+              ->orWhere('users.last_name', 'like', "%$search%")
+              ->orWhere('expenses.amount', 'like', "%$search")
+              ->orWhere('expenses.paid_amt', 'like', "%$search")
+              ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+              ->orWhere('expenses.extra_amt', 'like', "%$search")
+              ->orWhere('expenses.description', 'like', "%$search%");
+          });
+        });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last');
-    }
-    if ($from != '' ) {
-      $expenses = $expenses->wheredate('current_date', '>=',$from);
-      //   ->toSql();
-      //  // $bindings = $expenses->getBindings();
-      //   print_r($expenses);
-      //  exit;
-
-    }
-    if($to_date != ''){
-      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
-    }
-    if ($category_filter != 'undefined' && $category_filter != '') {
-      $expenses = $expenses->where('expenses.category_id', $category_filter);
-    }
-    if ($project_filter != 'undefined' && $project_filter != '') {
-      $expenses = $expenses->where('expenses.project_id', $project_filter);
-      //dd($expenses);exit;
-    }
-    if ($user_filter != 'undefined' && $user_filter != '') {
-      $expenses = $expenses->where('expenses.user_id', $user_filter);
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')
+        ->when(request('search'), function ($query, $search) {
+          $query->where(function ($q) use ($search) {
+            $q->where('category.name', 'like', "%$search%")
+              ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('payment.name', 'like', "%$search%")
+              ->orWhere('users.first_name', 'like', "%$search%")
+              ->orWhere('users.last_name', 'like', "%$search%")
+              ->orWhere('users_add.first_name', 'like', "%$search%")
+              ->orWhere('users_add.last_name', 'like', "%$search%")
+              ->orWhere('expenses.amount', 'like', "%$search")
+              ->orWhere('expenses.paid_amt', 'like', "%$search")
+              ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+              ->orWhere('expenses.extra_amt', 'like', "%$search")
+              ->orWhere('expenses.description', 'like', "%$search%");
+          });
+        });
     }
 
-    //dd($expenses);
-    if ($request->amount != '' && $request->amount != 'undefined') {
-      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
-    }
-    if($from != '' || $to_date != ''){
-   // echo $from; echo "</br>"; echo $to_date;
-    //dd('if');
-    $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
-    }
-    else{
-    //dd('else');
-      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
-    }
+    $expenses->orderBy($from || $to ? 'expenses.current_date' : 'expenses.id', 'desc');
 
-//dd($expenses);
+    // Get paginated result
+    $expenses = $expenses->paginate($paginate)->withQueryString();
+
+    // dd($expenses);
 
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
@@ -115,7 +126,8 @@ class ExpensesController extends Controller
     $advanced_amt = $expenses->sum('extra_amt');
     //dd($advanced_amt);
 
-    return view('expenses.index', ['expenses' => $expenses, 'category' => $category, 'category_filter' => $category_filter, 'from_date' => $request->from_date, 'to_date1' => $request->to_date, 'project' => $project, 'user' => $user, 'project_filter' => $project_filter, 'user_filter' => $user_filter, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
+     return view('expenses.index', ['expenses' => $expenses, 'category' => $category,  'project' => $project, 'user' => $user,  'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt,'tab' => $tab]);
+   // return view('tab');
   }
 
   public function create(Request $request)
@@ -146,7 +158,7 @@ class ExpensesController extends Controller
     $input['current_date'] = $request->current_date . ' ' . $request->time;
     $input['paid_amt'] = $request->paid_amt ? $request->paid_amt : 0;
     if ($image = $request->file('image')) {
-       $destinationPath = public_Path('images');
+      $destinationPath = public_Path('images');
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
@@ -183,7 +195,8 @@ class ExpensesController extends Controller
 
     if ($image = $request->file('image')) {
 
-      $destinationPath = public_Path('images'); 'public/images/';
+      $destinationPath = public_Path('images');
+      'public/images/';
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
@@ -211,16 +224,11 @@ class ExpensesController extends Controller
       $project['wallet'] = $minus;
       $project->update();
       $input['paid_amt'] = $expenses->paid_amt + $minus1;
-    //  if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-    //    $extra_amt = abs($request->paid_amt - $request->amount);
-    //  }
-    //  if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-      //  $unpaid_amt = abs($request->amount - $request->paid_amt);
-     // }
-        if($request->amount < $request->paid_amt){
+
+      if ($request->amount < $request->paid_amt) {
         $extra_amt = abs($request->paid_amt - $request->amount);
         $unpaid_amt = 0;
-      }else{
+      } else {
         $unpaid_amt = abs($request->amount - $request->paid_amt);
         $extra_amt = 0;
       }
@@ -235,22 +243,22 @@ class ExpensesController extends Controller
 
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt - $minus1);
-   //   if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-   //     $extra_amt = abs($request->paid_amt - $request->amount);
-   //   }
-   //   if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-    //    $unpaid_amt = abs($request->amount - $request->paid_amt);
-    //  }
-     // if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
-     //   $extra_amt = abs($request->paid_amt - $request->amount);
-     // }
-     // if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
-       // $unpaid_amt = abs($request->amount - $request->paid_amt);
-     // }
-        if($request->amount < $request->paid_amt){
+      //   if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
+      //     $extra_amt = abs($request->paid_amt - $request->amount);
+      //   }
+      //   if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
+      //    $unpaid_amt = abs($request->amount - $request->paid_amt);
+      //  }
+      // if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
+      //   $extra_amt = abs($request->paid_amt - $request->amount);
+      // }
+      // if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
+      // $unpaid_amt = abs($request->amount - $request->paid_amt);
+      // }
+      if ($request->amount < $request->paid_amt) {
         $extra_amt = abs($request->paid_amt - $request->amount);
         $unpaid_amt = 0;
-      }else{
+      } else {
         $unpaid_amt = abs($request->amount - $request->paid_amt);
         $extra_amt = 0;
       }
@@ -289,7 +297,7 @@ class ExpensesController extends Controller
     $input = $request->all();
     $extra_amt = 0;
     $unpaid_amt = 0;
-    $input['current_date'] = $request->current_date.' '.$request->time;
+    $input['current_date'] = $request->current_date . ' ' . $request->time;
     $expenses_date = ExpensesUnpaidDate::create($input);
     // wallet minus
     $user = User::find($user_id);
@@ -297,17 +305,16 @@ class ExpensesController extends Controller
     $user['wallet'] = $minus;
     $user->update();
     // expense minus
-    $expenses = Expenses::where('id',$request->expense_id)->first();
+    $expenses = Expenses::where('id', $request->expense_id)->first();
 
 
     $unpaid = abs($expenses->unpaid_amt - $request->unpaid_amt);
     $expenses['paid_amt'] = abs($expenses->paid_amt + $request->unpaid_amt);
 
-    if($expenses->amount <= $request->unpaid_amt){
+    if ($expenses->amount <= $request->unpaid_amt) {
       $extra_amt = abs($request->unpaid_amt  - $expenses->amount);
-
     }
-    if($request->unpaid_amt < $expenses->amount){
+    if ($request->unpaid_amt < $expenses->amount) {
       $unpaid_amt = abs($expenses->amount - $expenses->paid_amt);
     }
     $expenses['extra_amt'] = $extra_amt;
@@ -357,84 +364,82 @@ class ExpensesController extends Controller
   }
   public function delete_record(Request $request)
   {
-    $category_filter = $request->category_id;
-    $project_filter = $request->project_id;
-    $user_filter = $request->user_id;
-    //$from1 = now()->format('Y-m-d');
+    $from = null;
+    $to = null;
 
-    // if($request->from_date != ''){
-    //   $from = $request->from_date.' '.'00:00:00';
-    // }
-    // else{
-    //   $from = $from1.' '.'00:00:00';
-    // }
+    if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
 
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
-
-
-    // print_r($from);
-    // print_r($to_date);
-    // exit;
-
-
-
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+    $paginate = $request->paginate ?? 10;
     $auth = Auth::user()->id;
-    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+    $role =  Auth::user()->roles[0]['name'];
 
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
-      });
+      })
+      ->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])
+      ->when($from,function($query,$from){
+        $query->whereDate('current_date', '>=', $from);
+      })
+      ->when($to,function($query,$to){
+        $query->whereDate('current_date', '<=', $to);
+      })
+      ->when(request('category_id'),function($query,$category_id){
+        $query->where('expenses.category_id', $category_id);
+      })
+      ->when(request('project_id'),function($query,$project_id){
+        $query->where('expenses.project_id', $project_id);
+      })
+      ->when(request('user_id'),function($query,$user_id){
+        $query->where('expenses.user_id', $user_id);
+      })
+      ->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
 
-
-    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-    if ($role != 1) {
+    if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')
+      ->when(request('search'), function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+          $q->where('category.name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search%")
+            ->orWhere('users.first_name', 'like', "%$search%")
+            ->orWhere('users.last_name', 'like', "%$search%")
+            ->orWhere('expenses.amount', 'like', "%$search")
+            ->orWhere('expenses.paid_amt', 'like', "%$search")
+            ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+            ->orWhere('expenses.extra_amt', 'like', "%$search")
+            ->orWhere('expenses.description', 'like', "%$search%");
+        });
+      });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')
+      ->when(request('search'), function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+          $q->where('category.name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search%")
+            ->orWhere('users.first_name', 'like', "%$search%")
+            ->orWhere('users.last_name', 'like', "%$search%")
+            ->orWhere('users_add.first_name', 'like', "%$search%")
+            ->orWhere('users_add.last_name', 'like', "%$search%")
+            ->orWhere('expenses.amount', 'like', "%$search")
+            ->orWhere('expenses.paid_amt', 'like', "%$search")
+            ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+            ->orWhere('expenses.extra_amt', 'like', "%$search")
+            ->orWhere('expenses.description', 'like', "%$search%");
+        });
+      });
     }
-    if ($from != '' ) {
-      $expenses = $expenses->wheredate('current_date', '>=',$from);
-      //   ->toSql();
-      //  // $bindings = $expenses->getBindings();
-      //   print_r($expenses);
-      //  exit;
-
-    }
-    if($to_date !=''){
-      $expenses = $expenses->wheredate('current_date', '<=',$to_date);
-    }
-    if ($category_filter != 'undefined' && $category_filter != '') {
-      $expenses = $expenses->where('expenses.category_id', $category_filter);
-    }
-    if ($project_filter != 'undefined' && $project_filter != '') {
-      $expenses = $expenses->where('expenses.project_id', $project_filter);
-      //dd($expenses);exit;
-    }
-    if ($user_filter != 'undefined' && $user_filter != '') {
-      $expenses = $expenses->where('expenses.user_id', $user_filter);
-    }
-
-    //dd($expenses);
-    if ($request->amount != '' && $request->amount != 'undefined') {
-      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
-    }
-    if($from != '' || $to_date != ''){
-      $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
-      }
-      else{
-      
-
-    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
-      }
-
-
-
+   
+    $expenses = $expenses->onlyTrashed()->orderBy($from || $to ? 'expenses.current_date' : 'expenses.id', 'desc')->paginate($paginate)->withQueryString();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();
@@ -443,17 +448,24 @@ class ExpensesController extends Controller
     $paid_amt = $expenses->sum('paid_amt');
     $unpaid_amt = $expenses->sum('unpaid_amt');
     $advanced_amt = $expenses->sum('extra_amt');
-    return view('expenses.recorddelete', ['expenses' => $expenses, 'category' => $category, 'category_filter' => $category_filter, 'from_date' => $request->from_date, 'to_date1' => $request->to_date, 'project' => $project, 'user' => $user, 'project_filter' => $project_filter, 'user_filter' => $user_filter, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
+    return view('expenses.recorddelete', ['expenses' => $expenses, 'category' => $category, 'project' => $project, 'user' => $user, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
   }
   public function expense_export(Request $request)
   {
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
+    $search = $request->search;
+    $tab = $request->tab;
+    $from = null;
+    $to = null;
 
+    if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
 
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
 
 
 
@@ -461,25 +473,21 @@ class ExpensesController extends Controller
     $auth = Auth::user()->id;
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
-    return Excel::download((new ExportExpenses($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'expenses.xlsx');
+    return Excel::download((new ExportExpenses($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search,$tab)), 'expenses.xlsx');
   }
   public function expense_pdf(Request $request)
   {
-    $category_filter = $request->category_id;
-    $project_filter = $request->project_id;
-    $user_filter = $request->user_id;
-    //$from1 = now()->format('Y-m-d');
 
-    // if($request->from_date != ''){
-    //   $from = $request->from_date.' '.'00:00:00';
-    // }
-    // else{
-    //   $from = $from1.' '.'00:00:00';
-    // }
 
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+    $from = null;
+    $to = null;
 
+    if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
+
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
 
     // print_r($from);
     // print_r($to_date);
@@ -494,49 +502,69 @@ class ExpensesController extends Controller
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
+      })
+      ->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])
+      ->when($from, function ($query, $from) {
+        $query->whereDate('expenses.current_date', '>=', $from);
+      })
+      ->when($to, function ($query, $to) {
+        $query->whereDate('expenses.current_date', '<=', $to);
+      })
+      ->when(request('category_id'), function ($query, $category_id) {
+        $query->where('expenses.category_id', $category_id);
+      })
+      ->when(request('project_id'), function ($query, $project_id) {
+        $query->where('expenses.project_id', $project_id);
+      })
+      ->when(request('user_id'), function ($query, $user_id) {
+        $query->where('expenses.user_id', $user_id);
       });
-
-
-    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
     if ($role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')
+        ->when(request('search'), function ($query, $search) {
+          $query->where(function ($q) use ($search) {
+            $q->where('category.name', 'like', "%$search%")
+              ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('payment.name', 'like', "%$search%")
+              ->orWhere('users.first_name', 'like', "%$search%")
+              ->orWhere('users.last_name', 'like', "%$search%")
+              ->orWhere('expenses.amount', 'like', "%$search")
+              ->orWhere('expenses.paid_amt', 'like', "%$search")
+              ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+              ->orWhere('expenses.extra_amt', 'like', "%$search")
+              ->orWhere('expenses.description', 'like', "%$search%");
+          });
+        });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last');
-    }
-    if ($from != '' && $to_date != '') {
-      $expenses = $expenses->whereBetween('current_date', [$from, $to_date]);
-      //   ->toSql();
-      //  // $bindings = $expenses->getBindings();
-      //   print_r($expenses);
-      //  exit;
-
-    }
-    if ($category_filter != 'undefined' && $category_filter != '') {
-      $expenses = $expenses->where('expenses.category_id', $category_filter);
-    }
-    if ($project_filter != 'undefined' && $project_filter != '') {
-      $expenses = $expenses->where('expenses.project_id', $project_filter);
-      //dd($expenses);exit;
-    }
-    if ($user_filter != 'undefined' && $user_filter != '') {
-      $expenses = $expenses->where('expenses.user_id', $user_filter);
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')
+        ->when(request('search'), function ($query, $search) {
+          $query->where(function ($q) use ($search) {
+            $q->where('category.name', 'like', "%$search%")
+              ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('payment.name', 'like', "%$search%")
+              ->orWhere('users.first_name', 'like', "%$search%")
+              ->orWhere('users.last_name', 'like', "%$search%")
+              ->orWhere('users_add.first_name', 'like', "%$search%")
+              ->orWhere('users_add.last_name', 'like', "%$search%")
+              ->orWhere('expenses.amount', 'like', "%$search")
+              ->orWhere('expenses.paid_amt', 'like', "%$search")
+              ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+              ->orWhere('expenses.extra_amt', 'like', "%$search")
+              ->orWhere('expenses.description', 'like', "%$search%");
+          });
+        });
     }
 
-    //dd($expenses);
-    if ($request->amount != '' && $request->amount != 'undefined') {
-      $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
-    }
-    if($from != '' || $to_date != ''){
+    if ($from != '' || $to != '') {
       $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
-      }
-      else{
-        $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
-      }
+    } else {
+      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
+    }
 
-   
+
 
     $pdf = PDF::loadView('expenses.expensepdf', compact('expenses'));
 
@@ -608,12 +636,11 @@ class ExpensesController extends Controller
     if ($request->amount != '' && $request->amount != 'undefined') {
       $expenses = $expenses->orderBy('expenses.amount', $request->amount)->get();
     }
-    if($from != '' || $to_date != ''){
+    if ($from != '' || $to_date != '') {
       $expenses = $expenses->onlyTrashed()->orderBy('expenses.current_date', 'desc')->get();
-      }
-      else{
-    $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
-      }
+    } else {
+      $expenses = $expenses->onlyTrashed()->orderBy('expenses.id', 'desc')->get();
+    }
     $customPaper = array(0, 0, 567.00, 283.80);
     $pdf = PDF::loadView('expenses.deleteexpensepdf', compact('expenses'));
 
@@ -633,23 +660,24 @@ class ExpensesController extends Controller
 
     return Excel::download((new DeleteExpensesExport($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role)), 'delete-expenses.xlsx');
   }
-  public function expense_delete_all(Request $request){
-   // dd($request->all());
+  public function expense_delete_all(Request $request)
+  {
+    // dd($request->all());
     $expense_id = $request->id;
     $expense = [];
-    foreach($expense_id as $id){
-      $expense = Expenses::where('id',$id)->first();
-      if(!empty($expense->labour_id)){
-        $labour = Labour::where('id',$expense->labour_id)->first();
+    foreach ($expense_id as $id) {
+      $expense = Expenses::where('id', $id)->first();
+      if (!empty($expense->labour_id)) {
+        $labour = Labour::where('id', $expense->labour_id)->first();
         $labour['advance_amt'] = $labour->advance_amt - $expense->extra_amt;
         $labour->update();
       }
-      if(!empty($expense->vendor_id)){
-        $vendor = Vendor::where('id',$expense->vendor_id)->first();
+      if (!empty($expense->vendor_id)) {
+        $vendor = Vendor::where('id', $expense->vendor_id)->first();
         $vendor['advance_amt'] = $vendor->advance_amt - $expense->extra_amt;
         $vendor->update();
       }
-      $wallet = User::where('id',$expense->user_id)->first();
+      $wallet = User::where('id', $expense->user_id)->first();
       $wallet['wallet'] = $wallet->wallet + $expense->paid_amt;
       $wallet->update();
       $expense->delete();
@@ -657,4 +685,3 @@ class ExpensesController extends Controller
     return response()->json($expense);
   }
 }
-

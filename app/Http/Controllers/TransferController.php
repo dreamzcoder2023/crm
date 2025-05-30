@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\Vendor;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
@@ -19,22 +20,28 @@ class TransferController extends Controller
   public function index(Request $request)
   {
     $auth = Auth::user()->id;
-    $user_filter = $request->user_id;
-    $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+   
+    $from = null;
+    $to = null;
+    
+    if (!empty($request->date_range)) {
+        [$from, $to] = array_map('trim', explode('-', $request->date_range));
+    
+        $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+        $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+    
+    $paginate = $request->paginate ?? 10;
 
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
-
-    if ($role == 1) {
-      $transfers = Transfer::leftjoin('users', 'users.id', '=', 'transferdetails.member_id')->leftjoin('users as user_table', 'user_table.id', '=', 'transferdetails.user_id')->leftjoin('payment', 'payment.id', '=', 'transferdetails.payment_mode')->select('transferdetails.*', 'users.first_name', 'users.last_name', 'user_table.first_name as firstname', 'user_table.last_name as lastname', 'payment.name as payment_name');
-
-      if ($from != '' && $to_date != '') {
-        $transfers = $transfers->whereBetween('current_date', [$from, $to_date]);
-      }
-      if ($user_filter != 'undefined' && $user_filter != '') {
-        $transfers = $transfers->where('transferdetails.user_id', $user_filter);
-      }
-      $transfers = $transfers->orderBy('transferdetails.id', 'desc')->get();
+    if (Auth::user()->hasRole('Admin')) {
+      $transfers = Transfer::leftjoin('users', 'users.id', '=', 'transferdetails.member_id')->leftjoin('users as user_table', 'user_table.id', '=', 'transferdetails.user_id')->leftjoin('payment', 'payment.id', '=', 'transferdetails.payment_mode')->where('transferdetails.is_vendor',0)->select('transferdetails.*', 'users.first_name', 'users.last_name', 'user_table.first_name as firstname', 'user_table.last_name as lastname', 'payment.name as payment_name')
+      ->when($from, function($query, $from){
+        $query->whereDate('transferdetails.current_date','>=',$from);
+      })
+      ->when($to, function($query, $to){
+        $query->whereDate('transferdetails.current_date','<=',$to);
+      })
+      ->latest()->paginate($paginate);
     } else {
       $transfers = Transfer::leftjoin('users', 'users.id', '=', 'transferdetails.member_id')->leftjoin('users as to', 'to.id', '=', 'transferdetails.user_id')->where('users.id', $auth)->orWhere('to.id', $auth)->select('transferdetails.*', 'to.id as from_id', 'users.first_name', 'users.last_name', 'to.first_name as firstname', 'to.last_name as lastname');
       if ($from != '' && $to_date != '') {
@@ -156,12 +163,12 @@ class TransferController extends Controller
 
     if (Auth::user()->hasRole('Admin')) {
       $vendor = $vendor->orderBy('transferdetails.id','DESC')
-      ->paginate($paginate);
+      ->paginate($paginate)->withQueryString();
     } else {
       $vendor = $vendor->where('transferdetails.is_vendor', 1)
       ->where('user_id', Auth::user()->id)
       ->orderBy('transferdetails.id', 'DESC')
-      ->paginate($paginate);
+      ->paginate($paginate)->withQueryString();
     }
     $sum = $vendor->sum('amount');
     $vendor_list = Vendor::latest()->get();

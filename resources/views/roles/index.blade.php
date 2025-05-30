@@ -131,7 +131,7 @@
 
 
             <div class="table-responsive text-nowrap" style="width: 99%;">
-                <table class="table">
+                <table class="table" id="role_listing_table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -205,12 +205,7 @@
         <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
         <script>
-            $(document).ready(function() {
-                var data = new DataTable('#role_listing_table', {
-                    "lengthMenu": [15, 50, 100],
-                    processing: true,
-                });
-            });
+        
 
             $(document).ready(function() {
                 var roleid;

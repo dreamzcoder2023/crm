@@ -26,9 +26,19 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $paginate = $request->paginate??15;
         //return view('roles.index');
         $id = Auth::user()->id;
-        $users = User::where('active_status',1)->where('delete_status',0)->where('id','!=',$id)->orderBy('id','desc')->get();
+        $users = User::when(request('search'),function($query,$search){
+            $query->where('first_name','like',"%$search%")
+            ->orWhere('last_name','like',"%$search%")
+            ->orWhere('job_title','like',"%$search%")
+            ->orWhere('email','like',"%$search%")
+            ->orWhere('phone','like',"%$search%")
+            ->orWhere('wallet','like',"%$search");
+        })
+        ->where('active_status',1)->where('delete_status',0)
+        ->where('id','!=',$id)->orderBy('id','desc')->paginate($paginate)->withQueryString();
         $unpaid = Expenses::all();
         $role = Role::join('model_has_roles','model_has_roles.role_id','=','roles.id')->where('roles.name','Admin')->select('model_has_roles.model_id')->first();
         //dd($role);

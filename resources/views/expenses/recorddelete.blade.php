@@ -9,6 +9,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
 
 <style>
     @media only screen and (max-width:320px) {
@@ -56,6 +60,18 @@
         padding: 5px;
         /* Reduce cell padding */
     }
+    @media (max-width: 768px) {
+
+#filter-section .col-md-3,
+#filter-section .col-md-2,
+#filter-section .col-md-1 {
+    margin-bottom: 10px;
+}
+}
+
+#filter-section {
+padding: 5px !important;
+}
 </style>
 @section('title', 'Expenses | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -84,7 +100,7 @@
         </div>
     @endif
     <div class="card" style="top:-12px;">
-        <div class="card-header">
+        {{-- <div class="card-header">
             <div class="container text-center">
               <div style="float: right">
                 <a href="{{ route('expenses-delete_record') }}"><img
@@ -142,7 +158,92 @@
 
                 </div>
             </div>
-        </div>
+        </div> --}}
+        <form id="submit-form">
+            <div id="filter-section">
+                <!-- First Row: Filters + Search -->
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-1">
+                        <label for="entries">Entities</label>
+                        <select id="entries" name="paginate" class="form-control" onchange="submitform()">
+                            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
+                            <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="category_id">Category</label>
+                        <select id="category_id" name="category_id" class="glass-select2 form-control ">
+                            <option value="">Select Category</option>
+                            @foreach ($category as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <label for="project_id">Project</label>
+                        <select id="project_id" name="project_id" class="form-control">
+                            <option value="">Select Project</option>
+                            @foreach ($project as $project)
+                                <option value="{{ $project->id }}"
+                                    {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @role('Admin')
+                        <div class="col-md-2">
+                            <label for="user_id">Member</label>
+                            <select id="user_id" name="user_id" class="form-control">
+                                <option value="">Select Member</option>
+                                @foreach ($user as $member)
+                                    <option value="{{ $member->id }}"
+                                        {{ request('user_id') == $member->id ? 'selected' : '' }}>{{ $member->first_name }}
+                                        {{ $member->last_name }} - {{ $member->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endrole
+
+                    <div class="col-md-3">
+                        <label for="date_range">Date Range</label>
+                        <input type="text" id="date_range" name="date_range" class="form-control"
+                            value="{{ request('date_range') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="search">Search</label>
+                        <input type="text" id="search" name="search" value="{{ request('search') }}"
+                            class="form-control" placeholder="Search">
+                    </div>
+                </div>
+
+                <!-- Second Row: Buttons -->
+                <div class="row g-2 mt-3">
+                    <div class="col-md-12 text-end">
+                        <div class="d-flex justify-content-end flex-wrap gap-2">
+                            <button class="btn btn-primary client_search" type="submit">
+                                <i class="bx bx-search"></i>
+                            </button>
+                            <a class="btn btn-danger" href="{{ route('expenses-delete_record') }}">
+                                <i class="bx bx-x-circle"></i>
+                            </a>
+                            <button type="button" class="btn btn-success" id="expense-export">
+                                <i class="bi bi-file-earmark-excel-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger" id="expense-pdf">
+                                <i class="bi bi-file-pdf"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
     <!-- Basic Bootstrap Table -->
     <div class="card" style="max-width: 1200px; top:-1px; height:547px">
@@ -176,7 +277,7 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-
+                    @if(count($expenses) > 0)
                     @foreach ($expenses as $expense)
                         <tr>
                             <td>{{ $loop->index + 1 }}</td>
@@ -215,9 +316,14 @@
 
                         </tr>
                     @endforeach
-
+                    @else
+                    <tr><td colspan='10'><center>No data found.</center></td></tr>
+                    @endif
                 </tbody>
             </table>
+            <div class="paginatestyle mt-4">
+                {{ $expenses->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 
@@ -313,10 +419,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <script>
-        // $(document).ready(function() {
-        //     $('.selectpicker').selectpicker();
-        // });
-        $('#category_id').select2({
+        function submitform() {
+            $('#submit-form').submit();
+        }
+        $(function() {
+            $('input[name="date_range"]').daterangepicker({
+                autoUpdateInput: false, // don't set default value
+                opens: 'left',
+                locale: {
+                    cancelLabel: 'Clear'
+                }
+            });
+
+            $('input[name="date_range"]').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format(
+                    'MM/DD/YYYY'));
+            });
+
+            $('input[name="date_range"]').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+            });
+        });
+    $('#category_id').select2({
         placeholder: "Select",
         allowClear: true,
         width: '100%',
@@ -331,13 +455,7 @@
         allowClear: true,
         width: '100%',
     });
-        $(document).ready(function() {
-            var data = new DataTable('#expenses_listing_table', {
-                "lengthMenu": [15, 50, 100],
-                processing: true,
-
-            });
-        });
+ 
         $("document").ready(function() {
             var roleid;
             $('.error').addClass('hide');
@@ -381,106 +499,7 @@
                 }
             });
         });
-        $(document).ready(function() {
-            $('#unpaid-popup').modal('hide');
-        });
-            // var category = [];
-            // var amount = [];
-            // var project = [];
-            // var user = [];
-            // var from_date = [];
-            // var end_date = [];
-
-
-            $('#category_id').change(function() {
-
-               var project = $('#project_id').find(":selected").val();
-               var category = $('#category_id').find(":selected").val();
-               var user = $('#user_id').find(":selected").val();
-               var amount = $('#amount_id').find(":selected").val();
-               var from_date = $('#from_date').val();
-               var end_date = $('#to_date').val();
-                if (category != '') {
-                    reset_table(from_date, end_date, category, project, user);
-                }
-            });
-            // $('#amount_id').change(function(){
-
-            //   amount =$('#amount_id').find(":selected").val();
-            //   project =$('#project_id').find(":selected").val();
-            //    category =$('#category_id').find(":selected").val();
-            //    user =$('#user_id').find(":selected").val();
-            //    from_date=$('#from_date').val();
-            //    end_date = $('#to_date').val();
-            //   if(amount != ''){
-            //     reset_table(from_date,end_date,category,project,user,amount);
-            //   }
-            // });
-            $('#project_id').change(function() {
-
-               var project = $('#project_id').find(":selected").val();
-               var category = $('#category_id').find(":selected").val();
-               var user = $('#user_id').find(":selected").val();
-               var amount = $('#amount_id').find(":selected").val();
-               var from_date = $('#from_date').val();
-               var end_date = $('#to_date').val();
-                console.log('project', project);
-                console.log('category', category);
-                console.log('from_date', from_date);
-
-                if (project != '') {
-                    reset_table(from_date, end_date, category, project, user);
-                }
-            });
-            $('#user_id').change(function() {
-
-               var user = $('#user_id').find(":selected").val();
-               var project = $('#project_id').find(":selected").val();
-               var category = $('#category_id').find(":selected").val();
-                var amount = $('#amount_id').find(":selected").val();
-               var from_date = $('#from_date').val();
-               var end_date = $('#to_date').val();
-                console.log(user);
-                if (user != '') {
-                    reset_table(from_date, end_date, category, project, user);
-                }
-            });
-            $('#from_date').change(function() {
-
-               var user = $('#user_id').find(":selected").val();
-               var project = $('#project_id').find(":selected").val();
-               var category = $('#category_id').find(":selected").val();
-               var amount = $('#amount_id').find(":selected").val();
-               var from_date = $('#from_date').val();
-               var end_date = $('#to_date').val();
-                console.log(from_date);
-                if (from_date != '') {
-                    reset_table(from_date, end_date, category, project, user);
-                }
-            });
-            $('#to_date').change(function() {
-
-               var user = $('#user_id').find(":selected").val();
-               var project = $('#project_id').find(":selected").val();
-               var category = $('#category_id').find(":selected").val();
-                var amount = $('#amount_id').find(":selected").val();
-               var from_date = $('#from_date').val();
-               var end_date = $('#to_date').val();
-                console.log(end_date);
-                if (end_date != '') {
-                    reset_table(from_date, end_date, category, project, user);
-                }
-            });
-
-            function reset_table(from_date, to_date, category, project, user) {
-                console.log('category', category);
-                from_date = from_date;
-                end_date = to_date;
-                var url = '{{ route('expenses-delete_record') }}';
-                window.location.href = url + '?from_date=' + from_date + '&to_date=' + to_date + '&category_id=' +
-                    category + '&project_id=' + project + '&user_id=' + user;
-            }
-
+  
        // });
         $('#expense-export').click(function() {
             console.log('test');
@@ -488,10 +507,10 @@
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
 
-            var from_date = $('#from_date').val();
-            var end_date = $('#to_date').val();
+            var date_range = $('#date_range').val();
+            var search = $('#search').val();
             var url = '{{ route('deleteexpenses-export') }}';
-            window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
         $('#expense-pdf').click(function() {
@@ -500,10 +519,10 @@
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
 
-            var from_date = $('#from_date').val();
-            var end_date = $('#to_date').val();
+            var date_range = $('#date_range').val();
+            var search = $('#search').val();
             var url = '{{ route('deleteexpenses-pdf') }}';
-            window.location.href = url + '?from_date=' + from_date + '&to_date=' + end_date + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
     </script>

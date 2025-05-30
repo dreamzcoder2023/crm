@@ -10,8 +10,13 @@ class VendorController extends Controller
 {
   public function index(Request $request)
   {
-
-      $users = Vendor::latest()->get();
+    $paginate = $request->paginate??15;
+      $users = Vendor::when(request('search'),function($query,$search){
+        $query->where('name','like',"%$search%")
+        ->orWhere('phone','like',"%$search%")
+        ->orWhere('address','like',"%$search%")
+        ->orWhere('advance_amt','like',"%$search");
+      })->orderBy('id','desc')->paginate($paginate)->withQueryString();
 
       return view('vendor_details.index',compact('users'));
   }

@@ -22,8 +22,12 @@
 .table-responsive{
   margin-top:5px;
   margin-left:5px;
-
-
+}
+.nav-tabs{
+  margin-top:3px;
+}
+.tab-content{
+  padding: 0.5rem !important;
 }
   </style>
 @section('title', 'View | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
@@ -31,7 +35,7 @@
 @section('content')
 <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
 <!-- Basic Layout & Basic with Icons -->
-<div class="container">
+<div class="container" style="margin-top: 50px">
     <div class="row" style="background-color: #f0f0f0;">
         <div class="col-md-3 border-end"> <!-- Reduced the column size -->
             <h5 class="fw-bold py-3 mb-4">
@@ -77,9 +81,6 @@
       <div class="row">
         <div class="col-xl">
           <div class="card mb-4" style="margin-top:30px;">
-            <div class="card-header d-flex justify-content-between align-items-center">
-
-            </div>
 
             <div class="card-body">
               <div class="row">
@@ -119,10 +120,6 @@
 
       <div class="col-xl">
         <div class="card mb-4" style="margin-top:30px;">
-          <div class="card-header d-flex justify-content-between align-items-center">
-
-          </div>
-
           <div class="card-body">
             <div class="row">
                 <div class="col-6"><div class="mb-3">

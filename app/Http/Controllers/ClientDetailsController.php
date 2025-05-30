@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\ClientDetails;
 use App\Models\ProjectDetails;
 use App\Models\Wallet;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB as FacadesDB;
 
 class ClientDetailsController extends Controller
@@ -21,14 +22,17 @@ class ClientDetailsController extends Controller
     {
         $search = $request->search;
         $paginate = $request->paginate??15;
-        // if(!empty($search)){
-        //     $clients = ClientDetails::where('active_status',1)->where('delete_status',0)->where('first_name','like','%'.$search.'%')
-        //              ->orWhere('last_name','like','%'.$search.'%')   
-        //              ->orWhere('company_name','like','%'.$search.'%')
-        //              ->orWhere('email','like','%'.$search.'%')
-        //              ->orderBy('id','desc')->paginate($paginate)->withQueryString();
-        // }else{
-            $clients = ClientDetails::where('active_status',1)->where('delete_status',0)->orderBy('id','desc')->paginate($paginate);
+      
+            $clients = ClientDetails::where('active_status',1)->where('delete_status',0)->when(request('search'), function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%$search%")
+                      ->orWhere('last_name', 'like', "%$search%")
+                      ->orWhere('company_name', 'like', "%$search%")
+                      ->orWhere('email', 'like', "%$search%")
+                      ->orWhere('phone', 'like', "%$search%");
+                });
+            })
+            ->orderBy('id','desc')->paginate($paginate)->withQueryString();
        // }
         
         $project = ProjectDetails::where('active_status',1)->where('delete_status',0)->pluck('client_id')->toArray();
@@ -69,24 +73,45 @@ class ClientDetailsController extends Controller
      */
     public function show(Request $request)
     {
-        $from_date = $request->from_date;
-       $to_date = $request->to_date;
-       $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date.' '.'00:00:00') : '';
-       $to_date1 = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date.' '.'23:59:59') : '';
-        $projects = ProjectDetails::where(['client_id' => $request->id,'active_status' => 1, 'delete_status' => 0]);
-        if($from != ''){
-            $projects = $projects->whereDate('start_date','>=',$from);
+        $from = null;
+        $to = null;
+        $paginate = $request->paginate;
+        
+        if (!empty($request->date_range)) {
+            [$from, $to] = array_map('trim', explode('-', $request->date_range));
+        
+            $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+            $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
         }
-        if($to_date1 != ''){
-            $projects = $projects->whereDate('end_date','<=',$to_date1);
-        }
-        $projects = $projects->get();
+       // dd($from,$to);
+       $projects = ProjectDetails::when($from && $to, function($query) use ($from, $to) {
+        $query->where(function($query) use ($from, $to) {
+            $query->whereBetween('start_date', [$from, $to])
+                  ->orWhereBetween('end_date', [$from, $to]);
+        });
+    })
+    ->when(request('search'), function($query, $search){
+        $query->where(function($query) use ($search) {
+            $query->where('name','like',"%$search%")
+                  ->orWhere('advance_amt','like',"$search%")
+                  ->orWhere('total_amt','like',"$search%")
+                  ->orWhere('profit','like',"$search%");
+        });
+    })
+    ->where([
+        'client_id' => $request->id,
+        'active_status' => 1,
+        'delete_status' => 0
+    ])
+    ->orderBy('id','desc')
+    ->paginate($paginate)->withQueryString();
+    
        // dd($projects);
       $sum = $projects->sum('advance_amt');
       $total = $projects->sum('total_amt');
       $remaining = $projects->sum('profit');
         //->get();
-        return view('client.show',['client_id'=>$request->id,'projects' =>$projects,'from_date' => $from_date,'to_date' => $to_date,'sum' => $sum, 'total' => $total,'remaining' => $remaining]);
+        return view('client.show',['client_id'=>$request->id,'projects' =>$projects,'sum' => $sum, 'total' => $total,'remaining' => $remaining]);
     }
 
     /**

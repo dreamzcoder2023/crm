@@ -1,17 +1,9 @@
-<!-- Banner -->
-
-<html lang="en" xmlns:ng="https://angularjs.org">
-
-
+@extends('layouts/contentNavbarLayout')
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://code.angularjs.org/1.2.21/angular.js"></script>
 <script src="https://code.highcharts.com/highcharts.src.js"></script>
-
-<!-- Dashboard -->
-@extends('layouts/contentNavbarLayout')
-{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.4.2/css/all.min.css" integrity="sha512-NicFTMUg/LwBeG8C7VG+gC4YiiRtQACl98QdkmfsLy37RzXdkaUAuPyVMND0olPP4Jn8M/ctesGSB2pgUBDRIw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
-{{-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> --}}
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -137,7 +129,7 @@ up -->
   }
 
   .bi {
-    margin-left: 12px;
+    margin-left: 12px !important;
     margin-top: 15px !important;
     font-size: 20px;
   }
@@ -167,6 +159,9 @@ up -->
     margin-top: -42px !important;
     margin-left: 29px !important;
   }
+  .icon-center {
+  margin: 0 !important;
+}
 </style>
 
 <div class="row g-6 mb-6">
@@ -593,23 +588,27 @@ up -->
           <div id="orderStatisticsChart"></div>
         </div>
         <ul class="p-0 m-0">
-          <li class="d-flex mb-4 pb-1">
+          <li class="d-flex align-items-center mb-4 pb-1">
             <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-primary"><i class="fa fa-folder-open-o" aria-hidden="true" style="color:green"></i></span>
+              <span class="avatar-initial rounded bg-label-primary d-inline-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-folder2-open icon-center" aria-hidden="true" style="color: green; font-size: 22px; line-height: 1;"></i>
+              </span>
             </div>
+          
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
               <div class="me-2">
-                <h6 class="mb-0" style="color:green">Open</h6>
-                {{-- <small class="text-muted">Mobile, Earbuds, TV</small> --}}
+                <h6 class="mb-0" style="color: green;">Open</h6>
               </div>
               <div class="user-progress">
                 <small class="fw-semibold">{{ $project_open }}</small>
               </div>
             </div>
           </li>
+          
+          
           <li class="d-flex mb-4 pb-1">
             <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-primary"><i class="fa fa-folder-o" aria-hidden="true" style="color:red"></i></span>
+              <span class="avatar-initial rounded bg-label-primary"><i class="bi bi-folder icon-center" aria-hidden="true" style="color: red;"></i></span>
             </div>
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
               <div class="me-2">

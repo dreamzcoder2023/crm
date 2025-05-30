@@ -18,7 +18,10 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $categorys = Category::orderBy('id','desc')->where(['active_status' => 1, 'delete_status' =>0])->latest()->get();
+        $paginate = $request->paginate??15;
+        $categorys = Category::when(request('search'),function($query,$search){
+            $query->where('name','like',"%$search%");
+        })->orderBy('id','desc')->where(['active_status' => 1, 'delete_status' =>0])->latest()->paginate($paginate)->withQueryString();
         $categorynot = Expenses::pluck('category_id')->toArray();
         //dd($categorynot);
         return view('category.index',compact('categorys','categorynot'));

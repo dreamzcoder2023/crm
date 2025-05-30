@@ -20,8 +20,22 @@ class ProjectDetailsController extends Controller
      */
     public function index(Request $request)
     {
-        
-        $projects = ProjectDetails::join('clientdetails','clientdetails.id','=','project_details.client_id')->where('project_details.active_status',1)->where('project_details.delete_status',0)->select('project_details.*','clientdetails.first_name as first_name','clientdetails.last_name as last_name')->orderBy('project_details.id','desc')->get();
+        $paginate = $request->paginate??15;
+        $projects = ProjectDetails::join('clientdetails','clientdetails.id','=','project_details.client_id')
+                    ->where('project_details.active_status',1)
+                    ->where('project_details.delete_status',0)
+                    ->select('project_details.*','clientdetails.first_name as first_name',
+                    'clientdetails.last_name as last_name')
+                    ->orderBy('project_details.id','desc')
+                    ->when(request('search'),function($query,$search){
+                        $query->where('name','like',"%$search%")
+                        ->orWhere('clientdetails.first_name','like',"%$search%")
+                        ->orWhere('clientdetails.last_name','like',"%$search%")
+                        ->orWhere('advance_amt','like',"%$search")
+                        ->orWhere('total_amt','like',"%$search")
+                        ->orWhere('profit','like',"%$search");
+                    })
+                    ->paginate($paginate)->withQueryString();
         $expenses = Expenses::pluck('project_id')->toArray();
         $wallet = Wallet::where('active_status',1)->where('delete_status',0)->pluck('project_id')->toArray();
         $sum = $projects->sum('advance_amt');
@@ -75,12 +89,34 @@ class ProjectDetailsController extends Controller
      */
     public function show(string $id)
     {
-        $expenses = Expenses::join('category','category.id','=','expenses.category_id')->where('expenses.project_id',$id)->select('expenses.*','category.name as category_name')->orderBy('expenses.id','desc')->get(); 
+        $paginate = $request->paginate??15;
+        $expenses = Expenses::join('category','category.id','=','expenses.category_id')
+        ->when(request('search'),function($query,$search){
+            $query->where('expenses.amount','like',"%$search")
+            ->orWhere('category.name','like',"%$search%")
+            ->orWhere('expenses.paid_amt','like',"%$search")
+            ->orWhere('expenses.unpaid_amt','like',"%$search")
+            ->orWhere('expenses.description','like',"%$search%");
+        })
+        ->where('expenses.project_id',$id)->select('expenses.*','category.name as category_name')
+        ->orderBy('expenses.id','desc')->paginate($paginate); 
         
         return view('projectdetails.show',['expenses' => $expenses,'project_id'=>$id]);
     }
-    public function view(string $id){
-        $project = ProjectDetails::join('wallet','wallet.project_id','=','project_details.id')->join('stage','stage.id','=','wallet.stage_id')->join('payment','payment.id','=','wallet.payment_mode')->where('project_details.id',$id)->select('project_details.*','stage.name as stage_name','wallet.amount','payment.name as payment','wallet.current_date as currentdate')->get();
+    public function view(Request $request, $id){
+        $paginate = $request->paginate??15;
+        $project = ProjectDetails::join('wallet','wallet.project_id','=','project_details.id')
+                    ->join('stage','stage.id','=','wallet.stage_id')->join('payment','payment.id','=','wallet.payment_mode')
+                   
+                    ->select('project_details.*','stage.name as stage_name','wallet.amount',
+                    'payment.name as payment','wallet.current_date as currentdate')
+                    ->when(request('search'),function($query,$search){
+                        $query->where('project_details.name','like',"%$search%")
+                        ->orWhere('wallet.amount','like',"%$search")
+                        ->orWhere('project_details.total_amt','like',"%$search")
+                        ->orWhere('payment.name','like',"%$search%")
+                        ->orWhere('stage.name','like',"%$search%");
+                    })->where('project_details.id',$id)->paginate($paginate);
         $sum = $project->sum('amount');
         $total = $project->sum('total_amt');
         return view('projectdetails.view',['project' =>$project,'sum' =>$sum,'total' => $total]);

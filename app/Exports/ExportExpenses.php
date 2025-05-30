@@ -6,7 +6,8 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use DB;use Carbon\Carbon;
+use DB;
+use Carbon\Carbon;
 use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -15,41 +16,42 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
 {
 
 
-    public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role)
-    {
-        $this->category_filter = $category_filter;
-        $this->project_filter = $project_filter;
-        $this->user_filter = $user_filter;
-        $this->from = $from;
-        $this->to_date = $to_date;
-        $this->auth = $auth;
+  public function __construct($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role, $search,$tab)
+  {
+    $this->category_filter = $category_filter;
+    $this->project_filter = $project_filter;
+    $this->user_filter = $user_filter;
+    $this->from = $from;
+    $this->to_date = $to_date;
+    $this->auth = $auth;
+    $this->search = $search;
+    $this->role = $role;
+    $this->tab = $tab;
+  }
 
-        $this->role = $role;
+  // Headings
+  public function headings(): array
+  {
+    if ($this->role == 1) {
+      return [
+        'Category Name',
+        'Paid Date',
+        'Paid Time',
+        'Project Name',
+        'Amount',
+        'Paid Amount',
+        'Unpaid Amount',
+        'Advanced Amount',
+        'Description',
 
-    }
+        'Payment Mode',
 
-    // Headings
-    public function headings(): array{
-        if($this->role == 1){
-        return[
-            'Category Name',
-            'Paid Date',
-            'Paid Time',
-            'Project Name',
-            'Amount',
-            'Paid Amount',
-            'Unpaid Amount',
-            'Advanced Amount',
-            'Description',
+        'Added By',
+        'Edited By',
 
-            'Payment Mode',
-
-            'Added By',
-            'Edited By',
-
-        ];
-    }else{
-        return[
+      ];
+    } else {
+      return [
         'Category Name',
         'Paid Date',
         'Paid Time',
@@ -63,107 +65,129 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         'Payment Mode',
 
 
-        ];
+      ];
     }
-    }
+  }
 
-    /**
-    * @return \Illuminate\Support\Collection
-    */
+  /**
+   * @return \Illuminate\Support\Collection
+   */
 
-    public function collection()
-    {
-        $expenses = Expenses::join('category','category.id','=','expenses.category_id')
-        ->leftJoin('project_details', function ($join){
-            $join->on('project_details.id', 'expenses.project_id')
-                ->where('expenses.project_id', '!=', null);
+  public function collection()
+  {
+    $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+      ->leftJoin('project_details', function ($join) {
+        $join->on('project_details.id', 'expenses.project_id')
+          ->where('expenses.project_id', '!=', null);
+      });
+
+
+    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])->when($this->from, function ($query, $from) {
+        $query->wheredate('current_date', '>=', $from);
+      })
+      ->when($this->to_date, function ($query, $to) {
+        $query->wheredate('current_date', '<=', $to);
+      })
+      ->when($this->category_filter, function ($query, $category_id) {
+        $query->where('expenses.category_id', $category_id);
+      })
+      ->when($this->project_filter, function ($query, $project_id) {
+        $query->where('expenses.project_id', $project_id);
+      })
+      ->when($this->user_filter, function ($query, $user_id) {
+        $query->where('expenses.user_id', $user_id);
+      });
+       if($this->tab == 1){
+        $expenses = $expenses->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
+      }
+      if($this->tab == 2){
+        $expenses = $expenses->whereNotNull('expenses.labour_id');
+      }
+      if($this->tab == 3){
+        $expenses = $expenses->whereNotNull('expenses.vendor_id');
+      }
+    if ($this->role != 1) {
+      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $this->auth);
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')->when($this->search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+          $q->where('category.name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search%")
+            ->orWhere('users.first_name', 'like', "%$search%")
+            ->orWhere('users.last_name', 'like', "%$search%")
+            ->orWhere('expenses.amount', 'like', "%$search")
+            ->orWhere('expenses.paid_amt', 'like', "%$search")
+            ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+            ->orWhere('expenses.extra_amt', 'like', "%$search")
+            ->orWhere('expenses.description', 'like', "%$search%");
         });
-
-
-        $expenses = $expenses->leftjoin('payment','payment.id','=','expenses.payment_mode')
-        ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-        if($this->role != 1){
-          $expenses = $expenses->leftjoin('users','users.id','=','expenses.user_id')->where('users.id',$this->auth);
-          $expenses= $expenses->select('expenses.*','category.name as category_name','project_details.name as project_name','payment.name as payment_name','users.first_name','users.last_name');
+      });
+    } else {
+      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')->when($this->search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+          $q->where('category.name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search%")
+            ->orWhere('users.first_name', 'like', "%$search%")
+            ->orWhere('users.last_name', 'like', "%$search%")
+            ->orWhere('users_add.first_name', 'like', "%$search%")
+            ->orWhere('users_add.last_name', 'like', "%$search%")
+            ->orWhere('expenses.amount', 'like', "%$search")
+            ->orWhere('expenses.paid_amt', 'like', "%$search")
+            ->orWhere('expenses.unpaid_amt', 'like', "%$search")
+            ->orWhere('expenses.extra_amt', 'like', "%$search")
+            ->orWhere('expenses.description', 'like', "%$search%");
+        });
+      });
     }
-    else{
-      $expenses = $expenses->leftjoin('users','users.id','=','expenses.editedBy')->leftjoin('users as users_add','users_add.id','=','expenses.user_id');
-      $expenses= $expenses->select('expenses.*','category.name as category_name','project_details.name as project_name','payment.name as payment_name','users.first_name','users.last_name','users_add.first_name as first','users_add.last_name as last');
-    }
-        if($this->from != '' && $this->to_date != ''){
-          $expenses = $expenses->whereBetween('current_date', [$this->from,$this->to_date]);
-          // ->toSql();
-        //  // $bindings = $expenses->getBindings();
-        // print_r($this->auth);
-        //   print_r($this->from);
-        //   print_r($this->to_date);
-        //  exit;
+    $expenses = $expenses->orderBy($this->from || $this->to_date ? 'expenses.current_date' : 'expenses.id', 'desc')->get();
 
-        }
-        if($this->category_filter != 'undefined' && $this->category_filter != ''){
-          $expenses = $expenses->where('expenses.category_id',$this->category_filter);
-        }
-        if($this->project_filter != 'undefined' && $this->project_filter != ''){
-          $expenses = $expenses->where('expenses.project_id',$this->project_filter);
-          //dd($expenses);exit;
-        }
-        if($this->user_filter != 'undefined' && $this->user_filter != ''){
-          $expenses = $expenses->where('expenses.user_id',$this->user_filter);
-        }
-
-       // dd($expenses);
-       if($this->from != '' && $this->to_date != '' ){
-        $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
-
-       }else{
-        $expenses = $expenses->orderBy('expenses.id','desc')->get();
-       }
-//dd($expenses);
-
-        return collect($expenses);
-    }
-    // here you select the row that you want in the file
-    public function map($row): array{
-        $unpaid_amt = ExpensesUnpaidDate::where('expense_id',$row->id)?->select('*')?->orderBy('id','desc')?->first();
-        $unpaid_amt1 = !empty($unpaid_amt) ? $unpaid_amt->updated_at : $row->current_date;
-        if($this->role == 1){
-        $fields = [
-           $row->category_name,
-           Carbon::parse($row->current_date)->format('m/d/Y'),
-           Carbon::parse($row->current_date)->format('H:i A'),
-           $row->project_name,
-           $row->amount,
-           $row->paid_amt,
-           $row->unpaid_amt,
-           $row->extra_amt,
-           $row->description,
-           $row->payment_name,
+    return collect($expenses);
+  }
+  // here you select the row that you want in the file
+  public function map($row): array
+  {
+    $unpaid_amt = ExpensesUnpaidDate::where('expense_id', $row->id)?->select('*')?->orderBy('id', 'desc')?->first();
+    $unpaid_amt1 = !empty($unpaid_amt) ? $unpaid_amt->updated_at : $row->current_date;
+    if ($this->role == 1) {
+      $fields = [
+        $row->category_name,
+        Carbon::parse($row->current_date)->format('m/d/Y'),
+        Carbon::parse($row->current_date)->format('H:i A'),
+        $row->project_name,
+        $row->amount,
+        $row->paid_amt,
+        $row->unpaid_amt,
+        $row->extra_amt,
+        $row->description,
+        $row->payment_name,
 
 
-           $row->first.' '.$row->last,
-           $row->first_name.' '.$row->last_name,
+        $row->first . ' ' . $row->last,
+        $row->first_name . ' ' . $row->last_name,
 
 
       ];
-    }else{
-        $fields = [
-            $row->category_name,
-            Carbon::parse($row->current_date)->format('m/d/Y'),
-           Carbon::parse($row->current_date)->format('H:i A'),
-            $row->project_name,
-            $row->amount,
-            $row->paid_amt,
-            $row->unpaid_amt,
-            $row->extra_amt,
-            $row->description,
-            $row->payment_name,
+    } else {
+      $fields = [
+        $row->category_name,
+        Carbon::parse($row->current_date)->format('m/d/Y'),
+        Carbon::parse($row->current_date)->format('H:i A'),
+        $row->project_name,
+        $row->amount,
+        $row->paid_amt,
+        $row->unpaid_amt,
+        $row->extra_amt,
+        $row->description,
+        $row->payment_name,
 
 
 
 
-       ];
+      ];
     }
-     return $fields;
-    }
-
+    return $fields;
+  }
 }
