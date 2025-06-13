@@ -246,7 +246,7 @@ padding: 5px !important;
         </form>
     </div>
     <!-- Basic Bootstrap Table -->
-    <div class="card" style="max-width: 1200px; top:-1px; height:547px">
+    <div class="card" style="max-width: 100%; top:-1px; height:547px">
         <!-- <h5 class="card-header">Table Basic</h5> -->
         <div class="table-responsive text-nowrap" style="width: 99%;">
             <table class="table" id="expenses_listing_table">
@@ -509,7 +509,7 @@ padding: 5px !important;
 
             var date_range = $('#date_range').val();
             var search = $('#search').val();
-            var url = '{{ route('deleteexpenses-export') }}';
+            var url = "{{ route('deleteexpenses-export') }}";
             window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
@@ -521,7 +521,7 @@ padding: 5px !important;
 
             var date_range = $('#date_range').val();
             var search = $('#search').val();
-            var url = '{{ route('deleteexpenses-pdf') }}';
+            var url = "{{ route('deleteexpenses-pdf') }}";
             window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });

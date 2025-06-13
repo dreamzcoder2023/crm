@@ -269,6 +269,7 @@
             </div>
         </div> --}}
         <form id="submit-form">
+            <input type="hidden" name="tab" value="{{ request('tab') }}" id="tab">
             <div id="filter-section">
                 <!-- First Row: Filters + Search -->
                 <div class="row g-3 align-items-end">
@@ -342,12 +343,14 @@
                             <a class="btn btn-danger" href="{{ route('expenses-history') }}">
                                 <i class="bx bx-x-circle"></i>
                             </a>
+                            @if(request('tab') == 1 || $tab == 1)
                             <button type="button" class="btn btn-success" id="expense-export">
                                 <i class="bi bi-file-earmark-excel-fill"></i>
                             </button>
                             <button type="button" class="btn btn-danger" id="expense-pdf">
                                 <i class="bi bi-file-pdf"></i>
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -415,6 +418,12 @@
                             <th>Paid date</th>
                             <th>Category <br /> Name</th>
                             <th>Project Name</th>
+                            @if(request('tab') == 2 || $tab == 2)
+                            <th>Labour Name</th>
+                            @endif
+                             @if(request('tab') == 3 || $tab == 3)
+                            <th>Vendor Name</th>
+                            @endif
                             <th>Amount</th>
                             <th>Paid</th>
                             <th>Unpaid</th>
@@ -448,6 +457,12 @@
 
                                     <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                                     <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
+                                      @if(request('tab') == 2 || $tab == 2)
+                            <td>{{ $expense->labour_name ? $expense->labour_name : '--' }}</td>
+                            @endif
+                             @if(request('tab') == 3 || $tab == 3)
+                            <td>{{ $expense->vendor_name ? $expense->vendor_name : '--' }}</td>
+                            @endif
                                     <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                                     <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                                     <td>
@@ -764,9 +779,10 @@
 
             var date_range = $('#date_range').val();
             var search = $('#search').val();
+            var tab = $("#tab").val();
             var url = '{{ route('expenses-export') }}';
             window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user;
+                category + '&project_id=' + project + '&user_id=' + user + '&tab=' +tab;
         });
         $('#expense-pdf').click(function() {
             console.log('test1');
@@ -776,9 +792,10 @@
 
             var date_range = $('#date_range').val();
             var search = $('#search').val();
+             var tab = $("#tab").val();
             var url = '{{ route('expenses-pdf') }}';
             window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user;
+                category + '&project_id=' + project + '&user_id=' + user + '&tab=' +tab;
         });
         $('.expense_id').on('click', function() {
             if ($(this).is(':checked')) {

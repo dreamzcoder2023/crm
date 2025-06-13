@@ -283,7 +283,7 @@
 
 
     <!-- Basic Bootstrap Table -->
-    <div class="card " style="max-width: 1200px; top:13px; height:547px">
+    <div class="card " style="max-width: 100%; top:13px; height:547px">
         <!-- <h5 class="card-header">Table Basic</h5> -->
         <div class="table-responsive text-nowrap" style="padding:20px;">
             <table class="table " id="expenses_listing_table">

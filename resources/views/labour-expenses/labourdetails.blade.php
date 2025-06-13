@@ -31,7 +31,7 @@
     }
 </style>
 <!-- Basic Bootstrap Table -->
-<div class="card" style="max-width: 1200px; margin: 40px auto; height:250px">
+<div class="card" >
     <!-- <h5 class="card-header">Table Basic</h5> -->
     <div class="table-responsive text-nowrap">
         <table class="table" id="labour_datatable">

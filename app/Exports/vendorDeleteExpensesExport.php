@@ -15,7 +15,7 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
 {
 
 
-    public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role)
+    public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role,$search)
     {
         $this->category_filter = $category_filter;
         $this->project_filter = $project_filter;
@@ -23,7 +23,7 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
         $this->from = $from;
         $this->to_date = $to_date;
         $this->auth = $auth;
-
+        $this->search = $search;
         $this->role = $role;
 
     }
@@ -63,35 +63,55 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
       ->whereNotNull('expenses.vendor_id')->leftjoin('vendor_details as l','l.id','=','expenses.vendor_id')->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
+      })
+      ->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])
+      ->leftjoin('users', 'users.id', '=', 'expenses.editedBy')
+      ->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')
+      ->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance')
+      ->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 
+      'payment.name as payment_name', 'users.first_name', 
+      'users.last_name', 'users_add.first_name as first', 
+      'users_add.last_name as last','l.name as labour_name',
+      'labour_ad.first_name as labour_first','labour_ad.last_name as labour_last')
+      ->when($this->from, function($query,$from){
+        $query->wheredate('current_date', '>=',$from);
+      })
+   ->when($this->to_date,function($query,$to){
+        $query->wheredate('current_date', '<=', $to);
+      })
+      ->when($this->category_filter,function($query,$category_id){
+        $query->where('expenses.category_id', $category_id);
+      })
+      ->when($this->project_filter,function($query,$project_id){
+        $query->where('expenses.project_id', $project_id);
+      })
+      ->when($this->user_filter,function($query,$user_id){
+        $query->where('expenses.vendor_id', $user_id);
+      })
+      ->when($this->search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+          $q->where('category.name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search%")
+            ->orWhere(DB::raw("CONCAT(users.first_name, ' ', users.last_name)"), 'like', "%$search%")
+            ->orWhere(DB::raw("CONCAT(users_add.first_name, ' ', users_add.last_name)"), 'like', "%$search%")
+            ->orWhere(DB::raw("CONCAT(labour_ad.first_name, ' ', labour_ad.last_name)"), 'like', "%$search%")
+            ->orWhere('users.first_name', 'like', "%$search%")
+            ->orWhere('users.last_name', 'like', "%$search%")
+            ->orWhere('users_add.first_name', 'like', "%$search%")
+            ->orWhere('users_add.last_name', 'like', "%$search%")
+            ->orWhere('l.name', 'like', "%$search%")
+            ->orWhere('labour_ad.first_name', 'like', "%$search%")
+            ->orWhere('labour_ad.last_name', 'like', "%$search%")
+            ->orWhere('expenses.amount', 'like', "%$search%")
+            ->orWhere('expenses.paid_amt', 'like', "%$search%")
+            ->orWhere('expenses.unpaid_amt', 'like', "%$search%")
+            ->orWhere('expenses.extra_amt', 'like', "%$search%")
+            ->orWhere('expenses.reason','like',"%$search%")
+            ->orWhere('expenses.description', 'like', "%$search%");
+        });
       });
-
-
-    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad','labour_ad.id','=','expenses.is_advance');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','labour_ad.first_name as labour_first','labour_ad.last_name as labour_last');
-    if ($this->from != '' ) {
-      $expenses = $expenses->wheredate('current_date', '>=',$this->from);
-      //   ->toSql();
-      //  // $bindings = $expenses->getBindings();
-      //   print_r($expenses);
-      //  exit;
-
-    }
-    if($this->to_date !=''){
-      $expenses = $expenses->wheredate('current_date', '<=',$this->to_date);
-    }
-    if ($this->category_filter != 'undefined' && $this->category_filter != '') {
-      $expenses = $expenses->where('expenses.category_id', $this->category_filter);
-    }
-    if ($this->project_filter != 'undefined' && $this->project_filter != '') {
-      $expenses = $expenses->where('expenses.project_id', $this->project_filter);
-      //dd($expenses);exit;
-    }
-    if ($this->user_filter != 'undefined' && $this->user_filter != '') {
-      $expenses = $expenses->where('expenses.vendor_id', $this->user_filter);
-    }
-
 
 
     if($this->from != '' && $this->to_date != '' ){

@@ -12,12 +12,11 @@ use App\Models\Expenses;
 use App\Models\ExpensesUnpaidDate;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-
-class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
+class ReportExpensesHistory implements FromCollection, WithHeadings, WithMapping
 {
 
 
-  public function __construct($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role, $search)
+  public function __construct($category_filter, $project_filter, $user_filter, $from, $to_date, $auth, $role, $search,$tab)
   {
     $this->category_filter = $category_filter;
     $this->project_filter = $project_filter;
@@ -27,6 +26,7 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
     $this->auth = $auth;
     $this->search = $search;
     $this->role = $role;
+    $this->tab = $tab;
   }
 
   // Headings
@@ -38,6 +38,8 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         'Paid Date',
         'Paid Time',
         'Project Name',
+        'Labour Name',
+        'vendor Name',
         'Amount',
         'Paid Amount',
         'Unpaid Amount',
@@ -49,7 +51,6 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         'Added By',
         'Edited By',
 
-
       ];
     } else {
       return [
@@ -57,14 +58,15 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         'Paid Date',
         'Paid Time',
         'Project Name',
+        'Labour Name',
+        'vendor Name',
         'Amount',
         'Paid Amount',
         'Unpaid Amount',
         'Advanced Amount',
         'Description',
+
         'Payment Mode',
-
-
 
 
       ];
@@ -77,13 +79,16 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
 
   public function collection()
   {
-    $expenses = Expenses::where('expenses.unpaid_amt', '!=', 0)->join('category', 'category.id', '=', 'expenses.category_id')
+    $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
-      })->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0])
-      ->when($this->from, function ($query, $from) {
+      });
+
+
+    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+    ->leftjoin('labour_details as l','l.id','=','expenses.labour_id')->leftjoin('vendor_details as ve','ve.id','=','expenses.vendor_id')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])->when($this->from, function ($query, $from) {
         $query->wheredate('current_date', '>=', $from);
       })
       ->when($this->to_date, function ($query, $to) {
@@ -97,11 +102,11 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
       })
       ->when($this->user_filter, function ($query, $user_id) {
         $query->where('expenses.user_id', $user_id);
-      })
-      ->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
+      });
+  
     if ($this->role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $this->auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')->when($this->search, function ($query, $search) {
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name','ve.name as vendor_name')->when($this->search, function ($query, $search) {
         $query->where(function ($q) use ($search) {
           $q->where('category.name', 'like', "%$search%")
             ->orWhere('project_details.name', 'like', "%$search%")
@@ -112,13 +117,14 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
             ->orWhere('expenses.paid_amt', 'like', "%$search")
             ->orWhere('expenses.unpaid_amt', 'like', "%$search")
             ->orWhere('expenses.extra_amt', 'like', "%$search")
+             ->orWhere('l.name','like',"%$search%")
+              ->orWhere('ve.name','like',"%$search%")
             ->orWhere('expenses.description', 'like', "%$search%");
         });
       });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')
-      ->when($this->search, function ($query, $search) {
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','ve.name as vendor_name')->when($this->search, function ($query, $search) {
         $query->where(function ($q) use ($search) {
           $q->where('category.name', 'like', "%$search%")
             ->orWhere('project_details.name', 'like', "%$search%")
@@ -131,20 +137,13 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
             ->orWhere('expenses.paid_amt', 'like', "%$search")
             ->orWhere('expenses.unpaid_amt', 'like', "%$search")
             ->orWhere('expenses.extra_amt', 'like', "%$search")
+            ->orWhere('l.name','like',"%$search%")
+              ->orWhere('ve.name','like',"%$search%")
             ->orWhere('expenses.description', 'like', "%$search%");
         });
       });
     }
-
-
-
-    if ($this->from != '' && $this->to_date != '') {
-      $expenses = $expenses->orderBy('expenses.current_date', 'desc')->get();
-    } else {
-      $expenses = $expenses->orderBy('expenses.id', 'desc')->get();
-    }
-
-
+    $expenses = $expenses->orderBy($this->from || $this->to_date ? 'expenses.current_date' : 'expenses.id', 'desc')->get();
 
     return collect($expenses);
   }
@@ -159,6 +158,8 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         Carbon::parse($row->current_date)->format('m/d/Y'),
         Carbon::parse($row->current_date)->format('H:i A'),
         $row->project_name,
+        $row->labour_name,
+        $row->vendor_name,
         $row->amount,
         $row->paid_amt,
         $row->unpaid_amt,
@@ -178,12 +179,15 @@ class UnpaidExpensesExport implements FromCollection, WithHeadings, WithMapping
         Carbon::parse($row->current_date)->format('m/d/Y'),
         Carbon::parse($row->current_date)->format('H:i A'),
         $row->project_name,
+         $row->labour_name,
+        $row->vendor_name,
         $row->amount,
         $row->paid_amt,
         $row->unpaid_amt,
         $row->extra_amt,
         $row->description,
         $row->payment_name,
+
 
 
 

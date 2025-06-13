@@ -208,13 +208,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
     <script>
-        $(document).ready(function() {
-            var data = new DataTable('#user_listing_table', {
-                "lengthMenu": [15, 25, 50, 100],
-                processing: true,
 
-            });
-        });
         $("document").ready(function() {
             var user = $('#user_id').val();
             console.log()

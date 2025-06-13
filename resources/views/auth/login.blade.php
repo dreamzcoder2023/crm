@@ -42,7 +42,7 @@
   <div class="authentication-wrapper authentication-basic container-p-y">
     <div class="authentication-inner py-4">
         <div class="card" >
-            <div class="card-header text-center">
+            <div class="card-header text-center" style="background-color: white">
                 <img src="{{ asset('assets/img/icons/logo12.png') }}" class="img-fluid" alt="Layout container" style="width: 55%;">
 
             </div>

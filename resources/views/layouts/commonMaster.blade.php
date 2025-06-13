@@ -39,7 +39,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!--- link bootstrap --->
   @include('layouts/sections/styles')
@@ -126,6 +126,12 @@
       cursor: pointer;
       margin-left: 71px !important;
     }
+    .layout-menu{
+      z-index: 100 !important;
+    }
+    .layout-navbar{
+      z-index: 100 !important;
+    }
   </style>
 </head>
 
@@ -194,6 +200,35 @@
 
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
   </div>
+      @if(session('error_sweet'))
+<script>
+   Swal.fire({
+    icon: 'error',
+    title: 'Message',
+    text: '{{ session('error_sweet') }}',
+    showConfirmButton: true,
+    confirmButtonText: 'OK',
+   // position: 'top-end',
+    // customClass: {
+    //     popup: 'swal2-toast-like'
+    // }
+});
+
+</script>
+@endif
+@if (session()->has('message'))
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+<script>
+    $(function() {
+        toastr.success('{{ session('message') }}', {
+            timeOut: 1000,
+            fadeOut: 1000,
+        });
+    });
+</script>
+@endif
   <script>
     document.getElementById('image-input').addEventListener('change', function(event) {
     //  alert('hi');

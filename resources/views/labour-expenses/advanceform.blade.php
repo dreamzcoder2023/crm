@@ -21,10 +21,9 @@
     <div class="row">
         <!-- Basic Layout -->
         <div class="col-xxl">
-            <div class="card mb-4" style="top:30px">
+            
 
-
-                <div class="card-body">
+                <div class="card-body"  style="top:30px">
                     <form name="UnpaidSubmit" action="{{ route('labour-advance.store') }}" id="UnpaidSubmit" method="post">
                         @csrf
                         <div class="col-xl">
@@ -32,7 +31,8 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <input type="hidden" id="labour_id" value="{{ $labour->id }}" name="labour_id">
-                                        <div class="mb-3">
+                                      
+                                        <div class="col-6 mb-3">
                                             <label class="form-label" for="basic-default-email">Paid amount</label>
 
                                             <input type="text" onkeypress="allowNumbersOnly(event)" id="amount"
@@ -41,27 +41,15 @@
 
                                             <input type="hidden" name="advance_amt" id="advance_amt"
                                                 value="{{ $labour->advance_amt }}">
-                                            <p class="advance_amt" style="color:blue">Labour Total Advance Amount is
+                                            <p class="advance_amt" style="color:blue; margin-top:5px;">Labour Total Advance Amount is
                                                 :{{ $labour->advance_amt }} </p>
                                             <label id="amount-error" class="error" for="basic-default-email">Amount is
                                                 required</label>
                                                 <label id="advance-error" class="error" for="basic-default-email">Amount is
                                                     insufficient</label>
                                         </div>
-                                        {{-- <div class="mb-3">
-                                            <label class="form-label" for="basic-default-message">Amount
-                                                Deduction</label><br>
-                                            <input type="radio" class="gender" value="1" id="male"
-                                                name="gender">
-                                            <label class="form-label" for="male">Advance</label> &nbsp;
-                                            <input type="radio" class="gender" value="2" id="female"
-                                                name="gender">
-                                            <label class="form-label" for="female">Unpaid</label> <br />
-                                            <label id="gender-error" class="error" for="basic-default-email">Amount
-                                                deduction is
-                                                required</label>
-                                        </div> --}}
-                                        <div class="mb-3">
+                                       
+                                        <div class="col-6 mb-3">
                                             <label class="form-label" for="datetimepicker1">Project</label><br>
                                             <select class="form-control selectpicker" name="project_id"
                                                 data-live-search="true" id="project_id">
@@ -82,13 +70,15 @@
                                                 <label id="advance1-error" class="error" for="basic-default-email">Amount is
                                                   insufficient</label>
                                         </div>
+                                    </div>
+                                        <div class="row">
 
-                                        <div class="mb-3">
+                                        <div class="col-6 mb-3">
                                             <label class="form-label" for="datetimepicker1">Date</label><br>
                                             <input type="date" class="form-control" id="datetimepicker1"
                                                 name="current_date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="col-6 mb-3">
                                             <label for="appt">Time:</label><br>
                                             <input type="time" id="appt" class="form-control" name="time"
                                                 value="{{ Carbon\Carbon::now()->format('h:i:s') }}">
@@ -100,11 +90,11 @@
                                         </center>
                                     </div>
                                 </div>
-                            </div>
+                           
                         </div>
                     </form>
                 </div>
-            </div>
+            
         </div>
         <!-- Basic with Icons -->
     </div>

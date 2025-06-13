@@ -1,19 +1,46 @@
 @extends('layouts/contentNavbarLayout')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
 <style>
+    .table-responsive {
+        overflow-y: auto !important;
+    }
+
+    #expenses_listing_table th,
+    #expenses_listing_table td {
+        width: 10%;
+        /* Adjust the width as needed */
+        font-size: 13px;
+        /* Adjust the font size as needed */
+        white-space: nowrap;
+        /* Prevent text from wrapping */
+        text-overflow: ellipsis;
+        /* Add ellipsis for long text */
+        overflow: hidden;
+        /* Hide overflowing content */
+    }
+
+    .bootstrap-select {
+        max-width: 150px;
+    }
+
+    a.disabled {
+        pointer-events: none;
+        cursor: default;
+        opacity: 0.5;
+    }
+
+    /* Customize the styling further if needed */
+
     @media only screen and (max-width:320px) {
         .aa {
             display: inline !important;
@@ -34,22 +61,20 @@
     .table-responsive {
         margin-top: 5px;
         margin-left: 5px;
-
-
     }
 
-    #unpaid_expenses_listing_table th,
-    #unpaid_expenses_listing_table td {
-        width: 10%;
-        /* Adjust the width as needed */
-        font-size: 13px;
-        /* Adjust the font size as needed */
-        white-space: nowrap;
-        /* Prevent text from wrapping */
-        text-overflow: ellipsis;
-        /* Add ellipsis for long text */
-        overflow: hidden;
-        /* Hide overflowing content */
+    table {
+        width: 50%;
+        border-spacing: 0;
+        /* Remove spacing between cells */
+        border-collapse: collapse;
+        /* Collapse cell borders */
+    }
+
+    td,
+    th {
+        padding: 5px;
+        /* Reduce cell padding */
     }
 
     .dropdown-toggle {
@@ -60,6 +85,10 @@
         color: #f7f7f7 !important;
         content: "";
         display: none !important;
+    }
+
+    .table-responsive {
+        overflow: auto !important;
     }
 
     @media (max-width: 768px) {
@@ -74,8 +103,62 @@
     #filter-section {
         padding: 5px !important;
     }
-</style>
 
+
+    .tab-container {
+        width: 100%;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .tab-buttons {
+        display: flex;
+        background: #eee;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tab-button {
+        flex: 1;
+        padding: 14px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #555;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .tab-button:hover {
+        background-color: #171f29;
+        color: #fff;
+    }
+
+    .tab-button.active {
+        background-color: #171f29;
+        color: #fff !important;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 20px;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+    }
+</style>
 
 @section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -95,6 +178,9 @@
         </script>
     @endif
     @if (session()->has('message'))
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
         <script>
             $(function() {
                 toastr.success('{{ session('message') }}', {
@@ -104,6 +190,7 @@
             });
         </script>
     @endif
+
     @if (session()->has('msg'))
         <script>
             $(function() {
@@ -114,32 +201,11 @@
             });
         </script>
     @endif
-    <div style="margin-top:-32px ;">
 
-        <h4 class="fw-bold py-3 mb-4">
-            <span class="fw-light" style="color: black;font-size:16px;">Unpaid Expenses History </span>
-
-        </h4>
-
-        <div class="row" style="position:absolute;  right:50px ">
-            <div class="col-md-12">
-
-                <!-- @can('transfer-create')
-        -->
-                    <!-- <ul class="nav nav-pills flex-column flex-md-row mb-3">
-              <li class="nav-item"><a class="nav-link active" href="{{ route('transfer-create') }}"><i class="bi bi-currency-exchange me-1"></i> Add Transfer</a></li>
-
-            </ul> -->
-                    <!--
-    @endcan -->
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="top:-28px;">
-
-   
+    <div class="card" style="margin-top: -10px;">
+       
         <form id="submit-form">
+            <input type="hidden" name="tab" value="{{ request('tab') }}" id="tab">
             <div id="filter-section">
                 <!-- First Row: Filters + Search -->
                 <div class="row g-3 align-items-end">
@@ -210,13 +276,13 @@
                             <button class="btn btn-primary client_search" type="submit">
                                 <i class="bx bx-search"></i>
                             </button>
-                            <a class="btn btn-danger" href="{{ route('unpaid-history') }}">
+                            <a class="btn btn-danger" href="{{ route('expenses-history') }}">
                                 <i class="bx bx-x-circle"></i>
                             </a>
-                            <button type="button" class="btn btn-success" id="unpaidexpense-export">
+                         <button type="button" class="btn btn-success" id="expense-export">
                                 <i class="bi bi-file-earmark-excel-fill"></i>
                             </button>
-                            <button type="button" class="btn btn-danger" id="unpaidexpense-pdf">
+                            <button type="button" class="btn btn-danger" id="expense-pdf">
                                 <i class="bi bi-file-pdf"></i>
                             </button>
                         </div>
@@ -224,101 +290,126 @@
                 </div>
             </div>
         </form>
-      
     </div>
+
+
     <!-- Basic Bootstrap Table -->
-    <div class="card" style="max-width: 100%; top:-11px; height:516px">
-        <!-- <h5 class="card-header">Table Basic</h5> -->
-        <div class="table-responsive text-nowrap">
-            <table class="table" id="unpaid_expenses_listing_table">
-                <thead>
-                    <tr>
-                          @canany(['expenses-edit', 'expenses-delete'])
-                            <th>Action</th>
-                        @endcanany
-                        <th>ID</th>
-                        <th>Paid date</th>
-                        <th>Category <br /> Name</th>
-                        <th>Project Name</th>
-                        <th>Amount</th>
-                        <th>Paid</th>
-                        <th>Unpaid</th>
-                        <th>Advanced <br /> Amount</th>
-                        <th>Description</th>
-                        <th>Image</th>
-                        <th>Payment Mode</th>
-
-
-                        @role('Admin')
-                            <th>Added By</th>
-
-                            <th>Edited By</th>
-                        @endrole
-
-                      
-                    </tr>
-                </thead>
-                <tbody class="table-border-bottom-0">
-                  @if(count($expenses) > 0)
-                    @foreach ($expenses as $expense)
+    <div class="tab-container">
+       
+        <div id="designer" class="tab-content active">
+            <div class="table-responsive text-nowrap" style="padding:20px;width:99%;">
+                <table class="table " id="expenses_listing_table">
+                    <thead>
                         <tr>
-                              @canany(['expenses-unpaid edit'])
-                                @can('expenses-unpaid edit')
-                                    <td>
-                                        <a class="" href="{{ route('unpaid-create', $expense->id) }}"><i
-                                                class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
-                                    </td>
-                                @endcan
-                            @endcanany
-                            <td>{{ $loop->index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y ') }}
-                                <br />{{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A ') }}</td>
-
-                            <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
-                            <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
-                            <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
-                            <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
-                            <td>
-                                @if ($expense->unpaid_amt != 0)
-                                    <b><a href="{{ route('unpaidex-create', $expense->id) }}"
-                                            style="color:red">{{ $expense->unpaid_amt }}</a></b>
-                                @else
-                                    <b><span style="color:red"> {{ $expense->unpaid_amt }}</span></b>
-                                @endif
-                            </td>
-                            <td><b><span style="color: #840eef;">{{ $expense->extra_amt }}</span></b></td>
-                            <td>{{ $expense->description ? $expense->description : '--' }}</td>
-                            <td>
-                                @if ($expense->image != '' || $expense->image != null)
-                                    <img src="public/images/{{ $expense->image }}" width="50px">
-                                @endif
-                            </td>
-                            <td>{{ $expense->payment_name }}</td>
-
-
+                            @can('expenses-Over all delete option')
+                                <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
+                                            class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
+                            @endcan
+                            <th>Paid date</th>
+                            <th>Category <br /> Name</th>
+                            <th>Project Name</th>
+                            <th>Labour Name</th>
+                            <th>Vendor Name</th>
+                            <th>Amount</th>
+                            <th>Paid</th>
+                            <th>Unpaid</th>
+                            <th>Advanced <br /> Amount</th>
+                            <th style="width:30px">Description</th>
+                            <th>Image</th>
+                            <th>Payment Mode</th>
                             @role('Admin')
-                                <td>{{ $expense->first . '' . $expense->last }}</td>
-                                <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
+                                <th>Added By</th>
+                                <th>Edited By</th>
                             @endrole
 
-                          
                         </tr>
-                    @endforeach
-                  @else
-                  <tr><td colspan="10"><center>No data found.</center></td></tr>
-                  @endif
-                </tbody>
-            </table>
-            <div class="paginatestyle mt-4">
-              {{ $expenses->links('pagination::bootstrap-5') }}
-          </div>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @if (count($expenses) > 0)
+                            @foreach ($expenses as $expense)
+                                <tr>
+                                    @can('expenses-Over all delete option')
+                                        <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
+                                                value="{{ $expense->id }}">
+                                        </td>
+                                    @endcan
+                                    <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br />
+                                        {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
+
+                                    <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
+                                    <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
+                                    <td>{{ $expense->labour_name ? $expense->labour_name : '--' }}</td>
+                                    <td>{{ $expense->vendor_name ? $expense->vendor_name : '--' }}</td>
+                                    <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
+                                    <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
+                                    <td>
+                                        @if ($expense->unpaid_amt != 0)
+                                            <b><a href="{{ route('unpaidex-create', $expense->id) }}"
+                                                style="color:red">{{ $expense->unpaid_amt }}</a></b> @else<b>
+                                                <p style="color:red">{{ $expense->unpaid_amt }}</p>
+                                            </b>
+                                        @endif
+                                    </td>
+                                    <td><b><span style="color:#840eef;">{{ $expense->extra_amt }}</span></b></td>
+                                    <td style="width:10px"> @php
+                                        $desc = $expense->description ?? '--';
+                                    @endphp
+
+                                        @if (strlen($desc) > 30)
+                                            <span class="desc">{{ substr($desc, 0, 30) }}...</span>
+                                            <span class="full-desc" style="display:none;">{{ $desc }}</span>
+                                            <a href="javascript:void(0);" onclick="toggleDesc(this)">Show more</a>
+                                        @else
+                                            {{ $desc }}
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($expense->image != '' || $expense->image != null)
+                                            <a href="{{ url('images/' . $expense->image) }}" target="_blank">View</a>
+                                        @else
+                                            --
+                                        @endif
+                                    <td>{{ $expense->payment_name }}</td>
+
+                                    @role('Admin')
+                                        <td>{{ $expense->first . '' . $expense->last }}</td>
+                                        <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
+                                    @endrole
+
+                                  
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="9">
+                                    <center>No data found.</center>
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+                <div class="paginatestyle mt-4">
+                    {{ $expenses->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
         </div>
+
+        {{-- <div id="developer" class="tab-content">
+            <h2>Developer Panel</h2>
+            <p>Code integrations, API tools, and advanced settings.</p>
+        </div>
+
+        <div id="preview" class="tab-content">
+            <h2>Preview Panel</h2>
+            <p>See your layout in real-time.</p>
+        </div> --}}
     </div>
+
+
     <!--/ Basic Bootstrap Table -->
 
-
-
-    <p class="text-end" style="margin-top: 6px; margin-right: 147px; font-size: medium;">
+    <p class="text-end" style="margin-top: 31px; margin-right: 147px; font-size: medium;">
         <span class="d-inline"><b>Total Amount:</b> <b><span style="color:#ef6a0e">{{ $sum }}</span></b></span>
         <span class="d-inline ms-3"><b>Total Paid Amount:</b> <b><span
                     style="color: green;">{{ $paid_amt }}</span></b></span>
@@ -327,6 +418,7 @@
         <span class="d-inline ms-3"><b>Total Advanced Amount:</b><b><span style="color: #840eef;">
                     {{ $advanced_amt }}</span></b></span>
     </p>
+
     <!--- modal popup for transfer -->
     <div class="modal fade" id="unpaid-popup" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog d-flex justify-content-center">
@@ -352,6 +444,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Confirmation</h4>
+
                 </div>
                 <div class="modal-body">
                     <p style="text-align: center;">Are you sure want to delete this?</p>
@@ -364,6 +457,28 @@
 
         </div>
     </div>
+    <!--- delete all confirmation -->
+    <div class="modal fade" id="deleteAllModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation</h4>
+
+                </div>
+                <div class="modal-body">
+                    <p style="text-align: center;">Are you sure want to delete this?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary yes-delete-all" data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-danger no-delete-all" data-dismiss="modal">No</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--- delete all confirmation -->
     <div class="modal fade" id="myModal_reason" role="dialog">
         <div class="modal-dialog modal-sm">
 
@@ -390,20 +505,49 @@
 
     <!-- modal popup for delete role ended -->
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-       function submitform() {
+    function toggleDesc(link) {
+        const td = link.parentElement;
+        const short = td.querySelector('.desc');
+        const full = td.querySelector('.full-desc');
+
+        if (short.style.display === 'none') {
+            short.style.display = 'inline';
+            full.style.display = 'none';
+            link.textContent = 'Show more';
+        } else {
+            short.style.display = 'none';
+            full.style.display = 'inline';
+            link.textContent = 'Show less';
+        }
+    }
+</script>
+    <script>
+        const buttons = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                contents.forEach(tab => tab.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+    </script>
+
+    <script>
+        function submitform() {
             $('#submit-form').submit();
         }
         $(function() {
@@ -439,15 +583,14 @@
             allowClear: true,
             width: '100%',
         });
-
         $("document").ready(function() {
             var roleid;
             var user;
+            $('.error').addClass('hide');
             setTimeout(function() {
                 $("div.alert").remove();
             }, 5000); // 5 secs
-            $("#unpaid_expenses_listing_table").on("click", ".deleteExpense", function() {
-
+            $("#expenses_listing_table").on("click", ".deleteExpense", function() {
                 roleid = $(this).attr('data-id');
                 user = $(this).attr('data-user');
                 $("#myModal").removeClass('fade');
@@ -479,7 +622,7 @@
                 } else {
                     $('#reason-error').addClass('hide');
                     $("#myModal_reason").modal('hide');
-                    var url = '{{ route('unpaid-delete') }}';
+                    var url = '{{ route('expenses-delete') }}';
 
                     window.location.href = url + '?id=' + roleid + '&reason=' + reason + '&user=' + user;
                 }
@@ -488,13 +631,9 @@
         $(document).ready(function() {
             $('#unpaid-popup').modal('hide');
         });
-        $(document).ready(function() {
-            $('#unpaid-popup').modal('hide');
-        });
 
-
-        //  });
-        $('#unpaidexpense-export').click(function() {
+        // });
+        $('#expense-export').click(function() {
             console.log('test');
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
@@ -502,11 +641,12 @@
 
             var date_range = $('#date_range').val();
             var search = $('#search').val();
-            var url = '{{ route('unpaidexpenses-export') }}';
+            var tab = $("#tab").val();
+            var url = '{{ route('expenses-report-export') }}';
             window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user;
+                category + '&project_id=' + project + '&user_id=' + user + '&tab=' +tab;
         });
-        $('#unpaidexpense-pdf').click(function() {
+        $('#expense-pdf').click(function() {
             console.log('test1');
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
@@ -514,9 +654,55 @@
 
             var date_range = $('#date_range').val();
             var search = $('#search').val();
-            var url = '{{ route('unpaidexpenses-pdf') }}';
+             var tab = $("#tab").val();
+            var url = '{{ route('expenses-report-pdf') }}';
             window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user;
+                category + '&project_id=' + project + '&user_id=' + user + '&tab=' +tab;
+        });
+        $('.expense_id').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('.deleteAllExpense').removeClass('disabled');
+            } else {
+                $('.deleteAllExpense').addClass('disabled');
+            }
+        });
+        $('.deleteAllExpense').click(function() {
+            $('#deleteAllModal').modal('show');
+        });
+        $('.no-delete-all').click(function() {
+            $('.expense_id').prop('checked', false);
+            $('.deleteAllExpense').addClass('disabled');
+            $('#deleteAllModal').modal('hide');
+        });
+        $('.yes-delete-all').click(function() {
+
+            var val = [];
+            $('.expense_id:checked').each(function(i) {
+                val[i] = $(this).val();
+            });
+            $('.preloader').css('display', 'block');
+            $.ajax({
+                type: "get",
+                url: "{{ route('expense-delete-all') }}",
+                data: {
+                    id: val,
+                },
+                dataType: 'json',
+                success: function(html) {
+                    console.log(html);
+                    $('.preloader').css('display', 'none');
+                    $('#deleteAllModal').modal('hide');
+                    toastr.success('Deleted Successfully', {
+                        timeOut: 1000,
+                        fadeOut: 1000,
+                    });
+
+                    setTimeout(function() {
+                        // Do something after 5 seconds
+                        location.reload(); //reload page
+                    }, 5000);
+                }
+            });
         });
     </script>
 @endsection

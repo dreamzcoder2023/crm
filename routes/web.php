@@ -37,7 +37,10 @@ use App\Http\Controllers\VendorExpensesController;
 $controller_path = 'App\Http\Controllers';
 Route::prefix('server-commands')->group(function () {
     Route::get('optimize', function () {
-        \Artisan::call('optimize');
+        \Artisan::call('optimize:clear');
+        \Artisan::call('route:clear');
+        \Artisan::call('route:cache');
+        \Artisan::call('config:clear');
         dd("Done!");
     });
 });
@@ -153,6 +156,9 @@ Route::get('/expenses-delete_record',[ExpensesController::class,'delete_record']
 Route::get('/deleteexpenses-export',[ExpensesController::class,'delete_expense_export'])->name('deleteexpenses-export');
 Route::get('/deleteexpenses-pdf',[ExpensesController::class,'delete_expense_pdf'])->name('deleteexpenses-pdf');
 Route::get('/expense-delete-all',[ExpensesController::class,'expense_delete_all'])->name('expense-delete-all');
+Route::get('/expense-report',[ExpensesController::class,'reports_history'])->name('expenses-report-history');
+Route::get('/expenses-report-export',[ExpensesController::class,'expense_report_export'])->name('expenses-report-export');
+Route::get('/expenses-report-pdf',[ExpensesController::class,'expense_report_pdf'])->name('expenses-report-pdf');
 // expenses ended
 // unpaidexpenses start
 Route::get('/unpaid-history',[UnpaidExpensesController::class,'index'])->name('unpaid-history');
@@ -247,6 +253,8 @@ Route::get('/vendor-delete-expenses-pdf',[VendorExpensesController::class,'vendo
 Route::get('/vendor-delete-expenses-export',[VendorExpensesController::class,'vendor_delete_expense_export'])->name('vendor-delete-expenses-export');
 Route::get('/vendor-unpaid-expenses-export',[VendorExpensesController::class,'unpaid_expenses_export'])->name('vendor-unpaid-expenses-export');
 Route::get('/vendor-unpaid-expenses-pdf',[VendorExpensesController::class,'unpaid_expenses_pdf'])->name('vendor-unpaid-expenses-pdf');
+Route::get('vendor/withdraw',[VendorExpensesController::class,'withdraw'])->name('vendor-withdraw');
+Route::post('vendor/withdraw/save',[VendorExpensesController::class,'withdraw_save'])->name('vendor.withdraw-save');
 
 Route::get('userdetails',[TransferController::class,'userDetail'])->name('transfer.userdetail');
 Route::get('vendor-insufficent',[VendorExpensesController::class,'vendor_insufficant'])->name('vendor-insufficent');

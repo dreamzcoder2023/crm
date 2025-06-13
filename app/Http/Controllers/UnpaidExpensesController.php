@@ -243,7 +243,8 @@ class UnpaidExpensesController extends Controller
       })
       ->when(request('user_id'),function($query,$user_id){
         $query->where('expenses.user_id', $user_id);
-      });
+      })
+      ->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
     if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
       $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')

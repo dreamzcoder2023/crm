@@ -58,7 +58,7 @@
         <!--- roles -->
         @canany(['expenses-history', 'expenses-unpaid history', 'expenses-deleted history'])
             <li
-                class="menu-item {{ \Request::route()->getName() == 'expenses-history' || \Request::route()->getName() == 'unpaid-history' || \Request::route()->getName() == 'expenses-delete_record' ? 'active open' : '' }} ">
+                class="menu-item {{ \Request::route()->getName() == 'expenses-history' || \Request::route()->getName() == 'unpaid-history' || \Request::route()->getName() == 'expenses-delete_record' || \Request::route()->getName() == 'expenses-report-history' ? 'active open' : '' }} ">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <img src="{{ asset('assets/img/icons/amountexpenses.png') }}" alt="slack" class="me-3"
                         height="20">
@@ -68,7 +68,7 @@
 
                     @can('expenses-history')
                         <li class="menu-item {{ \Request::route()->getName() == 'expenses-history' ? 'active open' : '' }}">
-                            <a href="{{ route('expenses-history') }}" class="menu-link">
+                            <a href="{{ route('expenses-history',['tab' => 1]) }}" class="menu-link">
                                 {{-- <img
                                     src="{{ asset('assets/img/icons/icons8-payment-history-30.png') }}" alt="slack"
                                     class="me-3" height="20"> --}}
@@ -97,7 +97,16 @@
                             </a>
                         </li>
                     @endcan
-
+                     @can('expenses-history')
+                        <li class="menu-item {{ \Request::route()->getName() == 'expenses-report-history' ? 'active open' : '' }}">
+                            <a href="{{ route('expenses-report-history') }}" class="menu-link">
+                                {{-- <img
+                                    src="{{ asset('assets/img/icons/icons8-payment-history-30.png') }}" alt="slack"
+                                    class="me-3" height="20"> --}}
+                                <div class="dark">Reports</div>
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
 
             </li>
