@@ -15,13 +15,14 @@ class ClientSummaryExport implements FromCollection, WithHeadings, WithMapping
 {
 
 
-    public function __construct($project_filter, $user_filter, $from, $to_date)
+    public function __construct($project_filter, $category, $from, $to,$search)
     {
 
-        $this->project_filter = $project_filter;
-        $this->user_filter = $user_filter;
+        $this->project_id = $project_filter;
+        $this->category = $category;
         $this->from = $from;
-        $this->to_date = $to_date;
+        $this->to = $to;
+        $this->search = $search;
 
     }
 
@@ -47,19 +48,42 @@ class ClientSummaryExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        $clients = ProjectDetails::join('wallet','wallet.project_id','=','project_details.id')->join('stage','stage.id','=','wallet.stage_id')->join('clientdetails','wallet.client_id','=','clientdetails.id')->join('payment','payment.id','=','wallet.payment_mode')->select('project_details.*','stage.name as stage_name','wallet.amount','payment.name as payment','wallet.current_date as currentdate','clientdetails.first_name','clientdetails.last_name');
-        if($this->from != '' && $this->to_date != ''){
-            $clients = $clients->whereBetween('wallet.current_date', [$this->from,$this->to_date]);
-        }
-        if($this->project_filter != 'undefined' && $this->project_filter != ''){
-            $clients = $clients->where('wallet.project_id',$this->project_filter);
-            //dd($clients);exit;
-          }
-          if($this->user_filter != 'undefined' && $this->user_filter != ''){
-            $clients = $clients->where('wallet.client_id',$this->user_filter);
-          }
-
-        $clients = $clients->get();
+        $clients = ProjectDetails::leftjoin('wallet', 'wallet.project_id', '=', 'project_details.id')
+      ->leftjoin('stage', 'stage.id', '=', 'wallet.stage_id')
+      ->leftjoin('clientdetails', 'wallet.client_id', '=', 'clientdetails.id')
+      ->leftjoin('payment', 'payment.id', '=', 'wallet.payment_mode')
+      ->select(
+        'project_details.*',
+        'stage.name as stage_name',
+        'wallet.amount',
+        'payment.name as payment',
+        'wallet.current_date as currentdate',
+        'clientdetails.first_name',
+        'clientdetails.last_name'
+      )
+      ->when($this->from, function ($query, $from) {
+        $query->whereDate('wallet.current_date', '>=', $from);
+      })
+      ->when($this->to, function ($query, $to) {
+        $query->whereDate('wallet.current_date', '<=', $to);
+      })
+      ->when($this->category, function ($query, $category_id) {
+        $query->where('wallet.client_id', $category_id);
+      })
+      ->when($this->project_id, function ($query, $project_id) {
+        $query->where('wallet.project_id', $project_id);
+      })
+      ->when($this->search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+          $q->where('clientdetails.first_name', 'like', "%$search%")
+            ->orWhere('clientdetails.last_name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('wallet.amount', 'like', "%$search%")
+            ->orWhere('project_details.total_amt', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search")
+            ->orWhere('stage.name', 'like', "%$search");
+        });
+      })->get();
 
 
         return collect($clients);

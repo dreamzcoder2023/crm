@@ -19,6 +19,7 @@ use App\Exports\ExportExpenses;
 use App\Exports\DeleteExpensesExport;
 use App\Exports\ReportExpensesHistory;
 use App\Models\Labour;
+use App\Models\MainCategory;
 use App\Models\Vendor;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -43,6 +44,7 @@ class ExpensesController extends Controller
     $auth = Auth::user()->id;
     $role =  Auth::user()->roles[0]['name'];
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+    ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -55,6 +57,9 @@ class ExpensesController extends Controller
       })
       ->when($to, function ($query, $to) {
         $query->whereDate('current_date', '<=', $to);
+      })
+      ->when(request('main_category_id'),function($query,$main_id){
+        $query->where('expenses.main_category_id',$main_id);
       })
       ->when(request('category_id'), function ($query, $category_id) {
         $query->where('expenses.category_id', $category_id);
@@ -76,7 +81,7 @@ class ExpensesController extends Controller
     }
     if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name','ve.name as vendor_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name','ve.name as vendor_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
@@ -90,12 +95,13 @@ class ExpensesController extends Controller
               ->orWhere('expenses.extra_amt', 'like', "%$search")
                ->orWhere('l.name','like',"%$search%")
               ->orWhere('ve.name','like',"%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('expenses.description', 'like', "%$search%");
           });
         });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','ve.name as vendor_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','ve.name as vendor_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
@@ -111,6 +117,7 @@ class ExpensesController extends Controller
               ->orWhere('expenses.extra_amt', 'like', "%$search")
                ->orWhere('l.name','like',"%$search%")
               ->orWhere('ve.name','like',"%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('expenses.description', 'like', "%$search%");
           });
         });
@@ -122,7 +129,7 @@ class ExpensesController extends Controller
     $expenses = $expenses->paginate($paginate)->withQueryString();
 
     // dd($expenses);
-
+    $maincategory = MainCategory::latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();
@@ -133,26 +140,29 @@ class ExpensesController extends Controller
     $advanced_amt = $expenses->sum('extra_amt');
     //dd($advanced_amt);
 
-    return view('expenses.index', ['expenses' => $expenses, 'category' => $category,  'project' => $project, 'user' => $user,  'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt, 'tab' => $tab]);
+    return view('expenses.index', ['expenses' => $expenses, 'category' => $category,  'project' => $project, 'user' => $user,  'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt, 'tab' => $tab,'maincategory' => $maincategory]);
     // return view('tab');
   }
 
   public function create(Request $request)
   {
+    $maincategory = MainCategory::latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
-    return view('expenses.create', ['category' => $category, 'project' => $project, 'payment' => $payment]);
+    return view('expenses.create', ['category' => $category, 'project' => $project, 'payment' => $payment,'maincategory' => $maincategory]);
   }
   /**
    * Store a newly created resource in storage.
    */
   public function store(Request $request)
   {
+  //  dd($request->all());
 
     $user_id = Auth::user()->id;
     $input = $request->all();
     $input['user_id'] = $user_id;
+    $input['main_category_id'] = $request->main_category_id;
     $extra_amt = 0;
     $unpaid_amt = 0;
     if ($request->amount < $request->paid_amt) {
@@ -182,13 +192,14 @@ class ExpensesController extends Controller
   public function edit(Request $request)
   {
     $expense = Expenses::join('users', 'users.id', '=', 'expenses.user_id')->where('expenses.id', '=', $request->id)->select('expenses.*', 'users.wallet')->first();
+    $maincategory = MainCategory::latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
     $datetime = explode(' ', $expense?->current_date);
     $current_date = $datetime[0];
     $current_time = $datetime[1];
-    return view('expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time]);
+    return view('expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time,'maincategory' => $maincategory]);
   }
   public function update(Request $request)
   {
@@ -354,13 +365,16 @@ class ExpensesController extends Controller
   }
   public function new_category(Request $request)
   {
+    $input['main_category_id'] = $request->main_id;
     $input['name'] = $request->name;
     $value = "";
     $cat = Category::where([
       'active_status' => 1,
       'delete_status' => 0,
-      'name' => $request->name
+      'name' => $request->name,
+      'main_category_id' => $request->main_id
     ])->first();
+    //dd($cat);
     if (!empty($cat)) {
       $value = false;
     } else {
@@ -385,6 +399,7 @@ class ExpensesController extends Controller
     $role =  Auth::user()->roles[0]['name'];
 
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+    ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -396,6 +411,9 @@ class ExpensesController extends Controller
       })
       ->when($to, function ($query, $to) {
         $query->whereDate('current_date', '<=', $to);
+      })
+      ->when(request('main_category_id'),function($query,$main_id){
+        $query->where('expenses.main_category_id',$main_id);
       })
       ->when(request('category_id'), function ($query, $category_id) {
         $query->where('expenses.category_id', $category_id);
@@ -410,11 +428,12 @@ class ExpensesController extends Controller
 
     if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -427,11 +446,12 @@ class ExpensesController extends Controller
         });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -455,7 +475,8 @@ class ExpensesController extends Controller
     $paid_amt = $expenses->sum('paid_amt');
     $unpaid_amt = $expenses->sum('unpaid_amt');
     $advanced_amt = $expenses->sum('extra_amt');
-    return view('expenses.recorddelete', ['expenses' => $expenses, 'category' => $category, 'project' => $project, 'user' => $user, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt]);
+    $maincategory = MainCategory::latest()->get();
+    return view('expenses.recorddelete', ['expenses' => $expenses, 'category' => $category, 'project' => $project, 'user' => $user, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt,'maincategory' => $maincategory]);
   }
   public function expense_export(Request $request)
   {
@@ -463,6 +484,7 @@ class ExpensesController extends Controller
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
     $search = $request->search;
+    $main_id = $request->main_id;
     $tab = $request->tab;
     $from = null;
     $to = null;
@@ -480,7 +502,7 @@ class ExpensesController extends Controller
     $auth = Auth::user()->id;
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
-    return Excel::download((new ExportExpenses($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search, $tab)), 'expenses.xlsx');
+    return Excel::download((new ExportExpenses($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search, $tab,$main_id)), 'expenses.xlsx');
   }
   public function expense_pdf(Request $request)
   {
@@ -507,6 +529,7 @@ class ExpensesController extends Controller
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+    ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -518,6 +541,9 @@ class ExpensesController extends Controller
       })
       ->when($to, function ($query, $to) {
         $query->whereDate('expenses.current_date', '<=', $to);
+      })
+      ->when(request('main_id'),function($query,$main_id){
+        $query->where('expenses.main_category_id',$main_id);
       })
       ->when(request('category_id'), function ($query, $category_id) {
         $query->where('expenses.category_id', $category_id);
@@ -539,7 +565,7 @@ class ExpensesController extends Controller
     }
     if ($role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
@@ -551,12 +577,13 @@ class ExpensesController extends Controller
               ->orWhere('expenses.paid_amt', 'like', "%$search")
               ->orWhere('expenses.unpaid_amt', 'like', "%$search")
               ->orWhere('expenses.extra_amt', 'like', "%$search")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('expenses.description', 'like', "%$search%");
           });
         });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
@@ -570,6 +597,7 @@ class ExpensesController extends Controller
               ->orWhere('expenses.paid_amt', 'like', "%$search")
               ->orWhere('expenses.unpaid_amt', 'like', "%$search")
               ->orWhere('expenses.extra_amt', 'like', "%$search")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('expenses.description', 'like', "%$search%");
           });
         });
@@ -603,6 +631,7 @@ class ExpensesController extends Controller
     $role =  Auth::user()->roles[0]['name'];
 
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+    ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -614,6 +643,9 @@ class ExpensesController extends Controller
       })
       ->when($to, function ($query, $to) {
         $query->whereDate('current_date', '<=', $to);
+      })
+       ->when(request('main_category_id'), function ($query, $main_id) {
+        $query->where('expenses.main_category_id', $main_id);
       })
       ->when(request('category_id'), function ($query, $category_id) {
         $query->where('expenses.category_id', $category_id);
@@ -628,11 +660,12 @@ class ExpensesController extends Controller
 
     if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -645,11 +678,12 @@ class ExpensesController extends Controller
         });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -676,6 +710,7 @@ class ExpensesController extends Controller
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
     $search = $request->search;
+    $main_category = $request->main_category;
     $from = null;
     $to = null;
 
@@ -693,7 +728,7 @@ class ExpensesController extends Controller
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
 
-    return Excel::download((new DeleteExpensesExport($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search)), 'delete-expenses.xlsx');
+    return Excel::download((new DeleteExpensesExport($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search,$main_category)), 'delete-expenses.xlsx');
   }
   public function expense_delete_all(Request $request)
   {
@@ -707,14 +742,16 @@ class ExpensesController extends Controller
         $labour['advance_amt'] = $labour->advance_amt - $expense->extra_amt;
         $labour->update();
       }
-      if (!empty($expense->vendor_id)) {
-        $vendor = Vendor::where('id', $expense->vendor_id)->first();
-        $vendor['advance_amt'] = $vendor->advance_amt - $expense->extra_amt;
-        $vendor->update();
-      }
+      if(empty($expense->vendor_id)){
       $wallet = User::where('id', $expense->user_id)->first();
       $wallet['wallet'] = $wallet->wallet + $expense->paid_amt;
       $wallet->update();
+      }
+      if (!empty($expense->vendor_id)) {
+        $vendor = Vendor::where('id', $expense->vendor_id)->first();
+        $vendor['advance_amt'] = $vendor->advance_amt + $expense->paid_amt;
+        $vendor->update();
+      }
       $expense->delete();
     }
     return response()->json($expense);
@@ -735,6 +772,7 @@ class ExpensesController extends Controller
     $auth = Auth::user()->id;
     $role =  Auth::user()->roles[0]['name'];
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+    ->leftjoin('main_category','main_category.id','expenses.main_category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -748,6 +786,9 @@ class ExpensesController extends Controller
       ->when($to, function ($query, $to) {
         $query->whereDate('current_date', '<=', $to);
       })
+      ->when(request('main_category_id'), function($query,$main_category){
+        $query->where('expenses.main_category_id',$main_category);
+      })
       ->when(request('category_id'), function ($query, $category_id) {
         $query->where('expenses.category_id', $category_id);
       })
@@ -760,11 +801,12 @@ class ExpensesController extends Controller
 
     if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name','ve.name as vendor_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name','ve.name as vendor_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -779,11 +821,12 @@ class ExpensesController extends Controller
         });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','ve.name as vendor_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','ve.name as vendor_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -806,7 +849,7 @@ class ExpensesController extends Controller
     $expenses = $expenses->paginate($paginate)->withQueryString();
 
     // dd($expenses);
-
+    $main_category = MainCategory::latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();
@@ -817,7 +860,7 @@ class ExpensesController extends Controller
     $advanced_amt = $expenses->sum('extra_amt');
     //dd($advanced_amt);
 
-    return view('expenses.report_history', ['expenses' => $expenses, 'category' => $category,  'project' => $project, 'user' => $user,  'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt, 'tab' => $tab]);
+    return view('expenses.report_history', ['expenses' => $expenses, 'category' => $category,  'project' => $project, 'user' => $user,  'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt, 'tab' => $tab,'main_category' => $main_category]);
     // return view('tab');
   }
    public function expense_report_export(Request $request)
@@ -826,6 +869,7 @@ class ExpensesController extends Controller
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
     $search = $request->search;
+    $main_category = $request->main_category_id;
     $tab = $request->tab;
     $from = null;
     $to = null;
@@ -843,7 +887,7 @@ class ExpensesController extends Controller
     $auth = Auth::user()->id;
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
-    return Excel::download((new ReportExpensesHistory($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search, $tab)), 'reporthistory.xlsx');
+    return Excel::download((new ReportExpensesHistory($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search, $tab,$main_category)), 'reporthistory.xlsx');
   }
   public function expense_report_pdf(Request $request)
   {
@@ -870,6 +914,7 @@ class ExpensesController extends Controller
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
 
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+    ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -884,6 +929,9 @@ class ExpensesController extends Controller
       ->when($to, function ($query, $to) {
         $query->whereDate('expenses.current_date', '<=', $to);
       })
+      ->when(request('main_category_id'),function($query,$main_id){
+        $query->where('expenses.main_category_id',$main_id);
+      })
       ->when(request('category_id'), function ($query, $category_id) {
         $query->where('expenses.category_id', $category_id);
       })
@@ -896,11 +944,12 @@ class ExpensesController extends Controller
 
     if ($role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name','ve.name as vendor_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','l.name as labour_name','ve.name as vendor_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -915,11 +964,12 @@ class ExpensesController extends Controller
         });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','ve.name as vendor_name')
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','l.name as labour_name','ve.name as vendor_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
             $q->where('category.name', 'like', "%$search%")
               ->orWhere('project_details.name', 'like', "%$search%")
+               ->orWhere('main_category.name','like',"%$search%")
               ->orWhere('payment.name', 'like', "%$search%")
               ->orWhere('users.first_name', 'like', "%$search%")
               ->orWhere('users.last_name', 'like', "%$search%")
@@ -947,5 +997,9 @@ class ExpensesController extends Controller
     $pdf = PDF::loadView('expenses.reporthistorypdf', compact('expenses'));
 
     return $pdf->download('reporthistory.pdf');
+  }
+  public function category(Request $request){
+    $category = Category::where(['main_category_id' => $request->main_id,'active_status' => 1, 'delete_status' => 0])->get();
+    return response()->json($category);
   }
 }

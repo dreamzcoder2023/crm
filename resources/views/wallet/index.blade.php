@@ -6,7 +6,11 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
 
 <style>
     @media only screen and (max-width:320px) {
@@ -43,6 +47,19 @@
     th {
         padding: 5px;
         /* Reduce cell padding */
+    }
+    
+    @media (max-width: 768px) {
+
+        #filter-section .col-md-3,
+        #filter-section .col-md-2,
+        #filter-section .col-md-1 {
+            margin-bottom: 10px;
+        }
+    }
+       .card {
+        margin-top: 30px;
+        padding: 15px;
     }
 </style>
 @section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
@@ -87,22 +104,73 @@ $(function() {
         <h4 class="fw-bold py-3 mb-4" style="margin-top: -55px;font-size:13px;">
             <span class="fw-light" style="color: black;">Wallet History </span>
         </h4>
-        <div class="row" style="position:absolute; top:180px; right:50px ">
-            <div class="col-md-12">
-                <!-- @can('transfer-create')
-        -->
-                    <!-- <ul class="nav nav-pills flex-column flex-md-row mb-3">
-              <li class="nav-item"><a class="nav-link active" href="{{ route('transfer-create') }}"><i class="bi bi-currency-exchange me-1"></i> Add Transfer</a></li>
-
-            </ul> -->
-                    <!--
-    @endcan -->
-            </div>
-        </div>
     </div>
 
+    <div class="card">
+        <div id="filter-section">
+            <div class="row">
+                <div class="col-md-1">
+                    <form id="submit-form">
+                        <label for="entries">Entities</label>
+                        <select id="entries" class="form-control" name="paginate" id="showing_result"
+                            onchange="submitform()">
+                            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
+                            <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
+                        </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="date_range">Date Range</label>
+                    <input type="text" id="date_range" name="date_range" class="form-control"
+                        value="{{ request('date_range') }}">
+                </div>
+              
+                    <div class="col-md-2">
+                        <label for="member">Client</label>
+                        <select id="client_id" name="client_id" class="form-control">
+                            <option value="">Select Client</option>
+                            @foreach ($clients as $member)
+                                <option value="{{ $member->id }}"
+                                    {{ request('client_id') == $member->id ? 'selected' : '' }}>{{ $member->first_name }}
+                                    {{ $member->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+               
+                <div class="col-md-2">
+                    <label for="member">Projects</label>
+                    <select id="project_id" name="project_id" class="form-control">
+                        <option value="">Select project</option>
+                        @foreach ($projects as $member)
+                            <option value="{{ $member->id }}"
+                                {{ request('project_id') == $member->id ? 'selected' : '' }}>{{ $member->name }}
+                                </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="search">Search</label>
+                    <input type="text" id="search" name="search" value="{{ request('search') }}"
+                        class="form-control">
+                </div>
+            </div>
+
+            <div class="mt-3 text-end">
+                <button class="btn btn-primary client_search" type="submit">
+                    <i class="bx bx-search"></i>
+                </button>
+                <a class="btn btn-danger" href="{{ route('wallet-history') }}">
+                    <i class="bx bx-x-circle"></i>
+                </a>
+            </div>
+            </form>
+        </div>
+    </div>
     <!-- Basic Bootstrap Table -->
-    <div class="card" style="max-width: 1200px; top:10px; height:550px">
+    <div class="card" >
         <!-- <h5 class="card-header">Table Basic</h5> -->
         <div class="table-responsive text-nowrap">
             <table class="table" id="transfer_listing_table">
@@ -122,7 +190,7 @@ $(function() {
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-
+                    @if(count($wallet) > 0)
                     @foreach ($wallet as $transfer)
                         <tr>
                             <td>{{ $loop->index + 1 }}</td>
@@ -133,16 +201,23 @@ $(function() {
                             <td>{{ $transfer->project_name }}</td>
                             <td>{{ $transfer->amount }}</td>
                             @if ($transfer->transfer_type == 0)
-                            <td><p style="color:green">Credited</p></td>@else
-                            <td><p style="color:red">Debited</p></td>@endif
+                            <td> <span style="padding: 5px 10px; background-color: #d4edda; color: #155724; border-radius: 5px;">Credited</span></td>
+                            @else
+                            <td><span style="padding: 5px 10px; background-color: #f8d7da; color: #721c24; border-radius: 5px;">Debited</span></td>
+                            @endif
                                 <td>{{ $transfer->payment_name }}</td>
                                 <td>{{ $transfer->description ? $transfer->description : '--' }}</td>
                                 <td>{{ $transfer->stage_name }}</td>
                         </tr>
                     @endforeach
-
+                    @else
+                    <tr><td colspan="7"><center>No data found.</center></td></tr>
+                    @endif
                 </tbody>
             </table>
+             <div class="paginatestyle mt-4">
+                {{ $wallet->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
     <!--/ Basic Bootstrap Table -->
@@ -178,63 +253,38 @@ $(function() {
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        $(document).ready(function() {
-            var data = new DataTable('#transfer_listing_table', {
-                "lengthMenu": [15, 50, 100],
-                processing: true,
+        function submitform() {
+            $('#submit-form').submit();
+        }
+        $(function() {
+            $('input[name="date_range"]').daterangepicker({
+                autoUpdateInput: false, // don't set default value
+                opens: 'left',
+                locale: {
+                    cancelLabel: 'Clear'
+                }
+            });
 
+            $('input[name="date_range"]').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format(
+                    'MM/DD/YYYY'));
+            });
+
+            $('input[name="date_range"]').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
             });
         });
-        $(document).ready(function() {
-            $('#unpaid-popup').modal('hide');
-            var user = [];
-            var from_date = [];
-            var end_date = [];
-
-
-            $('#user_id').change(function() {
-
-                user = $('#user_id').find(":selected").val();
-
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
-                console.log(user);
-                if (user != '') {
-                    reset_table(from_date, end_date, user);
-                }
-            });
-            $('#from_date').change(function() {
-
-                user = $('#user_id').find(":selected").val();
-
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
-                console.log(from_date);
-                if (from_date != '') {
-                    reset_table(from_date, end_date, user);
-                }
-            });
-            $('#to_date').change(function() {
-
-                user = $('#user_id').find(":selected").val();
-
-                from_date = $('#from_date').val();
-                end_date = $('#to_date').val();
-                console.log(end_date);
-                if (end_date != '') {
-                    reset_table(from_date, end_date, user);
-                }
-            });
-
-            function reset_table(from_date, to_date, user) {
-
-                from_date = from_date;
-                end_date = to_date;
-                var url = '{{ route('transfer-history') }}';
-                window.location.href = url + '?from_date=' + from_date + '&to_date=' + to_date + '&user_id=' + user;
-            }
-
+          $('#client_id').select2({
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
+        });
+        $('#project_id').select2({
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
         });
     </script>
 @endsection

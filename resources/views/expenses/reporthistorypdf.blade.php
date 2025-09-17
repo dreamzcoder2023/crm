@@ -19,6 +19,7 @@
         <tr>
           <th>ID</th>
           <th>Paid date</th>
+          <th style="width:30px">Main <br/> Category</th>
           <th style="width:30px">Category <br/> Name</th>
           <th style="width:30px">Project Name</th>
           <th style="width:30px">Labour Name</th>
@@ -46,6 +47,7 @@
        <tr>
         <td>{{ $loop->index+1}}</td>
         <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A')}}</td>
+         <td style="width:30px">{{$expense->main_category_name ? $expense->main_category_name : '--'}}</td>
         <td style="width:30px">{{$expense->category_name ? $expense->category_name : '--'}}</td>
         <td style="width:30px">{{$expense->project_name ? $expense->project_name : '--'}}</td>
         <td style="width:30px">{{$expense->labour_name ? $expense->labour_name : '--'}}</td>

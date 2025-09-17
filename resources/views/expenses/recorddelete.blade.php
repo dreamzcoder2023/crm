@@ -1,18 +1,16 @@
 @extends('layouts/contentNavbarLayout')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
     @media only screen and (max-width:320px) {
@@ -60,17 +58,58 @@
         padding: 5px;
         /* Reduce cell padding */
     }
-    @media (max-width: 768px) {
 
-#filter-section .col-md-3,
-#filter-section .col-md-2,
-#filter-section .col-md-1 {
-    margin-bottom: 10px;
+@keyframes dropdownFlipIn {
+    0% {
+        transform: perspective(400px) rotateX(-90deg); /* Only flip down */
+        opacity: 0;
+    }
+    100% {
+        transform: perspective(400px) rotateX(0deg);
+        opacity: 1;
+    }
 }
+.filter-dropdown {
+    max-height: 350px;
+    overflow-y: auto;
+    border-radius: 16px;
+    width: 360px;
+    padding: 20px;
+    display: none;
+    
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
 }
 
-#filter-section {
-padding: 5px !important;
+/* Apply only flip-in effect */
+.dropdown-menu.show.filter-dropdown {
+    display: block !important;
+    animation: dropdownFlipIn 0.4s ease both;
+    transform-origin: top;
+    position: absolute;
+    top:100% !important;
+}
+
+/* Close button styled in red */
+.btn-close {
+    background-color: rgba(220, 53, 69, 0.8);
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+
+/* Make labels bold */
+.filter-dropdown label {
+    font-weight: 600;
+}
+
+/* Small & neat buttons side by side */
+.filter-dropdown .btn {
+    padding: 4px 12px;
+    font-size: 0.85rem;
 }
 </style>
 @section('title', 'Expenses | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
@@ -99,71 +138,27 @@ padding: 5px !important;
             {{ session()->get('msg') }}
         </div>
     @endif
-    <div class="card" style="top:-12px;">
-        {{-- <div class="card-header">
-            <div class="container text-center">
-              <div style="float: right">
-                <a href="{{ route('expenses-delete_record') }}"><img
-                        src="{{ asset('assets/img/icons/clearfilter.png') }}"  style="height: 25px;width:25px;" alt="slack" class="me-3"
-                        height="40" width="40"></a>
-           <!-- Reduce the column size from 1 to 2 -->
-                <button type="button" class="btn btn-light" id="expense-export"
-                    ><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""> </button>
-            <!-- Reduce the column size from 1 to 2 -->
-                <button type="button" class="btn btn-light" id="expense-pdf"
-                    ><img src="{{ asset('assets/img/icons/file.png') }}"  style="height: 25px;width:25px;" alt=""></button>
-            </div>
-                <div class="row aa">
 
+         <div class="row g-2 mt-3">
+                <div class="col-md-12 text-end">
+                    <div class="d-flex justify-content-end flex-wrap gap-2" style="margin-right: 5px">
+         <div class="dropdown d-inline-block">
+                            <button class="btn btn-primary no-caret" type="button" data-bs-toggle="dropdown"
+                                data-bs-auto-close="false" aria-expanded="false" style="position: relative">
+                                Filter
+                            </button>
 
+                            <div class="dropdown-menu p-4 shadow filter-dropdown" id="filterDropdown"
+                                style="min-width: 380px;">
+                                <div class="d-flex justify-content-end mb-2">
+                                    <button type="button" class="btn btn-sm btn-danger" id="closeDropdownBtn">x</button>
 
-                    <div class="col-md-2">
-                        <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
-                            <option value="">Select category</option>
-                            @foreach ($category as $category)
-                                <option
-                                    value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
-                                    {{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                      <select class="form-group selectpicker" name="project_id" id="project_id"
-                            data-live-search="true">
-                            <option value="">Select Project</option>
-                            @foreach ($project as $project)
-                                <option value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
-                                    {{ $project->name }}</option>
-                            @endforeach
-                        </select></div>
-                    @role('Admin') <div class="col-md-2"><select class="form-group selectpicker" name="user_id"
-                                id="user_id" data-live-search="true">
-                                <option value="">Select Member</option>
-                                @foreach ($user as $user)
-                                    <option value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
-                                        {{ $user->first_name }} {{ $user->last_name }} -
-                                        {{ $user->name }}</option>
-                                @endforeach
-                        </select></div> @endrole
-                    <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
-                        <span> <label>From:&nbsp;</label>
-                            <input type="date" class="form-control bb" id="from_date" name="from_date"
-                                value="{{ $from_date }}" style="width: 144px;display:initial;"></span>
-                    </div>
-                    <div class="col-md-3"> <!-- Reduce the column size from 1 to 2 -->
-                        <label>To</label>
-                        <input type="date" class="form-control" id="to_date" name="to_date"
-                            value="{{ $to_date1 }}" style="width: 144px;display:initial;">
-                    </div>
-
-                </div>
-            </div>
-        </div> --}}
-        <form id="submit-form">
+                                </div>
+        <form method="get" id="filterForm" >
             <div id="filter-section">
                 <!-- First Row: Filters + Search -->
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-1">
+               
+                    <div class="mb-3">
                         <label for="entries">Entities</label>
                         <select id="entries" name="paginate" class="form-control" onchange="submitform()">
                             <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
@@ -172,8 +167,19 @@ padding: 5px !important;
                             <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
                         </select>
                     </div>
-
-                    <div class="col-md-2">
+               <div class="mb-3">
+                                        <label for="category_id">Main Category</label>
+                                        <select id="main_category_id" name="main_category_id" class="glass-select2 form-select">
+                                            <option value="">Select Category</option>
+                                            @foreach ($maincategory as $main)
+                                                <option value="{{ $main->id }}"
+                                                    {{ request('main_category_id') == $main->id ? 'selected' : '' }}>
+                                                    {{ $main->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                    <div class="mb-3">
                         <label for="category_id">Category</label>
                         <select id="category_id" name="category_id" class="glass-select2 form-control ">
                             <option value="">Select Category</option>
@@ -186,7 +192,7 @@ padding: 5px !important;
                     </div>
 
 
-                    <div class="col-md-2">
+                    <div class="mb-3">
                         <label for="project_id">Project</label>
                         <select id="project_id" name="project_id" class="form-control">
                             <option value="">Select Project</option>
@@ -198,7 +204,7 @@ padding: 5px !important;
                         </select>
                     </div>
                     @role('Admin')
-                        <div class="col-md-2">
+                        <div class="mb-3">
                             <label for="user_id">Member</label>
                             <select id="user_id" name="user_id" class="form-control">
                                 <option value="">Select Member</option>
@@ -211,42 +217,40 @@ padding: 5px !important;
                         </div>
                     @endrole
 
-                    <div class="col-md-3">
+                    <div class="mb-3">
                         <label for="date_range">Date Range</label>
                         <input type="text" id="date_range" name="date_range" class="form-control"
                             value="{{ request('date_range') }}">
                     </div>
-                    <div class="col-md-2">
+                    <div class="mb-3">
                         <label for="search">Search</label>
                         <input type="text" id="search" name="search" value="{{ request('search') }}"
                             class="form-control" placeholder="Search">
                     </div>
-                </div>
+             
 
                 <!-- Second Row: Buttons -->
-                <div class="row g-2 mt-3">
-                    <div class="col-md-12 text-end">
-                        <div class="d-flex justify-content-end flex-wrap gap-2">
-                            <button class="btn btn-primary client_search" type="submit">
-                                <i class="bx bx-search"></i>
-                            </button>
-                            <a class="btn btn-danger" href="{{ route('expenses-delete_record') }}">
-                                <i class="bx bx-x-circle"></i>
-                            </a>
-                            <button type="button" class="btn btn-success" id="expense-export">
+                  <div class="d-flex justify-content-end gap-2">
+                                        <a class="btn btn-danger btn-sm" href="{{ route('expenses-history') }}">Reset</a>
+                                        <button type="submit" class="btn btn-success btn-sm">Apply</button>
+                                    </div>
+            </div>
+        </form>
+                            </div>
+         </div>
+           <button type="button" class="btn btn-success" id="expense-export">
                                 <i class="bi bi-file-earmark-excel-fill"></i>
                             </button>
                             <button type="button" class="btn btn-danger" id="expense-pdf">
                                 <i class="bi bi-file-pdf"></i>
                             </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
     </div>
+                </div>
+         </div>
+   
+    
     <!-- Basic Bootstrap Table -->
-    <div class="card" style="max-width: 100%; top:-1px; height:547px">
+    <div class="card" style="max-width: 100%; top:5px; height:547px">
         <!-- <h5 class="card-header">Table Basic</h5> -->
         <div class="table-responsive text-nowrap" style="width: 99%;">
             <table class="table" id="expenses_listing_table">
@@ -254,6 +258,7 @@ padding: 5px !important;
                     <tr>
                         <th>ID</th>
                         <th>Paid date</th>
+                        <th>Main<br/> Category</th>
                         <th>Category <br /> Name</th>
                         <th>Project Name</th>
                         <th>Reason</th>
@@ -283,7 +288,7 @@ padding: 5px !important;
                             <td>{{ $loop->index + 1 }}</td>
                             <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}
                                 <br />{{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }} </td>
-
+                            <td>{{ $expense->main_category_name ?? '--' }}</td>
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
                             <td>{{ $expense->reason }}</td>
@@ -419,6 +424,25 @@ padding: 5px !important;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <script>
+            $(document).ready(function() {
+            // Close dropdown on "Apply"
+            $('#filterForm').on('submit', function() {
+                var dropdownToggle = $('[data-bs-toggle="dropdown"]');
+                var dropdown = bootstrap.Dropdown.getInstance(dropdownToggle[0]);
+                if (dropdown) {
+                    dropdown.hide();
+                }
+            });
+
+            // Close dropdown on custom close button
+            $('#closeDropdownBtn').on('click', function() {
+                var dropdownToggle = $('[data-bs-toggle="dropdown"]');
+                var dropdown = bootstrap.Dropdown.getInstance(dropdownToggle[0]);
+                if (dropdown) {
+                    dropdown.hide();
+                }
+            });
+        });
         function submitform() {
             $('#submit-form').submit();
         }
@@ -440,6 +464,11 @@ padding: 5px !important;
                 $(this).val('');
             });
         });
+         $('#main_category_id').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: '100%',
+    });
     $('#category_id').select2({
         placeholder: "Select",
         allowClear: true,
@@ -506,11 +535,12 @@ padding: 5px !important;
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
+            var main_category_id = $('#main_category_id').find(":selected").val();
 
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = "{{ route('deleteexpenses-export') }}";
-            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range +'&main_category_id='+main_category_id+ '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
         $('#expense-pdf').click(function() {
@@ -518,12 +548,43 @@ padding: 5px !important;
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
-
+            var main_category_id = $('#main_category_id').find(":selected").val();
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = "{{ route('deleteexpenses-pdf') }}";
-            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range +'&main_category_id='+main_category_id+ '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
+                document.querySelector('#closeDropdownBtn').addEventListener('click', function() {
+    const dropdown = document.querySelector('.filter-dropdown');
+    
+    dropdown.style.animation = 'dropdownFlipOut 0.4s ease forwards';
+    
+    // Wait for animation to finish before hiding
+    dropdown.addEventListener('animationend', function handler() {
+        dropdown.style.display = 'none';
+        dropdown.classList.remove('show');
+        dropdown.style.animation = ''; // Reset animation
+        dropdown.removeEventListener('animationend', handler);
+    });
+});
+   $('#main_category_id').change(function(){
+          var main_id = $(this).val();
+          $.ajax({
+            type: 'get',
+            url: "{{ route('expenses.category') }}",
+            data: {main_id:main_id},
+            dataType:'json',
+            success:function(response){
+              console.log(response);
+              $('#category_id').empty();
+              $('#category_id').append('<option value="">Select category</option>');
+              $.each(response, function (index, category) {
+                $('#category_id').append('<option value="'+category.id+'">'+category.name+'</option>');
+               // $('#category_id').append(option);
+            });
+            }
+          })
+        })
     </script>
 @endsection

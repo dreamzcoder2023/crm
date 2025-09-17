@@ -194,7 +194,7 @@ class VendorExpensesController extends Controller
   }
   public function update(Request $request)
   {
-    //dd($request->all());
+   // dd($request->all());
     $user_id = Auth::user()->id;
     $input = $request->all();
     //dd($input);
@@ -213,12 +213,6 @@ class VendorExpensesController extends Controller
 
       $input['image'] = $profileImage;
     }
-    // else{
-    //   if($request->image_status == '' && $request->image_status == null){}
-    //     unset($input['image']);
-
-    // }
-
     $expenses = Expenses::find($request->id);
 
     $extra_amt = $expenses->extra_amt;
@@ -226,7 +220,7 @@ class VendorExpensesController extends Controller
 
     if ($expenses->paid_amt < $request->paid_amt) {
 
-
+//dd('if');
       $project = Vendor::find($request->user_id);
 
       $minus1 = abs($request->paid_amt - $expenses->paid_amt);
@@ -234,12 +228,7 @@ class VendorExpensesController extends Controller
       $project['advance_amt'] = $minus;
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt + $minus1);
-      //    if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-      //     $extra_amt = abs($request->paid_amt - $request->amount);
-      //   }
-      //  if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-      //   $unpaid_amt = abs($request->amount - $request->paid_amt);
-      // }
+
       if ($request->amount < $request->paid_amt) {
         $extra_amt = abs($request->paid_amt - $request->amount);
         $unpaid_amt = 0;
@@ -249,7 +238,7 @@ class VendorExpensesController extends Controller
       }
     } else {
 
-
+// dd('else');
       $project = Vendor::find($request->user_id);
 
       $minus1 = abs($expenses->paid_amt - $request->paid_amt);
@@ -258,18 +247,6 @@ class VendorExpensesController extends Controller
 
       $project->update();
       $input['paid_amt'] = abs($expenses->paid_amt - $minus1);
-      //    if (($request->paid_amt != $expenses->paid_amt) && ($request->amount <= $request->paid_amt)) {
-      //     $extra_amt = abs($request->paid_amt - $request->amount);
-      //  }
-      //  if (($request->paid_amt != $expenses->paid_amt) && ($request->paid_amt < $request->amount)) {
-      //   $unpaid_amt = abs($request->amount - $request->paid_amt);
-      // }
-      // if (($request->amount != $expenses->amount) && ($request->amount <= $request->paid_amt)) {
-      //  $extra_amt = abs($request->paid_amt - $request->amount);
-      // }
-      // if (($request->amount != $expenses->amount) && ($request->paid_amt < $request->amount)) {
-      // $unpaid_amt = abs($request->amount - $request->paid_amt);
-      //}
 
       if ($request->amount < $request->paid_amt) {
         $extra_amt = abs($request->paid_amt - $request->amount);
@@ -283,34 +260,24 @@ class VendorExpensesController extends Controller
     $input['extra_amt'] = 0;
     $input['unpaid_amt'] =  $unpaid_amt;
 
-
-    // $labour = Vendor::find($request->vendor_id);
-    //      if($input['extra_amt'] <= $expenses->extra_amt){  
-    //       $amt_add = $expenses->extra_amt - $input['extra_amt'];
-    //   $labour['advance_amt'] = abs($labour->advance_amt - $amt_add);
-    //   }else{
-    //     $amt_add =  $input['extra_amt'] - $expenses->extra_amt;
-    //    $labour['advance_amt'] = abs($labour->advance_amt + $amt_add);
-    //    }
-    //   // print_r($labour);exit;
-    //   $labour->update();
     $expenses->update($input);
     return redirect()->route('vendor-expenses-index')
       ->with('expenses-popup', 'Vendor Detail Updated Successfully');
   }
   public function vendordelete(Request $request)
   {
+//    dd($request->all());
     $expense = Expenses::find($request->id);
     $expense['reason'] = $request->reason;
     $expense->update();
+   // dd($expense);
     if (!empty($expense->vendor_id)) {
+     // dd('if');
       $labour = Vendor::where('id', $expense->vendor_id)->first();
-      $labour['advance_amt'] = $labour->advance_amt - $expense->extra_amt;
+      $labour['advance_amt'] = $labour->advance_amt + $expense->paid_amt;
+   //   dd($labour);
       $labour->update();
     }
-    $wallet = User::find($request->user);
-    $wallet['wallet'] = $wallet->wallet + $expense->paid_amt;
-    $wallet->update();
     $expense->delete();
     return redirect()->route('vendor-expenses-index')
       ->with('expenses-popup', 'Vendor Detail Deleted Successfully');
@@ -993,15 +960,14 @@ class VendorExpensesController extends Controller
         $query->where('users.id', $member_id);
       });
 
-    if (Auth::user()->hasRole('Admin')) {
+  //  if (Auth::user()->hasRole('Admin')) {
       $vendor = $vendor->orderBy('transferdetails.id', 'DESC')
         ->paginate($paginate)->withQueryString();
-    } else {
-      $vendor = $vendor->where('transferdetails.is_vendor', 1)
-        ->where('user_id', Auth::user()->id)
-        ->orderBy('transferdetails.id', 'DESC')
-        ->paginate($paginate)->withQueryString();
-    }
+    // } else {
+    //   $vendor = $vendor->where('user_id', Auth::user()->id)
+    //     ->orderBy('transferdetails.id', 'DESC')
+    //     ->paginate($paginate)->withQueryString();
+    // }
     $sum = $vendor->sum('amount');
     $user_list = User::latest()->get();
     return view('vendor-expenses.vendorhistory', ['vendor' => $vendor, 'user_list' => $user_list, 'sum' => $sum, 'id' => $id]);

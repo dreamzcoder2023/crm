@@ -9,7 +9,8 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
     .table-responsive {
         overflow-y: auto !important;
@@ -122,7 +123,7 @@
     .tab-button {
         flex: 1;
         padding: 14px;
-        background: transparent;
+        background: #fff;
         border: none;
         cursor: pointer;
         display: flex;
@@ -158,205 +159,201 @@
         height: 18px;
         stroke: currentColor;
     }
+
+    /* Keyframes: Flip-fade effect */
+@keyframes dropdownFlipIn {
+    0% {
+        transform: perspective(400px) rotateX(-90deg); /* Only flip down */
+        opacity: 0;
+    }
+    100% {
+        transform: perspective(400px) rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+/* Glass-style dropdown with full-rounded corners and no horizontal animation */
+.filter-dropdown {
+    max-height: 350px;
+    overflow-y: auto;
+    border-radius: 16px;
+    width: 360px;
+    padding: 20px;
+    display: none;
+    
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+}
+
+/* Apply only flip-in effect */
+.dropdown-menu.show.filter-dropdown {
+    display: block !important;
+    animation: dropdownFlipIn 0.4s ease both;
+    transform-origin: top;
+    position: absolute;
+    top:100% !important;
+}
+
+/* Close button styled in red */
+.btn-close {
+    background-color: rgba(220, 53, 69, 0.8);
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+
+/* Make labels bold */
+.filter-dropdown label {
+    font-weight: 600;
+}
+
+/* Small & neat buttons side by side */
+.filter-dropdown .btn {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+}
+
 </style>
 
 @section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
 
-    @if (session()->has('expenses-popup'))
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-
-        <script>
-            $(function() {
-                toastr.success('{{ session('expenses-popup') }}', {
-                    timeOut: 1000,
-                    fadeOut: 1000,
-                });
-            });
-        </script>
-    @endif
-    @if (session()->has('message'))
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-
-        <script>
-            $(function() {
-                toastr.success('{{ session('message') }}', {
-                    timeOut: 1000,
-                    fadeOut: 1000,
-                });
-            });
-        </script>
-    @endif
-
-    @if (session()->has('msg'))
-        <script>
-            $(function() {
-                toastr.error('{{ session('msg') }}', {
-                    timeOut: 1000,
-                    fadeOut: 1000,
-                });
-            });
-        </script>
-    @endif
-
-    <div class="card" style="margin-top: -10px;">
-        {{-- <div class="card-header">
-            <div class="container justify-content-start">
-                <div class="row aa">
-                    <div class="col-md-2">
-                        <select class="form-group selectpicker" name="category_id" id="category_id" data-live-search="true">
-                            <option value="">Select category</option>
-                            @foreach ($category as $category)
-                                <option value="{{ $category->id }}"{{ $category->id == $category_filter ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <select class="form-group selectpicker" name="project_id" id="project_id" data-live-search="true">
-                            <option value="">Select Project</option>
-                            @foreach ($project as $project)
-                                <option value="{{ $project->id }}"{{ $project->id == $project_filter ? 'selected' : '' }}>
-                                    {{ $project->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    @role('Admin')
-                        <div class="col-md-2">
-                            <select class="form-group selectpicker" name="user_id" id="user_id" data-live-search="true">
-                                <option value="">Select Member</option>
-                                @foreach ($user as $user)
-                                    <option value="{{ $user->id }}"{{ $user->id == $user_filter ? 'selected' : '' }}>
-                                        {{ $user->first_name }} {{ $user->last_name }} - {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @endrole
-
-                    <div class="col-md-3">
-                        <span>
-                            <label>From:&nbsp;</label>
-                            <input type="date" class="form-control bb" id="from_date" name="from_date" value="{{ $from_date }}"
-                                style="width: 144px; display: initial;">
-                        </span>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label>To</label>
-                        <input type="date" class="form-control" id="to_date" name="to_date" value="{{ $to_date1 }}"
-                            style="width: 144px; display: initial;">
-                    </div>
-                  </div>
-                    <div style="float: right">
-                        <a href="{{ route('expenses-history') }}" class="me-3">
-                            <img src="{{ asset('assets/img/icons/clearfilter.png') }}" alt="clear filter" height="25" width="25">
-                        </a>
-                        <button type="button" class="btn btn-light" id="expense-export"
-                            style=" border-radius:6px;"><img src="{{ asset('assets/img/icons/excel.png') }}" style="height: 25px;width:25px;" alt=""></button>
-                        <button type="button" class="btn btn-light" id="expense-pdf"
-                            style=" border-radius:6px;"><img src="{{ asset('assets/img/icons/file.png') }}" style="height: 25px;width:25px;" alt=""></button>
-                    </div>
 
 
-            </div>
-        </div> --}}
+    <div class="" style="margin-top: -10px;">
         <form id="submit-form">
             <input type="hidden" name="tab" value="{{ request('tab') }}" id="tab">
-            <div id="filter-section">
-                <!-- First Row: Filters + Search -->
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-1">
-                        <label for="entries">Entities</label>
-                        <select id="entries" name="paginate" class="form-control" onchange="submitform()">
-                            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
-                            <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
 
-                    <div class="col-md-2">
-                        <label for="category_id">Category</label>
-                        <select id="category_id" name="category_id" class="glass-select2 form-control ">
-                            <option value="">Select Category</option>
-                            @foreach ($category as $category)
-                                <option value="{{ $category->id }}"
-                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+            <!-- Filter & Export Buttons -->
+            <div class="row g-2 mt-3">
+                <div class="col-md-12 text-end">
+                    <div class="d-flex justify-content-end flex-wrap gap-2" style="margin-right: 5px">
 
-
-                    <div class="col-md-2">
-                        <label for="project_id">Project</label>
-                        <select id="project_id" name="project_id" class="form-control">
-                            <option value="">Select Project</option>
-                            @foreach ($project as $project)
-                                <option value="{{ $project->id }}"
-                                    {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @role('Admin')
-                        <div class="col-md-2">
-                            <label for="user_id">Member</label>
-                            <select id="user_id" name="user_id" class="form-control">
-                                <option value="">Select Member</option>
-                                @foreach ($user as $member)
-                                    <option value="{{ $member->id }}"
-                                        {{ request('user_id') == $member->id ? 'selected' : '' }}>{{ $member->first_name }}
-                                        {{ $member->last_name }} - {{ $member->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @endrole
-
-                    <div class="col-md-3">
-                        <label for="date_range">Date Range</label>
-                        <input type="text" id="date_range" name="date_range" class="form-control"
-                            value="{{ request('date_range') }}">
-                    </div>
-                    <div class="col-md-2">
-                        <label for="search">Search</label>
-                        <input type="text" id="search" name="search" value="{{ request('search') }}"
-                            class="form-control" placeholder="Search">
-                    </div>
-                </div>
-
-                <!-- Second Row: Buttons -->
-                <div class="row g-2 mt-3">
-                    <div class="col-md-12 text-end">
-                        <div class="d-flex justify-content-end flex-wrap gap-2">
-                            <button class="btn btn-primary client_search" type="submit">
-                                <i class="bx bx-search"></i>
+                        <!-- Filter Dropdown -->
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-primary no-caret" type="button" data-bs-toggle="dropdown"
+                                data-bs-auto-close="false" aria-expanded="false" style="position: relative">
+                                Filter
                             </button>
-                            <a class="btn btn-danger" href="{{ route('expenses-history') }}">
-                                <i class="bx bx-x-circle"></i>
-                            </a>
-                            @if(request('tab') == 1 || $tab == 1)
+
+                            <div class="dropdown-menu p-4 shadow filter-dropdown" id="filterDropdown"
+                                style="min-width: 380px;">
+                                <div class="d-flex justify-content-end mb-2">
+                                    <button type="button" class="btn btn-sm btn-danger" id="closeDropdownBtn">x</button>
+
+                                </div>
+
+                                <form method="GET" id="filterForm">
+                                    <input type="hidden" name="tab" value="{{ request('tab') }}">
+
+                                    <div class="mb-3">
+                                        <label for="entries" class="form-label">Entities</label>
+                                        <select id="entries" name="paginate" class="form-select">
+                                            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10
+                                            </option>
+                                            <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25
+                                            </option>
+                                            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50
+                                            </option>
+                                            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100
+                                            </option>
+                                        </select>
+                                    </div>
+                                      <div class="mb-3">
+                                        <label for="category_id" class="form-label">Main Category</label>
+                                        <select id="main_category_id" name="main_category_id" class="glass-select2 form-select">
+                                            <option value="">Select Category</option>
+                                            @foreach ($maincategory as $main)
+                                                <option value="{{ $main->id }}"
+                                                    {{ request('main_category_id') == $main->id ? 'selected' : '' }}>
+                                                    {{ $main->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category_id" class="form-label">Category</label>
+                                        <select id="category_id" name="category_id" class="glass-select2 form-select">
+                                            <option value="">Select Category</option>
+                                            @foreach ($category as $category)
+                                                <option value="{{ $category->id }}"
+                                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                                    {{ $category->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="project_id" class="form-label">Project</label>
+                                        <select id="project_id" name="project_id" class="form-select">
+                                            <option value="">Select Project</option>
+                                            @foreach ($project as $project)
+                                                <option value="{{ $project->id }}"
+                                                    {{ request('project_id') == $project->id ? 'selected' : '' }}>
+                                                    {{ $project->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    @role('Admin')
+                                        <div class="mb-3">
+                                            <label for="user_id" class="form-label">Member</label>
+                                            <select id="user_id" name="user_id" class="form-select">
+                                                <option value="">Select Member</option>
+                                                @foreach ($user as $member)
+                                                    <option value="{{ $member->id }}"
+                                                        {{ request('user_id') == $member->id ? 'selected' : '' }}>
+                                                        {{ $member->first_name }} {{ $member->last_name }} -
+                                                        {{ $member->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endrole
+
+                                    <div class="mb-3">
+                                        <label for="date_range" class="form-label">Date Range</label>
+                                        <input type="text" id="date_range" name="date_range" class="form-control"
+                                            value="{{ request('date_range') }}">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="search" class="form-label">Search</label>
+                                        <input type="text" id="search" name="search" class="form-control"
+                                            placeholder="Search" value="{{ request('search') }}">
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a class="btn btn-danger btn-sm" href="{{ route('expenses-history') }}">Reset</a>
+                                        <button type="submit" class="btn btn-success btn-sm">Apply</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Export Buttons -->
+                        @if (request('tab') == 1 || $tab == 1)
+                       
                             <button type="button" class="btn btn-success" id="expense-export">
                                 <i class="bi bi-file-earmark-excel-fill"></i>
                             </button>
                             <button type="button" class="btn btn-danger" id="expense-pdf">
                                 <i class="bi bi-file-pdf"></i>
                             </button>
-                            @endif
-                        </div>
+                      
+                        @endif
                     </div>
                 </div>
             </div>
         </form>
     </div>
+
 
 
     <!-- Basic Bootstrap Table -->
@@ -366,8 +363,8 @@
             <a href="{{ route('expenses-history', ['tab' => '1']) }}" class="tab-button {{ $tab == 1 ? 'active' : '' }}"
                 data-tab="other-expenses">
                 <!-- Feather Icon: File Text -->
-                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    viewBox="0 0 24 24" height="20" width="20">
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" viewBox="0 0 24 24" height="20" width="20">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -416,13 +413,14 @@
                                             class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
                             @endcan
                             <th>Paid date</th>
+                            <th>Main<br /> Category</th>
                             <th>Category <br /> Name</th>
                             <th>Project Name</th>
-                            @if(request('tab') == 2 || $tab == 2)
-                            <th>Labour Name</th>
+                            @if (request('tab') == 2 || $tab == 2)
+                                <th>Labour Name</th>
                             @endif
-                             @if(request('tab') == 3 || $tab == 3)
-                            <th>Vendor Name</th>
+                            @if (request('tab') == 3 || $tab == 3)
+                                <th>Vendor Name</th>
                             @endif
                             <th>Amount</th>
                             <th>Paid</th>
@@ -454,15 +452,16 @@
                                     @endcan
                                     <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br />
                                         {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
+                                    <td>{{ $expense->main_category_name ? $expense->main_category_name : '--' }}</td>
 
                                     <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                                     <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
-                                      @if(request('tab') == 2 || $tab == 2)
-                            <td>{{ $expense->labour_name ? $expense->labour_name : '--' }}</td>
-                            @endif
-                             @if(request('tab') == 3 || $tab == 3)
-                            <td>{{ $expense->vendor_name ? $expense->vendor_name : '--' }}</td>
-                            @endif
+                                    @if (request('tab') == 2 || $tab == 2)
+                                        <td>{{ $expense->labour_name ? $expense->labour_name : '--' }}</td>
+                                    @endif
+                                    @if (request('tab') == 3 || $tab == 3)
+                                        <td>{{ $expense->vendor_name ? $expense->vendor_name : '--' }}</td>
+                                    @endif
                                     <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
                                     <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
                                     <td>
@@ -653,22 +652,22 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-    function toggleDesc(link) {
-        const td = link.parentElement;
-        const short = td.querySelector('.desc');
-        const full = td.querySelector('.full-desc');
+        function toggleDesc(link) {
+            const td = link.parentElement;
+            const short = td.querySelector('.desc');
+            const full = td.querySelector('.full-desc');
 
-        if (short.style.display === 'none') {
-            short.style.display = 'inline';
-            full.style.display = 'none';
-            link.textContent = 'Show more';
-        } else {
-            short.style.display = 'none';
-            full.style.display = 'inline';
-            link.textContent = 'Show less';
+            if (short.style.display === 'none') {
+                short.style.display = 'inline';
+                full.style.display = 'none';
+                link.textContent = 'Show more';
+            } else {
+                short.style.display = 'none';
+                full.style.display = 'inline';
+                link.textContent = 'Show less';
+            }
         }
-    }
-</script>
+    </script>
     <script>
         const buttons = document.querySelectorAll('.tab-button');
         const contents = document.querySelectorAll('.tab-content');
@@ -712,6 +711,11 @@
             width: '100%',
         });
         $('#project_id').select2({
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
+        });
+         $('#main_category_id').select2({
             placeholder: "Select",
             allowClear: true,
             width: '100%',
@@ -776,26 +780,26 @@
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
-
+            var main_id = $('#main_category_id').find(":selected").val();
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var tab = $("#tab").val();
             var url = '{{ route('expenses-export') }}';
-            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user + '&tab=' +tab;
+            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&main_id='+main_id+'&category_id=' +
+                category + '&project_id=' + project + '&user_id=' + user + '&tab=' + tab;
         });
         $('#expense-pdf').click(function() {
             console.log('test1');
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
-
+            var main_id = $('#main_category_id').find(":selected").val();
             var date_range = $('#date_range').val();
             var search = $('#search').val();
-             var tab = $("#tab").val();
+            var tab = $("#tab").val();
             var url = '{{ route('expenses-pdf') }}';
-            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
-                category + '&project_id=' + project + '&user_id=' + user + '&tab=' +tab;
+            window.location.href = url + '?date_range=' + date_range + '&search=' + search +'&main_id='+main_id+ '&category_id=' +
+                category + '&project_id=' + project + '&user_id=' + user + '&tab=' + tab;
         });
         $('.expense_id').on('click', function() {
             if ($(this).is(':checked')) {
@@ -843,4 +847,44 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            // Close dropdown on "Apply"
+            $('#filterForm').on('submit', function() {
+                var dropdownToggle = $('[data-bs-toggle="dropdown"]');
+                var dropdown = bootstrap.Dropdown.getInstance(dropdownToggle[0]);
+                if (dropdown) {
+                    dropdown.hide();
+                }
+            });
+
+            // Close dropdown on custom close button
+            $('#closeDropdownBtn').on('click', function() {
+                var dropdownToggle = $('[data-bs-toggle="dropdown"]');
+                var dropdown = bootstrap.Dropdown.getInstance(dropdownToggle[0]);
+                if (dropdown) {
+                    dropdown.hide();
+                }
+            });
+        });
+              $('#main_category_id').change(function(){
+          var main_id = $(this).val();
+          $.ajax({
+            type: 'get',
+            url: "{{ route('expenses.category') }}",
+            data: {main_id:main_id},
+            dataType:'json',
+            success:function(response){
+              console.log(response);
+              $('#category_id').empty();
+              $('#category_id').append('<option value="">Select category</option>');
+              $.each(response, function (index, category) {
+                $('#category_id').append('<option value="'+category.id+'">'+category.name+'</option>');
+               // $('#category_id').append(option);
+            });
+            }
+          })
+        })
+    </script>
+
 @endsection

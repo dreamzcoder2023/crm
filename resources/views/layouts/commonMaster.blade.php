@@ -13,7 +13,7 @@
   <!-- laravel CRUD token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
- 
+
    <!-- Canonical SEO -->
   <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -132,10 +132,13 @@
     .layout-navbar{
       z-index: 100 !important;
     }
+    /* .card{
+      overflow:  hidden !important;
+    } */
   </style>
 </head>
 
-<body>
+<body style="background-color:#f5f5f5">
 
   <!-- @guest
                                     @if (Route::has('login'))
@@ -216,19 +219,7 @@
 
 </script>
 @endif
-@if (session()->has('message'))
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"
-    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
-<script>
-    $(function() {
-        toastr.success('{{ session('message') }}', {
-            timeOut: 1000,
-            fadeOut: 1000,
-        });
-    });
-</script>
-@endif
   <script>
     document.getElementById('image-input').addEventListener('change', function(event) {
     //  alert('hi');

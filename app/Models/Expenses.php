@@ -10,6 +10,6 @@ class Expenses extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $table = 'expenses';
-    protected $fillable = ['id','amount','category_id','project_id','user_id','current_date','paid_amt','unpaid_amt','image','payment_mode','description','editedBy','extra_amt','reason','labour_id','vendor_id'];
+    protected $fillable = ['id','amount','category_id','project_id','user_id','current_date','paid_amt','unpaid_amt','image','payment_mode','description','editedBy','extra_amt','reason','labour_id','vendor_id','main_category_id'];
 }
 ?>

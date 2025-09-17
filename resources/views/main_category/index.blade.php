@@ -52,41 +52,17 @@
     }
 </style>
 @section('content')
-@if (session()->has('message'))
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"
-    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
-<script>
-    $(function() {
-        toastr.success('{{ session('message') }}', {
-            timeOut: 1000,
-            fadeOut: 1000,
-        });
-    });
-</script>
-@endif
-
-    @if (session()->has('msg'))
-
-<script>
-    $(function() {
-        toastr.error('{{ session('msg') }}', {
-            timeOut: 1000,
-            fadeOut: 1000,
-        });
-    });
-</script>
-    @endif
     <div style="margin-top: 30px;">
         <h4 class="fw-bold py-3 mb-4" style="margin-top:-49px;font-size:16px;color:black">
-            <span class="fw-light">Category</span>
+            <span class="fw-light">Main Category</span>
         </h4>
         <div class="row" style="position:absolute; top:90px; right:50px ">
             <div class="col-md-12">
-                @can('category-create')
+                @can('maincategory-create')
                     <ul class="nav nav-pills flex-column flex-md-row mb-3">
-                        <li class="nav-item"><a class="nav-link active" href="{{ route('category-create') }}"><i
-                                    class="bx bxs-category me-1"></i> Add Category</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="{{ route('maincategory.create') }}"><i
+                                    class="bx bxs-category me-1"></i> Add Main Category</a></li>
 
                     </ul>
                 @endcan
@@ -98,7 +74,7 @@
         <!-- <h5 class="card-header">Table Basic</h5> -->
         <form id="submit-form">
             <div class="d-flex justify-content-between align-items-center m-2">
-        
+
                 <div class="d-flex justify-content-center align-items-center">
                     <span class="me-2">Showing:</span>
                     <select class="form-control me-2" style="width:50%" name="paginate" id="showing_result"
@@ -107,23 +83,23 @@
                         <option value="50" {{ request('paginate') == 50 ? 'selected' : '' }}>50</option>
                         <option value="100" {{ request('paginate') == 100 ? 'selected' : '' }}>100</option>
                     </select>
-        
+
                 </div>
                 <div class="d-flex justify-content-center align-items-center">
                     {{-- <form method="post" action="{{ route('roles.index') }}" class="d-flex align-items-center">  --}}
                     <span class="me-2">Search:</span>
                     <input type="text" name="search" id="search" value="{{ request('search') }}"
                         class="form-control me-2" style="width: 200px;">
-        
+
                     <button class="btn btn-primary me-2 client_search" type="submit">
                         <i class="bx bx-search" style="font-size: 18px;"></i>
                     </button>
-                    <a class="btn btn-danger" href="{{ route('category-index') }}">
+                    <a class="btn btn-danger" href="{{ route('maincategory.index') }}">
                         <i class="bx bx-x-circle" style="font-size: 18px;"></i>
                     </a>
                     {{-- </form> --}}
                 </div>
-        
+
             </div>
         </form>
         <div class="table-responsive text-nowrap" style="width: 99%;">
@@ -131,9 +107,8 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Main Category</th>
                         <th>Name</th>
-                        @canany(['category-edit', 'category-delete'])
+                        @canany(['maincategory-edit', 'maincategory-delete'])
                             <th>Action</th>
                         @endcanany
                     </tr>
@@ -141,26 +116,30 @@
                 <tbody class="table-border-bottom-0">
                     @if(count($categorys) > 0)
                     @foreach ($categorys as $category)
-                
                         <tr>
                             <td>{{ $loop->index + 1 }}</td>
-                            <td>{{ $category?->maincategory?->name }}</td>
                             <td>{{ $category->name }}</td>
-                            @canany(['category-edit', 'category-delete'])
+                            @canany(['maincategory-edit', 'maincategory-delete'])
                                 <td>
-                                  @if($category->name != "salary")
-                                    @can(['category-edit'])
-                                        <a class="" href="{{ route('category-edit', $category->id) }}"><i class="bi bi-pencil-square"
+
+                                    @can(['maincategory-edit'])
+                                        <a class="" href="{{ route('maincategory.edit', $category->id) }}"><i class="bi bi-pencil-square"
                                                 style="font-size:24px;color:green"></i></a>
                                     @endcan
-                                    @can('category-delete')
-                                        @if (!in_array($category->id, $categorynot))
+                                    @can('maincategory-delete')
+                                        @if ($category->category->count() == 0)
+                                       
                                             <a data-toggle="modal" href="javascript:void(0)" data-id="{{ $category->id }}"
                                                 class="deleteCategory"><i class="bi bi-trash"
                                                     style="font-size:24px; color:red"></i> </a><br />
+                                                
                                         @endif
+                                        <form id="delete-form" method="POST" >
+                                          @csrf
+                                          @method('DELETE')
+                                        </form>
                                     @endcan
-                                    @endif
+
                                 </td>
                             @endcanany
                         </tr>
@@ -233,9 +212,8 @@
             $('.yes-delete').click(function() {
                 console.log('categoryid', categoryid);
                 $("#myModal").modal('hide');
-                var url = '{{ route('category-delete', ':id') }}';
-                url1 = url.replace(':id', categoryid);
-                window.location.href = url1;
+                $('#delete-form').attr('action', '{{ route("maincategory.destroy", ":id") }}'.replace(':id', categoryid));
+                $('#delete-form').submit();
             });
         });
     </script>

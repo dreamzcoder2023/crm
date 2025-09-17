@@ -409,7 +409,7 @@ try {
 
         <!-- Transactions -->
         <div class="col-md-6 col-lg-4 order-2 mb-4">
-            <div class="card  incc" style="height:300px;overflow:auto;">
+            <div class="card  incc" style="height:300px !important;overflow:auto;">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5 class="card-title m-0 me-2" style="color:black">Recent Transactions</h5>
                     <div class="dropdown">
@@ -454,6 +454,55 @@ try {
                 </div>
             </div>
         </div>
+         <div class="col-md-6 col-lg-4 order-2 mb-4">
+            <div class="card  incc" style="height:300px !important;overflow:auto;">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="card-title m-0 me-2" style="color:black">Total Transactions</h5>
+                    <div class="dropdown">
+                        <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <i class="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                            <a class="dropdown-item" href="{{ route('transfer-history') }}">View more</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="p-0 m-0">
+                        @foreach ($transfer_history as $transfer)
+                            <li class="d-flex mb-4 pb-1">
+
+                                <div class="avatar flex-shrink-0 me-3">
+
+                                    <img src="{{ asset('assets/img/icons/unicons/member.png') }}" alt="User"
+                                        class="rounded">
+                                </div>
+                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+
+                                    <div class="me-2">
+                                        <h6 class="mb-0">{{ $transfer?->first_name }}</h6>
+                                        <small class="text-muted d-block mb-1">{{ $transfer?->last_name }}</small>
+
+                                    </div>
+                                    <div class="user-progress d-flex align-items-center gap-1">
+                                        <h6 class="mb-0">
+                                            {{ $transfer->total_amount }}
+                                        </h6>
+                                        <span class="text-muted">Rupees</span>
+                                    </div>
+                                </div>
+
+                            </li>
+                        @endforeach
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    <div class="row" style="margin:10px; padding:10px;">
         <div class="col-md-6 col-lg-4 order-3 mb-4">
             <div class="card incc over">
                 <div class="card-header">
@@ -537,51 +586,4 @@ try {
             </div>
         </div>
     </div>
-    <div class="row" style="margin:10px; padding:10px;">
-        <div class="col-md-6 col-lg-4 order-2 mb-4">
-            <div class="card  incc" style="height:300px;overflow:auto;">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="card-title m-0 me-2" style="color:black">Total Transactions</h5>
-                    <div class="dropdown">
-                        <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
-                            <a class="dropdown-item" href="{{ route('transfer-history') }}">View more</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <ul class="p-0 m-0">
-                        @foreach ($transfer_history as $transfer)
-                            <li class="d-flex mb-4 pb-1">
-
-                                <div class="avatar flex-shrink-0 me-3">
-
-                                    <img src="{{ asset('assets/img/icons/unicons/member.png') }}" alt="User"
-                                        class="rounded">
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-
-                                    <div class="me-2">
-                                        <h6 class="mb-0">{{ $transfer?->first_name }}</h6>
-                                        <small class="text-muted d-block mb-1">{{ $transfer?->last_name }}</small>
-
-                                    </div>
-                                    <div class="user-progress d-flex align-items-center gap-1">
-                                        <h6 class="mb-0">
-                                            {{ $transfer->total_amount }}
-                                        </h6>
-                                        <span class="text-muted">Rupees</span>
-                                    </div>
-                                </div>
-
-                            </li>
-                        @endforeach
-
-                    </ul>
-                </div>
-            </div>
-        </div>
     @endsection

@@ -19,6 +19,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LabourController;
 use App\Http\Controllers\LabourExpensesController;
 use App\Http\Controllers\LabourRoleController;
+use App\Http\Controllers\MainCategoryController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VendorExpensesController;
 
@@ -159,6 +160,7 @@ Route::get('/expense-delete-all',[ExpensesController::class,'expense_delete_all'
 Route::get('/expense-report',[ExpensesController::class,'reports_history'])->name('expenses-report-history');
 Route::get('/expenses-report-export',[ExpensesController::class,'expense_report_export'])->name('expenses-report-export');
 Route::get('/expenses-report-pdf',[ExpensesController::class,'expense_report_pdf'])->name('expenses-report-pdf');
+Route::get('/expenses/getcategory',[ExpensesController::class,'category'])->name('expenses.category');
 // expenses ended
 // unpaidexpenses start
 Route::get('/unpaid-history',[UnpaidExpensesController::class,'index'])->name('unpaid-history');
@@ -259,7 +261,7 @@ Route::post('vendor/withdraw/save',[VendorExpensesController::class,'withdraw_sa
 Route::get('userdetails',[TransferController::class,'userDetail'])->name('transfer.userdetail');
 Route::get('vendor-insufficent',[VendorExpensesController::class,'vendor_insufficant'])->name('vendor-insufficent');
 Route::get('/vendorhistory/{id}',[VendorExpensesController::class,'vendor_history'])->name('vendor.vendor-history');
-
+Route::resource('maincategory',MainCategoryController::class);
 //vendor ended
 });
 

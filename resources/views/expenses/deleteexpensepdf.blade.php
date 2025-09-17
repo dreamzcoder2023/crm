@@ -14,6 +14,7 @@ table, th, td {
         <tr>
           <th>ID</th>
           <th>Paid date</th>
+          <th>Main Category</th>
           <th>Category Name</th>
           <th>Project Name</th>
           <th>Reason</th>
@@ -40,6 +41,7 @@ table, th, td {
        <tr>
         <td>{{ $loop->index+1}}</td>
         <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A')}}</td>
+        <td>{{ $expense->main_category_name?? '--' }}</td>
         <td>{{$expense->category_name ? $expense->category_name : '--'}}</td>
         <td>{{$expense->project_name ? $expense->project_name : '--'}}</td>
         <td>{{$expense->reason}}</td>

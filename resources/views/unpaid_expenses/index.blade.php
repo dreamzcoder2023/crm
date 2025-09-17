@@ -1,17 +1,16 @@
 @extends('layouts/contentNavbarLayout')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
     @media only screen and (max-width:320px) {
@@ -74,6 +73,76 @@
     #filter-section {
         padding: 5px !important;
     }
+
+    /* Keyframes: Flip-fade effect */
+    @keyframes dropdownFlipIn {
+        0% {
+            transform: perspective(400px) rotateX(-90deg);
+            /* Only flip down */
+            opacity: 0;
+        }
+
+        100% {
+            transform: perspective(400px) rotateX(0deg);
+            opacity: 1;
+        }
+    }
+@keyframes dropdownFlipOut {
+    0% {
+        transform: perspective(400px) rotateX(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: perspective(400px) rotateX(-90deg);
+        opacity: 0;
+    }
+}
+
+    /* Glass-style dropdown with full-rounded corners and no horizontal animation */
+    .filter-dropdown {
+        max-height: 350px;
+        overflow-y: auto;
+
+        width: 360px;
+        padding: 20px;
+        display: none;
+
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(0.5px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+
+    }
+
+    /* Apply only flip-in effect */
+    .dropdown-menu.show.filter-dropdown {
+        display: block !important;
+        animation: dropdownFlipIn 0.4s ease both;
+        transform-origin: top;
+        top: 100% !important;
+        position: absolute;
+        border-radius: 10px;
+    }
+
+    /* Close button styled in red */
+    .btn-close {
+        background-color: rgba(220, 53, 69, 0.8);
+        border-radius: 50%;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        opacity: 1;
+    }
+
+    /* Make labels bold */
+    .filter-dropdown label {
+        font-weight: 600;
+    }
+
+    /* Small & neat buttons side by side */
+    .filter-dropdown .btn {
+        padding: 4px 12px;
+        font-size: 0.85rem;
+    }
 </style>
 
 
@@ -120,124 +189,140 @@
             <span class="fw-light" style="color: black;font-size:16px;">Unpaid Expenses History </span>
 
         </h4>
+    </div>
 
-        <div class="row" style="position:absolute;  right:50px ">
-            <div class="col-md-12">
+        <div class="row g-2 mb-3">
+            <div class="col-md-12 text-end">
+                <div class="d-flex justify-content-end flex-wrap gap-2" style="margin-right: 5px">
 
-                <!-- @can('transfer-create')
-        -->
-                    <!-- <ul class="nav nav-pills flex-column flex-md-row mb-3">
-              <li class="nav-item"><a class="nav-link active" href="{{ route('transfer-create') }}"><i class="bi bi-currency-exchange me-1"></i> Add Transfer</a></li>
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-primary no-caret" type="button" data-bs-toggle="dropdown"
+                            data-bs-auto-close="false" aria-expanded="false" style="position: relative">
+                            Filter
+                        </button>
 
-            </ul> -->
-                    <!--
-    @endcan -->
+                        <div class="dropdown-menu p-4 shadow filter-dropdown" id="filterDropdown" style="min-width: 380px;">
+                            <div class="d-flex justify-content-end mb-2">
+                                <button type="button" class="btn btn-sm btn-danger" id="closeDropdownBtn">x</button>
+
+                            </div>
+
+                            <form method="GET" id="filterForm">
+
+
+                                <div class="mb-3">
+                                    <label for="entries" class="form-label">Entities</label>
+                                    <select id="entries" name="paginate" class="form-select">
+                                        <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10
+                                        </option>
+                                        <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25
+                                        </option>
+                                        <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50
+                                        </option>
+                                        <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category_id" class="form-label">Main Category</label>
+                                    <select id="main_category_id" name="main_category_id" class="glass-select2 form-select">
+                                        <option value="">Select Category</option>
+                                        @foreach ($maincategory as $main)
+                                            <option value="{{ $main->id }}"
+                                                {{ request('main_category_id') == $main->id ? 'selected' : '' }}>
+                                                {{ $main->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category_id" class="form-label">Category</label>
+                                    <select id="category_id" name="category_id" class="glass-select2 form-select">
+                                        <option value="">Select Category</option>
+                                        @foreach ($category as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="project_id" class="form-label">Project</label>
+                                    <select id="project_id" name="project_id" class="form-select">
+                                        <option value="">Select Project</option>
+                                        @foreach ($project as $project)
+                                            <option value="{{ $project->id }}"
+                                                {{ request('project_id') == $project->id ? 'selected' : '' }}>
+                                                {{ $project->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                @role('Admin')
+                                    <div class="mb-3">
+                                        <label for="user_id" class="form-label">Member</label>
+                                        <select id="user_id" name="user_id" class="form-select">
+                                            <option value="">Select Member</option>
+                                            @foreach ($user as $member)
+                                                <option value="{{ $member->id }}"
+                                                    {{ request('user_id') == $member->id ? 'selected' : '' }}>
+                                                    {{ $member->first_name }} {{ $member->last_name }} -
+                                                    {{ $member->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endrole
+
+                                <div class="mb-3">
+                                    <label for="date_range" class="form-label">Date Range</label>
+                                    <input type="text" id="date_range" name="date_range" class="form-control"
+                                        value="{{ request('date_range') }}">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="search" class="form-label">Search</label>
+                                    <input type="text" id="search" name="search" class="form-control"
+                                        placeholder="Search" value="{{ request('search') }}">
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a class="btn btn-danger btn-sm" href="{{ route('unpaid-history') }}">Reset</a>
+                                    <button type="submit" class="btn btn-success btn-sm">Apply</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <button type="button" class="btn btn-success" id="unpaidexpense-export">
+                        <i class="bi bi-file-earmark-excel-fill"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger" id="unpaidexpense-pdf">
+                        <i class="bi bi-file-pdf"></i>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="card" style="top:-28px;">
-
-   
-        <form id="submit-form">
-            <div id="filter-section">
-                <!-- First Row: Filters + Search -->
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-1">
-                        <label for="entries">Entities</label>
-                        <select id="entries" name="paginate" class="form-control" onchange="submitform()">
-                            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
-                            <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label for="category_id">Category</label>
-                        <select id="category_id" name="category_id" class="glass-select2 form-control ">
-                            <option value="">Select Category</option>
-                            @foreach ($category as $category)
-                                <option value="{{ $category->id }}"
-                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
 
 
-                    <div class="col-md-2">
-                        <label for="project_id">Project</label>
-                        <select id="project_id" name="project_id" class="form-control">
-                            <option value="">Select Project</option>
-                            @foreach ($project as $project)
-                                <option value="{{ $project->id }}"
-                                    {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @role('Admin')
-                        <div class="col-md-2">
-                            <label for="user_id">Member</label>
-                            <select id="user_id" name="user_id" class="form-control">
-                                <option value="">Select Member</option>
-                                @foreach ($user as $member)
-                                    <option value="{{ $member->id }}"
-                                        {{ request('user_id') == $member->id ? 'selected' : '' }}>{{ $member->first_name }}
-                                        {{ $member->last_name }} - {{ $member->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @endrole
 
-                    <div class="col-md-3">
-                        <label for="date_range">Date Range</label>
-                        <input type="text" id="date_range" name="date_range" class="form-control"
-                            value="{{ request('date_range') }}">
-                    </div>
-                    <div class="col-md-2">
-                        <label for="search">Search</label>
-                        <input type="text" id="search" name="search" value="{{ request('search') }}"
-                            class="form-control" placeholder="Search">
-                    </div>
-                </div>
-
-                <!-- Second Row: Buttons -->
-                <div class="row g-2 mt-3">
-                    <div class="col-md-12 text-end">
-                        <div class="d-flex justify-content-end flex-wrap gap-2">
-                            <button class="btn btn-primary client_search" type="submit">
-                                <i class="bx bx-search"></i>
-                            </button>
-                            <a class="btn btn-danger" href="{{ route('unpaid-history') }}">
-                                <i class="bx bx-x-circle"></i>
-                            </a>
-                            <button type="button" class="btn btn-success" id="unpaidexpense-export">
-                                <i class="bi bi-file-earmark-excel-fill"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger" id="unpaidexpense-pdf">
-                                <i class="bi bi-file-pdf"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-      
-    </div>
     <!-- Basic Bootstrap Table -->
-    <div class="card" style="max-width: 100%; top:-11px; height:516px">
+    <div class="card">
         <!-- <h5 class="card-header">Table Basic</h5> -->
         <div class="table-responsive text-nowrap">
             <table class="table" id="unpaid_expenses_listing_table">
                 <thead>
                     <tr>
-                          @canany(['expenses-edit', 'expenses-delete'])
+                        @canany(['expenses-edit', 'expenses-delete'])
                             <th>Action</th>
                         @endcanany
                         <th>ID</th>
                         <th>Paid date</th>
+                        <th>Main<br />Category</th>
                         <th>Category <br /> Name</th>
                         <th>Project Name</th>
                         <th>Amount</th>
@@ -255,63 +340,69 @@
                             <th>Edited By</th>
                         @endrole
 
-                      
+
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                  @if(count($expenses) > 0)
-                    @foreach ($expenses as $expense)
+                    @if (count($expenses) > 0)
+                        @foreach ($expenses as $expense)
+                            <tr>
+                                @canany(['expenses-unpaid edit'])
+                                    @can('expenses-unpaid edit')
+                                        <td>
+                                            <a class="" href="{{ route('unpaid-create', $expense->id) }}"><i
+                                                    class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
+                                        </td>
+                                    @endcan
+                                @endcanany
+                                <td>{{ $loop->index + 1 }}</td>
+                                <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y ') }}
+                                    <br />{{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A ') }}
+                                </td>
+                                <td>{{ $expense->main_category_name ?? '--' }} </td>
+
+                                <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
+                                <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
+                                <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
+                                <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
+                                <td>
+                                    @if ($expense->unpaid_amt != 0)
+                                        <b><a href="{{ route('unpaidex-create', $expense->id) }}"
+                                                style="color:red">{{ $expense->unpaid_amt }}</a></b>
+                                    @else
+                                        <b><span style="color:red"> {{ $expense->unpaid_amt }}</span></b>
+                                    @endif
+                                </td>
+                                <td><b><span style="color: #840eef;">{{ $expense->extra_amt }}</span></b></td>
+                                <td>{{ $expense->description ? $expense->description : '--' }}</td>
+                                <td>
+                                    @if ($expense->image != '' || $expense->image != null)
+                                        <img src="public/images/{{ $expense->image }}" width="50px">
+                                    @endif
+                                </td>
+                                <td>{{ $expense->payment_name }}</td>
+
+
+                                @role('Admin')
+                                    <td>{{ $expense->first . '' . $expense->last }}</td>
+                                    <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
+                                @endrole
+
+
+                            </tr>
+                        @endforeach
+                    @else
                         <tr>
-                              @canany(['expenses-unpaid edit'])
-                                @can('expenses-unpaid edit')
-                                    <td>
-                                        <a class="" href="{{ route('unpaid-create', $expense->id) }}"><i
-                                                class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
-                                    </td>
-                                @endcan
-                            @endcanany
-                            <td>{{ $loop->index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y ') }}
-                                <br />{{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A ') }}</td>
-
-                            <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
-                            <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
-                            <td><b><span style="color:#ef6a0e">{{ $expense->amount }}</span></b></td>
-                            <td><b><span style="color: green;">{{ $expense->paid_amt }}</span></b></td>
-                            <td>
-                                @if ($expense->unpaid_amt != 0)
-                                    <b><a href="{{ route('unpaidex-create', $expense->id) }}"
-                                            style="color:red">{{ $expense->unpaid_amt }}</a></b>
-                                @else
-                                    <b><span style="color:red"> {{ $expense->unpaid_amt }}</span></b>
-                                @endif
+                            <td colspan="10">
+                                <center>No data found.</center>
                             </td>
-                            <td><b><span style="color: #840eef;">{{ $expense->extra_amt }}</span></b></td>
-                            <td>{{ $expense->description ? $expense->description : '--' }}</td>
-                            <td>
-                                @if ($expense->image != '' || $expense->image != null)
-                                    <img src="public/images/{{ $expense->image }}" width="50px">
-                                @endif
-                            </td>
-                            <td>{{ $expense->payment_name }}</td>
-
-
-                            @role('Admin')
-                                <td>{{ $expense->first . '' . $expense->last }}</td>
-                                <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
-                            @endrole
-
-                          
                         </tr>
-                    @endforeach
-                  @else
-                  <tr><td colspan="10"><center>No data found.</center></td></tr>
-                  @endif
+                    @endif
                 </tbody>
             </table>
             <div class="paginatestyle mt-4">
-              {{ $expenses->links('pagination::bootstrap-5') }}
-          </div>
+                {{ $expenses->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
     <!--/ Basic Bootstrap Table -->
@@ -403,7 +494,21 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-       function submitform() {
+        $(document).ready(function() {
+            // Close dropdown on "Apply"
+            $('#filterForm').on('submit', function() {
+                var dropdownToggle = $('[data-bs-toggle="dropdown"]');
+                var dropdown = bootstrap.Dropdown.getInstance(dropdownToggle[0]);
+                if (dropdown) {
+                    dropdown.hide();
+                }
+            });
+
+            // Close dropdown on custom close button
+        
+        });
+
+        function submitform() {
             $('#submit-form').submit();
         }
         $(function() {
@@ -499,11 +604,11 @@
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
-
+            var main_category = $('#main_category_id').find(":selected").val();
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = '{{ route('unpaidexpenses-export') }}';
-            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range + '&main_id='+main_category+ '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
         $('#unpaidexpense-pdf').click(function() {
@@ -511,12 +616,46 @@
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
-
+var main_category = $('#main_category_id').find(":selected").val();
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = '{{ route('unpaidexpenses-pdf') }}';
-            window.location.href = url + '?date_range=' + date_range + '&search=' + search + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range +'&main_id='+main_category+ '&search=' + search + '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user;
         });
+        $('#main_category_id').change(function() {
+            var main_id = $(this).val();
+            $.ajax({
+                type: 'get',
+                url: "{{ route('expenses.category') }}",
+                data: {
+                    main_id: main_id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response);
+                    $('#category_id').empty();
+                    $('#category_id').append('<option value="">Select category</option>');
+                    $.each(response, function(index, category) {
+                        $('#category_id').append('<option value="' + category.id + '">' +
+                            category.name + '</option>');
+                        // $('#category_id').append(option);
+                    });
+                }
+            })
+        });
+        document.querySelector('#closeDropdownBtn').addEventListener('click', function() {
+    const dropdown = document.querySelector('.filter-dropdown');
+    
+    dropdown.style.animation = 'dropdownFlipOut 0.4s ease forwards';
+    
+    // Wait for animation to finish before hiding
+    dropdown.addEventListener('animationend', function handler() {
+        dropdown.style.display = 'none';
+        dropdown.classList.remove('show');
+        dropdown.style.animation = ''; // Reset animation
+        dropdown.removeEventListener('animationend', handler);
+    });
+});
     </script>
 @endsection

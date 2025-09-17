@@ -27,11 +27,26 @@
             @csrf
             {{ method_field('PUT') }}
             <input type="hidden" value="{{$category->id}}" name="id">
-          <div class="row mb-3">
+              <div class="row mb-3">
+                            <div class="mb-3">
+                                <label class="col-sm-2 col-form-label" for="basic-default-phone">Main Category</label>
+                                <div class="col-sm-6">
+                                <select class="form-control" name="main_category_id" id="main_category_id">
+                                    <option value="">Select Main Category </option>
+                                    @foreach ($maincategory as $cat)
+                                        <option value="{{ $cat->id }}" {{ $cat->id == $category->main_category_id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                    @endforeach
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+          <div class="row ">
+            <div class="mb-3">
             <label class="col-sm-2 col-form-label" for="basic-default-name">Name</label>
-            <div class="col-sm-10">
+            <div class="col-sm-6">
               <input type="text" name="name" class="form-control" id="basic-default-name" {{ $category->name == "salary" ? "readonly" : '' }} placeholder="Enter category" value="{{$category->name}}" />
             </div>
+          </div>
           </div>
 
          <div class="row justify-content-end">

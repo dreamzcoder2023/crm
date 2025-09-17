@@ -15,7 +15,7 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
 {
 
 
-    public function __construct($category_filter , $project_filter, $user_filter, $from, $to,$auth,$role,$search)
+    public function __construct($category_filter , $project_filter, $user_filter, $from, $to,$auth,$role,$search,$main_category)
     {
         $this->category_filter = $category_filter;
         $this->project_filter = $project_filter;
@@ -25,6 +25,7 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
         $this->auth = $auth;
         $this->search = $search;
         $this->role = $role;
+        $this->main_category = $main_category;
 
     }
 
@@ -32,6 +33,7 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array{
         if($this->role == 1){
         return[
+          'Main Category',
             'Category Name',
             'Paid Date',
             'Paid Time',
@@ -52,6 +54,7 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
         ];
     }else{
         return[
+          'Main Category',
         'Category Name',
         'Paid Date',
         'Paid Time',
@@ -75,6 +78,7 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
     public function collection()
     {
     $expenses = Expenses::join('category', 'category.id', '=', 'expenses.category_id')
+    ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
@@ -88,6 +92,9 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
       ->when($this->to, function ($query, $to) {
         $query->wheredate('current_date', '<=', $to);
       })
+      ->when($this->main_category,function($query,$main_category){
+        $query->where('expenses.main_category_id',$main_category);
+      })
       ->when($this->category_filter, function ($query, $category_id) {
         $query->where('expenses.category_id', $category_id);
       })
@@ -100,10 +107,11 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
       ->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
     if ($this->role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $this->auth);
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name')->when($this->search, function ($query, $search) {
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','main_category.name as main_category_name')->when($this->search, function ($query, $search) {
         $query->where(function ($q) use ($search) {
           $q->where('category.name', 'like', "%$search%")
             ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('main_category.name','like',"%$search%")
             ->orWhere('payment.name', 'like', "%$search%")
             ->orWhere('users.first_name', 'like', "%$search%")
             ->orWhere('users.last_name', 'like', "%$search%")
@@ -116,10 +124,11 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
       });
     } else {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id');
-      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last')->when($this->search, function ($query, $search) {
+      $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last','main_category.name as main_category_name')->when($this->search, function ($query, $search) {
         $query->where(function ($q) use ($search) {
           $q->where('category.name', 'like', "%$search%")
             ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('main_category.name','like',"%$search%")
             ->orWhere('payment.name', 'like', "%$search%")
             ->orWhere('users.first_name', 'like', "%$search%")
             ->orWhere('users.last_name', 'like', "%$search%")
@@ -143,6 +152,7 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
         $unpaid_amt1 =  $row->current_date;
         if($this->role == 1){
         $fields = [
+          $row->main_category_name,
            $row->category_name,
             Carbon::parse($unpaid_amt1)->format('d/m/Y'),
            Carbon::parse($unpaid_amt1)->format('H:i A'),
@@ -164,6 +174,7 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
       ];
     }else{
         $fields = [
+          $row->main_category_name,
             $row->category_name,
              Carbon::parse($unpaid_amt1)->format('m/d/Y'),
            Carbon::parse($unpaid_amt1)->format('H:i A'),

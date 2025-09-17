@@ -11,24 +11,76 @@ use App\Models\Wallet;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\Stage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class WalletController extends Controller
 {
-  public function index(){
+  public function index(Request $request){
+    $paginate = $request->paginate??10;
+    $from = null;
+    $to = null;
+    
+    if (!empty($request->date_range)) {
+        [$from, $to] = array_map('trim', explode('-', $request->date_range));
+    
+        $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+        $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+    
     $user_id = Auth::user()->id;
     $role = Role::join('model_has_roles','model_has_roles.role_id','=','roles.id')->where('roles.id',$user_id)->pluck('model_has_roles.model_id')->first();
    // dd($role);
-   if($role == 1){
-    $wallet = Wallet::leftjoin('users','users.id','=','wallet.user_id')->leftjoin('clientdetails','clientdetails.id','=','wallet.client_id')->leftjoin('project_details','project_details.id','=','wallet.project_id')->leftjoin('payment','payment.id','=','wallet.payment_mode')->leftjoin('stage','stage.id','=','wallet.stage_id')->select('wallet.*','clientdetails.first_name as client_first','clientdetails.last_name as client_last','payment.name as payment_name','users.first_name as first_name','users.last_name as last_name','stage.name as stage_name','project_details.name as project_name')->latest()->get();
-   }
-   else{
-    $wallet = Wallet::leftjoin('users','users.id','=','wallet.user_id')->leftjoin('clientdetails','clientdetails.id','=','wallet.client_id')->leftjoin('project_details','project_details.id','=','wallet.project_id')->leftjoin('payment','payment.id','=','wallet.payment_mode')->leftjoin('stage','stage.id','=','wallet.stage_id')->where('wallet.user_id',$user_id)->select('wallet.*','clientdetails.first_name as client_first','clientdetails.last_name as client_last','payment.name as payment_name','users.first_name as first_name','users.last_name as last_name','stage.name as stage_name','project_details.name as project_name')->latest()->get();
-   }
+   
+    $wallet = Wallet::leftjoin('users','users.id','=','wallet.user_id')->leftjoin('clientdetails','clientdetails.id','=','wallet.client_id')
+            ->leftjoin('project_details','project_details.id','=','wallet.project_id')
+            ->leftjoin('payment','payment.id','=','wallet.payment_mode')
+            ->leftjoin('stage','stage.id','=','wallet.stage_id');
+    if($role != 1){
+      $wallet = $wallet->where('wallet.user_id',$user_id);
+    }
+      $wallet = $wallet->select('wallet.*','clientdetails.first_name as client_first','clientdetails.last_name as client_last',
+      'payment.name as payment_name','users.first_name as first_name','users.last_name as last_name','stage.name as stage_name',
+      'project_details.name as project_name')
+      ->when($from,function($query,$from){
+        $query->whereDate('wallet.current_date','>=',$from);
+      })
+      ->when($to,function($query,$to){
+        $query->whereDate('wallet.current_date','<=',$to);
+      })
+      ->when(request('client_id'),function($query,$client_id){
+        $query->where('clientdetails.id',$client_id);
+      })
+      ->when(request('project_id'),function($query,$project_id){
+        $query->where('project_details.id',$project_id);
+      })
+   ->when(request('search'), function ($query, $search) {
+    $query->where(function ($q) use ($search) {
+        // Check if search is the word 'credited'
+        if (strtolower(trim($search)) === 'credited') {
+            $q->where('wallet.transfer_type', 0);
+        }else if(strtolower(trim($search)) === 'debited'){
+          $q->where('wallet.transfer_type', 1);
+        } else {
+            $q->where('clientdetails.first_name', 'like', "%$search%")
+              ->orWhere('clientdetails.last_name', 'like', "%$search%")
+              ->orWhere('payment.name', 'like', "%$search%")
+              ->orWhere('users.first_name', 'like', "%$search%")
+              ->orWhere('users.last_name', 'like', "%$search%")
+              ->orWhere('stage.name', 'like', "%$search%")
+              ->orWhere('project_details.name', 'like', "%$search%")
+              ->orWhere('wallet.amount', 'like', "%$search%")
+              ->orWhere('wallet.description', 'like', "%$search%");
+        }
+    });
+})
+      ->latest()->paginate($paginate);
+      $clients = ClientDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
+      $projects = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
    $sum = $wallet->sum('amount');
-    return view('wallet.index',['wallet' => $wallet,'sum' =>$sum]);
+    return view('wallet.index',['wallet' => $wallet,'sum' =>$sum,'clients' => $clients, 'projects' => $projects]);
   }
 
     public function create(Request $request){

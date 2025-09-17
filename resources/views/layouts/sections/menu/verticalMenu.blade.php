@@ -299,6 +299,16 @@
                         </li>
                     @endcan
                     <!--- vendor -->
+                    <!-- main category -->
+                    @can('maincategory-list')
+                     <li class="menu-item {{ \Request::route()->getName() == 'maincategory.index' ? 'active open' : '' }}">
+                            <a href="{{ route('maincategory.index') }}" class="menu-link">
+                                {{-- <i class="menu-icon tf-icons bx bxs-category" style="margin-left:1px;"></i> --}}
+                                <div class="dark">Main Category</div>
+                            </a>
+                        </li>
+                    @endcan
+                    <!-- main category -->
                     <!--- category -->
                     @can('category-list')
                         <li class="menu-item {{ \Request::route()->getName() == 'category-index' ? 'active open' : '' }}">

@@ -53,11 +53,11 @@
         padding: 15px;
     }
 
-    .paginatestyle {
+    /* .paginatestyle {
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+    } */
 
     @media (max-width: 768px) {
 
@@ -133,7 +133,7 @@
 
             {{-- Table --}}
             <div class="table-responsive">
-                <table class="table table-bordered" id="transfer_listing_table">
+                <table class="table " id="transfer_listing_table">
                     <thead class="">
                         <tr>
                             <th>ID</th>

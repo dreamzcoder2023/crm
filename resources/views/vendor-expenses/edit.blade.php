@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-message">Paid Amount</label><br>
-                                    <input type="text" class="form-control" id="paid_amt" value="{{ $expense->paid_amt }}"
+                                    <input type="text" class="form-control" id="paid_amt" data-oldvalue="{{ $expense->paid_amt }}" value="{{ $expense->paid_amt }}"
                                         name="paid_amt" oninput="amountcheck(this.value)" onkeypress="allowNumbersOnly(event)">
                                     <label id="paid-error" class="error" for="basic-default-amt">Paid amount is
                                         required.</label>
@@ -327,11 +327,19 @@
 
         function amountcheck(amount) {
             console.log(amount, "amount check");
+            var old_amt = $('#paid_amt').attr('data-oldvalue');
+            var total = 0;
+            if(old_amt < amount){
+                total = amount - old_amt;
+            }
+            console.log('old_amt',old_amt);
+            console.log('total',total);
             var user_id = $('#user_id').val();
+            if(total > 0){
             $.ajax({
                 url: "{{ route('vendor-insufficent') }}",
                 data: {
-                    'amount': amount,'vendor_id' : user_id
+                    'amount': total,'vendor_id' : user_id
                 },
                 type: 'GET',
                 dataType: 'json',
@@ -345,6 +353,7 @@
 
                 }
             });
+        }
         }
     </script>
 @endsection
