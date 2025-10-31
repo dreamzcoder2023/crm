@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 20, 2025 at 02:47 PM
+-- Generation Time: Oct 29, 2025 at 01:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -2075,7 +2075,7 @@ INSERT INTO `category` (`id`, `name`, `main_category_id`, `active_status`, `dele
 (311, 'FRP PANEL', NULL, 1, 0, '2025-05-19 17:13:50', '2025-05-19 17:13:50'),
 (312, 'AAC BLOCKS', NULL, 1, 0, '2025-05-24 11:57:40', '2025-05-24 11:57:40'),
 (313, 'Epoxy', NULL, 1, 0, '2025-06-12 16:09:23', '2025-06-12 16:09:23'),
-(314, 'Hospital', NULL, 1, 0, '2025-06-18 10:27:27', '2025-06-18 10:27:27'),
+(314, 'Hospital', 3, 1, 0, '2025-06-18 10:27:27', '2025-09-08 06:18:25'),
 (315, 'GUNNY BAGS', NULL, 1, 0, '2025-06-18 11:02:43', '2025-06-18 11:02:43'),
 (316, 'test', NULL, 0, 1, '2025-07-19 10:06:47', '2025-07-19 10:07:53'),
 (317, 'testss', 1, 1, 0, '2025-07-19 10:13:06', '2025-07-19 10:29:24'),
@@ -2085,7 +2085,10 @@ INSERT INTO `category` (`id`, `name`, `main_category_id`, `active_status`, `dele
 (321, 'rent', 1, 1, 0, '2025-07-25 05:44:12', '2025-07-25 05:44:12'),
 (322, 'eeeee', 1, 1, 0, '2025-07-25 06:21:25', '2025-07-25 06:21:25'),
 (323, 'tessssssssss', 1, 1, 0, '2025-07-31 10:08:08', '2025-07-31 10:08:08'),
-(324, 'dfad', 1, 1, 0, '2025-08-01 11:13:26', '2025-08-01 11:13:26');
+(324, 'dfad', 1, 1, 0, '2025-08-01 11:13:26', '2025-08-01 11:13:26'),
+(325, 'gfhr', 3, 1, 0, '2025-09-08 09:46:39', '2025-09-08 09:46:39'),
+(326, 'advance', 3, 1, 0, '2025-09-23 12:13:57', '2025-10-29 12:11:11'),
+(327, 'test12', NULL, 1, 0, '2025-10-29 08:19:25', '2025-10-29 09:37:34');
 
 -- --------------------------------------------------------
 
@@ -14783,7 +14786,7 @@ INSERT INTO `expenses` (`id`, `amount`, `main_category_id`, `category_id`, `proj
 (13295, 2150, NULL, 143, 86, 42, '2025-06-13 11:04:33', 'M SAND AND CEMENT', 2150, 0, 0, NULL, NULL, 9, '2025-06-18 11:05:04', '2025-06-18 11:05:04', NULL, NULL, NULL, NULL, NULL),
 (13296, 100, NULL, 135, 86, 42, '2025-06-14 11:10:42', NULL, 100, 0, 0, NULL, NULL, 9, '2025-06-18 11:10:57', '2025-06-18 11:10:57', NULL, NULL, NULL, NULL, NULL),
 (13297, 300, NULL, 139, 86, 42, '2025-06-14 11:10:57', 'FOR LABOURS', 300, 0, 0, NULL, NULL, 9, '2025-06-18 11:11:16', '2025-06-18 11:11:16', NULL, NULL, NULL, NULL, NULL),
-(13298, 3000, NULL, 132, 80, 54, '2025-06-14 11:10:08', 'mani painter & others salary on 14/06/25', 3000, 0, 0, NULL, NULL, 9, '2025-06-18 11:11:16', '2025-06-18 11:11:16', NULL, NULL, 43, NULL, NULL),
+(13298, 3000, 4, 326, 80, 54, '2025-06-14 11:10:00', 'mani painter & others salary on 14/06/25', 3000, 0, 0, NULL, 56, 9, '2025-06-18 11:11:16', '2025-09-25 09:54:38', NULL, NULL, 43, NULL, NULL),
 (13299, 500, NULL, 139, 29, 42, '2025-06-16 11:12:05', NULL, 500, 0, 0, NULL, NULL, 9, '2025-06-18 11:12:16', '2025-06-18 11:12:16', NULL, NULL, NULL, NULL, NULL),
 (13300, 200, NULL, 134, 96, 43, '2025-06-16 11:20:14', NULL, 200, 0, 0, NULL, NULL, 9, '2025-06-18 11:37:23', '2025-06-18 11:37:23', NULL, NULL, NULL, NULL, NULL),
 (13301, 225, NULL, 134, 96, 43, '2025-06-17 11:37:23', NULL, 225, 0, 0, NULL, NULL, 9, '2025-06-18 11:40:02', '2025-06-18 11:40:02', NULL, NULL, NULL, NULL, NULL),
@@ -14792,7 +14795,12 @@ INSERT INTO `expenses` (`id`, `amount`, `main_category_id`, `category_id`, `proj
 (13304, 200, NULL, 175, 18, 44, '2025-06-27 02:34:05', NULL, 200, 0, 0, NULL, NULL, 9, '2025-06-27 09:05:24', '2025-06-27 09:05:46', '2025-06-27 09:05:46', 'wallet entry', NULL, 5, NULL),
 (13305, 200, NULL, 199, 18, 44, '2025-06-27 02:36:35', NULL, 200, 0, 0, NULL, NULL, 9, '2025-06-27 09:09:58', '2025-06-27 09:13:42', '2025-06-27 09:13:42', NULL, NULL, 5, NULL),
 (13306, 0, NULL, 178, 18, 5, '2025-06-27 02:58:00', NULL, 300, 0, 0, NULL, 44, 9, '2025-06-27 09:29:22', '2025-06-27 09:34:05', NULL, NULL, NULL, 5, NULL),
-(13307, 10, 1, 317, 18, 44, '2025-07-21 11:18:00', NULL, 0, 10, 0, NULL, 44, 9, '2025-07-21 05:56:47', '2025-08-05 10:02:07', NULL, NULL, NULL, NULL, NULL);
+(13307, 10, 1, 317, 18, 44, '2025-07-21 11:18:00', NULL, 10, 0, 0, NULL, 44, 9, '2025-07-21 05:56:47', '2025-09-08 06:24:19', NULL, NULL, NULL, NULL, NULL),
+(13308, 10, 3, 325, 18, 44, '2025-09-08 11:44:00', NULL, 0, 10, 0, NULL, 44, 9, '2025-09-08 06:14:59', '2025-09-09 07:08:13', NULL, NULL, NULL, NULL, NULL),
+(13309, 0, 1, 321, 18, 44, '2025-09-08 03:35:29', NULL, 0, 0, 0, NULL, NULL, 9, '2025-09-08 10:05:49', '2025-09-08 10:06:06', '2025-09-08 10:06:06', NULL, NULL, NULL, NULL),
+(13310, 1170, 4, 326, 18, 56, '2025-09-23 05:50:19', NULL, 10, 1160, 0, NULL, NULL, 9, '2025-09-23 12:22:28', '2025-09-24 11:31:32', '2025-09-24 11:31:32', 'test', 4, NULL, NULL),
+(13311, 100, 4, 326, 18, 56, '2025-09-25 03:30:00', NULL, 100, 0, 0, NULL, NULL, 9, '2025-09-25 10:01:03', '2025-09-25 10:01:03', NULL, NULL, NULL, 5, NULL),
+(13312, 100, 3, 314, 18, 5, '2025-09-25 03:34:00', NULL, 0, 100, 0, NULL, 56, 9, '2025-09-25 10:04:34', '2025-09-29 07:46:23', '2025-09-29 07:46:23', NULL, NULL, 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -15618,7 +15626,9 @@ INSERT INTO `expenses_unpaid_date` (`id`, `expense_id`, `current_date`, `unpaid_
 (987, 11358, '2025-03-10 05:16:00', 5180, '2025-06-16 12:12:10', '2025-06-16 12:12:10'),
 (988, 9718, '2025-01-18 01:09:00', 5980, '2025-06-16 12:13:53', '2025-06-16 12:13:53'),
 (989, 11074, '2025-03-15 01:48:00', 11000, '2025-06-16 12:57:19', '2025-06-16 12:57:19'),
-(990, 12145, '2025-05-29 11:56:00', 27300, '2025-06-16 18:02:29', '2025-06-16 18:02:29');
+(990, 12145, '2025-05-29 11:56:00', 27300, '2025-06-16 18:02:29', '2025-06-16 18:02:29'),
+(991, 13307, '2025-07-21 11:18:00', 1, '2025-09-08 06:24:05', '2025-09-08 06:24:05'),
+(992, 13307, '2025-07-21 11:18:00', 9, '2025-09-08 06:24:18', '2025-09-08 06:24:18');
 
 -- --------------------------------------------------------
 
@@ -15788,6 +15798,7 @@ INSERT INTO `labour_role` (`id`, `name`, `salary`, `salary_type`, `created_at`, 
 CREATE TABLE `main_category` (
   `id` int(11) NOT NULL,
   `name` varchar(250) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
   `deleted_at` datetime DEFAULT NULL
@@ -15797,9 +15808,11 @@ CREATE TABLE `main_category` (
 -- Dumping data for table `main_category`
 --
 
-INSERT INTO `main_category` (`id`, `name`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'tools', '2025-07-18 17:28:06', '2025-07-18 17:28:06', NULL),
-(2, 'tests', '2025-07-18 17:30:39', '2025-07-18 17:31:09', '2025-07-18 17:31:09');
+INSERT INTO `main_category` (`id`, `name`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'tools', 1, '2025-07-18 17:28:06', '2025-07-18 17:28:06', NULL),
+(2, 'tests', 1, '2025-07-18 17:30:39', '2025-07-18 17:31:09', '2025-07-18 17:31:09'),
+(3, 'Demo', 1, '2025-09-08 11:47:34', '2025-09-08 11:47:34', NULL),
+(4, 'salarys', 1, '2025-09-23 10:57:29', '2025-10-29 12:50:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -15879,6 +15892,7 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 (1, 'App\\Models\\User', 44),
 (1, 'App\\Models\\User', 50),
 (1, 'App\\Models\\User', 54),
+(1, 'App\\Models\\User', 56),
 (26, 'App\\Models\\User', 42),
 (26, 'App\\Models\\User', 49),
 (26, 'App\\Models\\User', 53),
@@ -16092,8 +16106,8 @@ CREATE TABLE `project_details` (
 --
 
 INSERT INTO `project_details` (`id`, `name`, `advance_amt`, `total_amt`, `client_id`, `profit`, `project_status`, `active_status`, `delete_status`, `payment_mode`, `start_date`, `end_date`, `created_at`, `updated_at`) VALUES
-(17, 'TMS', 136000, 106000, 18, 30000, 0, 1, 0, 0, '2024-05-08 16:00:12', '2024-04-24 16:43:00', '2024-01-08 13:40:17', '2025-05-13 16:54:17'),
-(18, 'KVPM', 1501000, 8232685, 19, 6731685, 0, 1, 0, 0, '2024-01-08 13:40:49', NULL, '2024-01-08 13:40:49', '2024-11-25 13:10:33'),
+(17, 'TMS', 137000, 106000, 18, 29000, 0, 1, 0, 0, '2024-05-08 16:00:12', '2024-04-24 16:43:00', '2024-01-08 13:40:17', '2025-09-23 12:20:11'),
+(18, 'KVPM', 1511000, 8232685, 19, 6721685, 0, 1, 0, 0, '2024-01-08 13:40:49', NULL, '2024-01-08 13:40:49', '2025-09-08 06:23:47'),
 (19, 'AVR', 30000, 30000, 20, 0, 1, 1, 0, 0, '2024-01-08 13:41:35', '2024-09-09 17:48:27', '2024-01-08 13:41:35', '2024-09-09 17:48:27'),
 (20, 'CK PRO', 600000, 300000, 21, 300000, 0, 0, 1, 0, '2024-01-08 18:26:33', NULL, '2024-01-08 18:26:33', '2024-03-02 16:39:46'),
 (21, 'ES CONSULTANCY', NULL, 0, 22, 0, 1, 1, 0, 0, '2024-01-10 11:51:53', '2024-09-09 17:48:39', '2024-01-09 17:41:39', '2024-09-09 17:48:39'),
@@ -16644,6 +16658,27 @@ INSERT INTO `salary_details` (`id`, `user_id`, `salary`, `appraisal_image`, `cre
 (102, 77, 900, NULL, '2025-05-19 17:42:37', '2025-05-19 17:42:37'),
 (103, 78, 1170, NULL, '2025-05-30 16:22:05', '2025-05-30 16:22:05'),
 (104, 18, 620, NULL, '2025-05-30 16:23:19', '2025-05-30 16:23:19');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL,
+  `key` varchar(250) DEFAULT NULL,
+  `value` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
+(1, 'is_maintenance', 0, '2025-09-09 17:56:20', '2025-09-09 17:56:20');
 
 -- --------------------------------------------------------
 
@@ -19256,7 +19291,7 @@ CREATE TABLE `users` (
   `type` int(11) NOT NULL DEFAULT 0,
   `confirm_password` varchar(255) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `status` int(11) NOT NULL DEFAULT 0,
+  `status` int(11) NOT NULL DEFAULT 1,
   `message_checked_at` datetime DEFAULT current_timestamp(),
   `client_id` int(11) NOT NULL DEFAULT 0,
   `notification_checked_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -19294,21 +19329,22 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `user_type`, `is_admin`, `role_id`, `email`, `email_verified_at`, `password`, `type`, `confirm_password`, `image`, `status`, `message_checked_at`, `client_id`, `notification_checked_at`, `is_primary_contact`, `job_title`, `disable_login`, `note`, `address`, `alternative_address`, `phone`, `alternative_phone`, `dob`, `ssn`, `gender`, `sticky_note`, `skype`, `language`, `enable_web_notification`, `enable_email_notification`, `requested_account_removal`, `active_status`, `delete_status`, `wallet`, `date_of_joining`, `salary`, `government_image`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Balamurugan', 'M', 0, 0, 0, 'admin@warpe.in', NULL, '$2y$10$ZpyUbjFqvv3M2vooSzCIeek4R4Lv.5Zg.Xj7tuApbBTFMbDYpP2J6', 0, '$2y$10$DWIHTtlp1XKWCB.d9QKDQOSZqVXkGecT8xZVH0rowd0jyQ32Wg0Cm', '', 0, '2023-09-05 11:15:44', 0, '2023-09-05 11:15:44', 0, 'Admin', 0, 'NULL', 'NULL', 'NULL', '8807342425', 'NULL', '1994-03-31', 'NULL', 1, 'NULL', 'NULL', 'NULL', 0, 0, 0, 1, 0, 17301, NULL, NULL, NULL, NULL, '2023-10-03 22:36:55', '2025-06-18 10:34:24', NULL),
-(41, 'BALASUBRAMANIAN', 'L M S', 0, 0, 0, 'lms15@gmail.com', NULL, '$2y$10$YwrHLL/immKRd8ldmp7ljOMKDDpIwNEf7WmJimn6DC32rf0OApA3q', 0, '$2y$10$mz9Qdk18lz06jNtl0MxkSe/TBMVYIgHBxUFv8o35jo/8/yVQbN6VC', '20231030192058.png', 0, '2023-10-30 13:50:58', 0, '2023-10-30 13:50:58', 0, 'Engineer', 0, NULL, NULL, NULL, '9486415394', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 37336, '2024-08-22 00:00:00', 0, '20231030192146.png', NULL, '2023-10-30 19:20:58', '2025-06-09 17:44:35', NULL),
-(42, 'ASWIN', 'P', 0, 0, 0, 'aswinpaul55@gmail.com', NULL, '$2y$10$MON5BcZR3Js9dmGqdVz/8e7BeZyJqRUVqmllGqd/HYyENsqRJJ4xe', 0, '$2y$10$RXaXJSWTB3i.pCWx4ATV/.Ncw2hUnf6jzB7kA9QMIac9XMsNzQ/My', '20231030192700.png', 0, '2023-10-30 13:57:00', 0, '2023-10-30 13:57:00', 0, 'Engineer', 0, NULL, NULL, NULL, '9003955288', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 15679, '2018-07-01 00:00:00', 9000, '20231030192739.png', NULL, '2023-10-30 19:27:00', '2025-06-27 07:34:18', NULL),
-(43, 'CHINNASAMY', 'MAISTRY', 0, 0, 0, 'cs@hf.in', NULL, '$2y$10$5s60ZYMZW9M2TwaWpRCXPuHCT8ZF/lIAcKs.2nmoGpBGnSzvNTxp6', 0, '$2y$10$AUgn.J1nm.wBKr6aXMDFhOO4RvgUMSHodayomeyGp6vx1tuGqFN0O', '20240108104827.jpg', 0, '2023-10-30 14:32:57', 0, '2023-10-30 14:32:57', 0, 'Maistry', 0, NULL, NULL, NULL, '8940928060', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 6170, '2024-01-08 00:00:00', 950, '20231030200326.jpg', NULL, '2023-10-30 20:02:57', '2025-06-27 09:17:09', NULL),
-(44, 'BACKYA', 'LAKSHMI', 0, 0, 0, 'krishnan.jai5@gmail.com', NULL, '$2y$10$/HQ2jPIqrIOz7HhQDWuHOuQkj37emqRs/JRsJaVML7iY0bNjvAwd2', 0, '$2y$10$C9SO05N/XgwyvL5by45YFOj3vPHk.fkr/t9RRSky90jhGs6GEnaBG', '20240415112722.jpeg', 0, '2023-10-30 14:35:57', 0, '2023-10-30 14:35:57', 0, 'Accountant', 0, NULL, NULL, NULL, '8610033778', NULL, NULL, NULL, 2, NULL, NULL, NULL, 0, 0, 0, 1, 0, 10, '2025-04-30 00:00:00', 7500, '20231031162705.png', NULL, '2023-10-30 20:05:57', '2025-06-27 09:06:09', NULL),
-(45, 'BALAMURUGAN', 'ASSISTANT', 0, 0, 0, 'bala@hf.in', NULL, '$2y$10$y8GH0HS5.X04aLPkkZCNou8oVPxWQkwqBd9wRmy4hwASEiWktxEIG', 0, '$2y$10$jmbYZPYZ86Z7cMDiD.nI9eDhJV/nmO8DWXs.WVX9ZCMc9P1hI3VQG', '20231031163257.jpg', 0, '2023-10-31 11:02:57', 0, '2023-10-31 11:02:57', 0, 'ASSISTANT', 0, NULL, NULL, NULL, '8148636254', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 829, '2023-11-17 00:00:00', 8000, '20231031163339.jpeg', NULL, '2023-10-31 16:32:57', '2025-01-09 11:27:40', NULL),
-(46, 'KUMARAVEL', 'M', 0, 0, 0, 'kumar@gmail.com', NULL, '$2y$10$pYG23LKSqYzKzW5zsPLvCOicZMgd4BuuWfuYXQ4wGWSRw39qSyrEG', 0, '$2y$10$U3DSXUbSKGKOf/enfo/Rk.5yHdgAQXJbrt0iF4ODNMerF7yeXuf/G', '20231101163605.jpg', 0, '2023-11-01 11:06:05', 0, '2023-11-01 11:06:05', 0, 'AC SUPERVISOR', 0, NULL, NULL, NULL, '9360073309', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 3500, '2023-09-01 00:00:00', 8000, '20231101163642.jpg', NULL, '2023-11-01 16:36:05', '2024-03-23 18:26:56', NULL),
-(47, 'q', 'test', 0, 0, 0, 'test12@mail.com', NULL, '$2y$10$WDHWRF.Hp38iyc9YydkMSe6qyGqSyGexI29.7708N7H/owQngRZZG', 0, '$2y$10$V6dwAoj6mqTm8.iUq92zDurleF0Byq2/T7ni0yfNg9tuRYbxZa44O', '20240130150309.png', 0, '2024-01-30 09:33:09', 0, '2024-01-30 09:33:09', 0, '', 0, NULL, NULL, NULL, '8807342426', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, NULL, NULL, NULL, NULL, '2024-01-30 15:03:09', '2024-01-30 15:05:55', NULL),
-(48, 'john', 'cena', 0, 0, 0, 'admin11@gmail.com', NULL, '$2y$10$cemqKK2NlXjoDfU/lC5sgOJGLrA8/yXfXKRUMT06gzM61QVFZ2FNG', 0, '$2y$10$oNof3BmrHGekVfx/dIUYCePp6Wsi1PpbkdGIEcpVRod2Fo2a91mG2', '20240206164757.jpg', 0, '2024-02-06 11:17:57', 0, '2024-02-06 11:17:57', 0, '', 0, NULL, NULL, NULL, '8807342427', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, NULL, NULL, NULL, NULL, '2024-02-06 16:47:57', '2024-02-06 16:49:26', NULL),
-(49, 'KARTHIKEYAN', 'ENGINEER', 0, 0, 0, 'karthikeyan@hf.com', NULL, '$2y$10$CIdpGCY1lmyxl6n373D/XOME/HhKUh0HVGhMLsAqMYUP4ZYrrPQxm', 0, '$2y$10$1QYk3zHFRjqhqXSoBHR44OkDQkgW6c5z1S2iizk56ZyUB003m0N7u', '20240322171906.jpg', 0, '2024-03-22 11:49:06', 0, '2024-03-22 11:49:06', 0, '', 0, NULL, NULL, NULL, '7305206119', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 0, NULL, NULL, NULL, NULL, '2024-03-22 17:19:06', '2024-06-27 12:09:07', NULL),
-(50, 'LABOURS', 'ACCOUNTS', 0, 0, 0, 'LA@HF.IN', NULL, '$2y$10$VIzpCK9HgHoAwScT5ekVA.9nZlMGICS1F6cMlNtdZFKego30/pL.O', 0, '$2y$10$hZppmmtl9T2l94D5FVSO5.vpguprb33z0eKGVRvzQ8pkj1juXbL7.', '20240615150527.png', 0, '2024-06-15 09:35:27', 0, '2024-06-15 09:35:27', 0, 'LABOURS ADVANCE AND SALARY', 0, NULL, NULL, NULL, '0000000000', NULL, NULL, NULL, 3, NULL, NULL, NULL, 0, 0, 0, 1, 0, 1675, '2024-06-15 00:00:00', 0, '20240615150604.png', NULL, '2024-06-15 15:05:27', '2025-06-17 11:12:51', NULL),
-(51, 'KEERTHIKA', 'AC', 0, 0, 0, 'kt@gmail.com', NULL, '$2y$10$sCyYm/LxFgduUien/LzRweiSW/h0.4iHhZlLWz8I6Mlf3aw4EHA.i', 0, '$2y$10$gnw1MVJkU4/Kp2IA9afnre02sSMwkKm2UdORgVfrAL/YvPaAO.xZW', '20240916092129.jpg', 0, '2024-09-16 03:51:29', 0, '2024-09-16 03:51:29', 0, 'TELECALLER', 0, NULL, NULL, NULL, '9345584856', NULL, NULL, NULL, 2, NULL, NULL, NULL, 0, 0, 0, 1, 0, 500, '2025-01-21 00:00:00', 4000, '20240916092456.jpg', NULL, '2024-09-16 09:21:29', '2025-04-04 16:24:59', NULL),
-(52, 'GURUPRAKASH', 'M', 0, 0, 0, 'MGPPRACTICAL@GMAIL.COM', NULL, '$2y$10$5Acv3qt2LW7Gd/wSrTR1JOsrxzBUWrlBZj37mo9QkZIMWVTuxiTTu', 0, '$2y$10$0ws9A9r/7DOujkTE8Cth.e7mTjk72UK8MsHcHW3TUfzeESHA6/sBG', '20250121121615.jpeg', 0, '2025-01-21 06:40:37', 0, '2025-01-21 06:40:37', 0, 'MANAGER', 0, NULL, NULL, NULL, '9894836540', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 755, '2025-01-21 00:00:00', 15000, NULL, NULL, '2025-01-21 12:10:37', '2025-06-18 10:32:17', NULL),
-(53, 'Poopathi', 'M', 0, 0, 0, 'poopathirajaa02@gmail.com', NULL, '$2y$10$loevkQjOLCnFeVmSXBsQDewCwIZAew7zQ1aNw.LThJObF/Fsw8gXy', 0, '$2y$10$bzF3GqyZwnjSbPx3i6Bpx.ioYL0kutpi7ufWBzeQCavh5Ic12wnbC', '20250301202015.jpg', 0, '2025-02-27 16:53:30', 0, '2025-02-27 16:53:30', 0, 'Site Engineer', 0, NULL, NULL, NULL, '8072731855', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 3185, '2025-02-27 00:00:00', 5000, NULL, NULL, '2025-02-27 22:23:30', '2025-03-12 15:52:36', NULL),
-(54, 'SANDHIYA', 'S K', 0, 0, 0, 'sandhiyakalimuthu5@gmail.com', NULL, '$2y$10$FADj2eigxkBFvuOGNtkWpuqyRZleasRhQseAcMGqEG9hgOTQxkaK6', 0, '$2y$10$iiKL20taHoeCmSMMe8FLSu//MWzEMr6.VH6j/sExGxDlSAapgFBKC', '20250418171242.webp', 0, '2025-04-18 11:42:42', 0, '2025-04-18 11:42:42', 0, 'ACCOUNTANT', 0, NULL, NULL, NULL, '6382257870', NULL, NULL, NULL, 2, NULL, NULL, NULL, 0, 0, 0, 1, 0, 320, '2025-04-30 00:00:00', 12000, NULL, NULL, '2025-04-18 17:12:42', '2025-06-18 11:11:16', NULL);
+(1, 'Balamurugan', 'M', 0, 0, 0, 'admin@warpe.in', NULL, '$2y$10$ZpyUbjFqvv3M2vooSzCIeek4R4Lv.5Zg.Xj7tuApbBTFMbDYpP2J6', 0, '$2y$10$DWIHTtlp1XKWCB.d9QKDQOSZqVXkGecT8xZVH0rowd0jyQ32Wg0Cm', '', 1, '2023-09-05 11:15:44', 0, '2023-09-05 11:15:44', 0, 'Admin', 0, 'NULL', 'NULL', 'NULL', '8807342425', 'NULL', '1994-03-31', 'NULL', 1, 'NULL', 'NULL', 'NULL', 0, 0, 0, 1, 0, 17301, NULL, NULL, NULL, NULL, '2023-10-03 22:36:55', '2025-06-18 10:34:24', NULL),
+(41, 'BALASUBRAMANIAN', 'L M S', 0, 0, 0, 'lms15@gmail.com', NULL, '$2y$10$YwrHLL/immKRd8ldmp7ljOMKDDpIwNEf7WmJimn6DC32rf0OApA3q', 0, '$2y$10$mz9Qdk18lz06jNtl0MxkSe/TBMVYIgHBxUFv8o35jo/8/yVQbN6VC', '20231030192058.png', 1, '2023-10-30 13:50:58', 0, '2023-10-30 13:50:58', 0, 'Engineer', 0, NULL, NULL, NULL, '9486415394', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 37336, '2024-08-22 00:00:00', 0, '20231030192146.png', NULL, '2023-10-30 19:20:58', '2025-06-09 17:44:35', NULL),
+(42, 'ASWIN', 'P', 0, 0, 0, 'aswinpaul55@gmail.com', NULL, '$2y$10$MON5BcZR3Js9dmGqdVz/8e7BeZyJqRUVqmllGqd/HYyENsqRJJ4xe', 0, '$2y$10$RXaXJSWTB3i.pCWx4ATV/.Ncw2hUnf6jzB7kA9QMIac9XMsNzQ/My', '20231030192700.png', 1, '2023-10-30 13:57:00', 0, '2023-10-30 13:57:00', 0, 'Engineer', 0, NULL, NULL, NULL, '9003955288', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 15679, '2018-07-01 00:00:00', 9000, '20231030192739.png', NULL, '2023-10-30 19:27:00', '2025-06-27 07:34:18', NULL),
+(43, 'CHINNASAMY', 'MAISTRY', 0, 0, 0, 'cs@hf.in', NULL, '$2y$10$5s60ZYMZW9M2TwaWpRCXPuHCT8ZF/lIAcKs.2nmoGpBGnSzvNTxp6', 0, '$2y$10$AUgn.J1nm.wBKr6aXMDFhOO4RvgUMSHodayomeyGp6vx1tuGqFN0O', '20240108104827.jpg', 1, '2023-10-30 14:32:57', 0, '2023-10-30 14:32:57', 0, 'Maistry', 0, NULL, NULL, NULL, '8940928060', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 6170, '2024-01-08 00:00:00', 950, '20231030200326.jpg', NULL, '2023-10-30 20:02:57', '2025-06-27 09:17:09', NULL),
+(44, 'BACKYA', 'LAKSHMI', 0, 0, 0, 'superadmin.@gmail.com', NULL, '$2y$10$/HQ2jPIqrIOz7HhQDWuHOuQkj37emqRs/JRsJaVML7iY0bNjvAwd2', 0, '$2y$10$C9SO05N/XgwyvL5by45YFOj3vPHk.fkr/t9RRSky90jhGs6GEnaBG', '20240415112722.jpeg', 1, '2023-10-30 14:35:57', 0, '2023-10-30 14:35:57', 0, 'Accountant', 0, NULL, NULL, NULL, '8610033778', NULL, NULL, NULL, 2, NULL, NULL, NULL, 0, 0, 0, 1, 0, 10000, '2025-04-30 00:00:00', 7500, '20231031162705.png', NULL, '2023-10-30 20:05:57', '2025-09-08 06:24:18', NULL),
+(45, 'BALAMURUGAN', 'ASSISTANT', 0, 0, 0, 'bala@hf.in', NULL, '$2y$10$y8GH0HS5.X04aLPkkZCNou8oVPxWQkwqBd9wRmy4hwASEiWktxEIG', 0, '$2y$10$jmbYZPYZ86Z7cMDiD.nI9eDhJV/nmO8DWXs.WVX9ZCMc9P1hI3VQG', '20231031163257.jpg', 1, '2023-10-31 11:02:57', 0, '2023-10-31 11:02:57', 0, 'ASSISTANT', 0, NULL, NULL, NULL, '8148636254', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 829, '2023-11-17 00:00:00', 8000, '20231031163339.jpeg', NULL, '2023-10-31 16:32:57', '2025-01-09 11:27:40', NULL),
+(46, 'KUMARAVEL', 'M', 0, 0, 0, 'kumar@gmail.com', NULL, '$2y$10$pYG23LKSqYzKzW5zsPLvCOicZMgd4BuuWfuYXQ4wGWSRw39qSyrEG', 0, '$2y$10$U3DSXUbSKGKOf/enfo/Rk.5yHdgAQXJbrt0iF4ODNMerF7yeXuf/G', '20231101163605.jpg', 1, '2023-11-01 11:06:05', 0, '2023-11-01 11:06:05', 0, 'AC SUPERVISOR', 0, NULL, NULL, NULL, '9360073309', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 3500, '2023-09-01 00:00:00', 8000, '20231101163642.jpg', NULL, '2023-11-01 16:36:05', '2024-03-23 18:26:56', NULL),
+(47, 'q', 'test', 0, 0, 0, 'test12@mail.com', NULL, '$2y$10$WDHWRF.Hp38iyc9YydkMSe6qyGqSyGexI29.7708N7H/owQngRZZG', 0, '$2y$10$V6dwAoj6mqTm8.iUq92zDurleF0Byq2/T7ni0yfNg9tuRYbxZa44O', '20240130150309.png', 1, '2024-01-30 09:33:09', 0, '2024-01-30 09:33:09', 0, '', 0, NULL, NULL, NULL, '8807342426', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, NULL, NULL, NULL, NULL, '2024-01-30 15:03:09', '2024-01-30 15:05:55', NULL),
+(48, 'john', 'cena', 0, 0, 0, 'admin11@gmail.com', NULL, '$2y$10$cemqKK2NlXjoDfU/lC5sgOJGLrA8/yXfXKRUMT06gzM61QVFZ2FNG', 0, '$2y$10$oNof3BmrHGekVfx/dIUYCePp6Wsi1PpbkdGIEcpVRod2Fo2a91mG2', '20240206164757.jpg', 1, '2024-02-06 11:17:57', 0, '2024-02-06 11:17:57', 0, '', 0, NULL, NULL, NULL, '8807342427', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, NULL, NULL, NULL, NULL, '2024-02-06 16:47:57', '2024-02-06 16:49:26', NULL),
+(49, 'KARTHIKEYAN', 'ENGINEER', 0, 0, 0, 'karthikeyan@hf.com', NULL, '$2y$10$CIdpGCY1lmyxl6n373D/XOME/HhKUh0HVGhMLsAqMYUP4ZYrrPQxm', 0, '$2y$10$1QYk3zHFRjqhqXSoBHR44OkDQkgW6c5z1S2iizk56ZyUB003m0N7u', '20240322171906.jpg', 1, '2024-03-22 11:49:06', 0, '2024-03-22 11:49:06', 0, '', 0, NULL, NULL, NULL, '7305206119', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 0, NULL, NULL, NULL, NULL, '2024-03-22 17:19:06', '2024-06-27 12:09:07', NULL),
+(50, 'LABOURS', 'ACCOUNTS', 0, 0, 0, 'LA@HF.IN', NULL, '$2y$10$VIzpCK9HgHoAwScT5ekVA.9nZlMGICS1F6cMlNtdZFKego30/pL.O', 0, '$2y$10$hZppmmtl9T2l94D5FVSO5.vpguprb33z0eKGVRvzQ8pkj1juXbL7.', '20240615150527.png', 1, '2024-06-15 09:35:27', 0, '2024-06-15 09:35:27', 0, 'LABOURS ADVANCE AND SALARY', 0, NULL, NULL, NULL, '0000000000', NULL, NULL, NULL, 3, NULL, NULL, NULL, 0, 0, 0, 1, 0, 1675, '2024-06-15 00:00:00', 0, '20240615150604.png', NULL, '2024-06-15 15:05:27', '2025-06-17 11:12:51', NULL),
+(51, 'KEERTHIKA', 'AC', 0, 0, 0, 'kt@gmail.com', NULL, '$2y$10$sCyYm/LxFgduUien/LzRweiSW/h0.4iHhZlLWz8I6Mlf3aw4EHA.i', 0, '$2y$10$gnw1MVJkU4/Kp2IA9afnre02sSMwkKm2UdORgVfrAL/YvPaAO.xZW', '20240916092129.jpg', 1, '2024-09-16 03:51:29', 0, '2024-09-16 03:51:29', 0, 'TELECALLER', 0, NULL, NULL, NULL, '9345584856', NULL, NULL, NULL, 2, NULL, NULL, NULL, 0, 0, 0, 1, 0, 500, '2025-01-21 00:00:00', 4000, '20240916092456.jpg', NULL, '2024-09-16 09:21:29', '2025-04-04 16:24:59', NULL),
+(52, 'GURUPRAKASH', 'M', 0, 0, 0, 'MGPPRACTICAL@GMAIL.COM', NULL, '$2y$10$5Acv3qt2LW7Gd/wSrTR1JOsrxzBUWrlBZj37mo9QkZIMWVTuxiTTu', 0, '$2y$10$0ws9A9r/7DOujkTE8Cth.e7mTjk72UK8MsHcHW3TUfzeESHA6/sBG', '20250121121615.jpeg', 1, '2025-01-21 06:40:37', 0, '2025-01-21 06:40:37', 0, 'MANAGER', 0, NULL, NULL, NULL, '9894836540', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 755, '2025-01-21 00:00:00', 15000, NULL, NULL, '2025-01-21 12:10:37', '2025-06-18 10:32:17', NULL),
+(53, 'Poopathi', 'M', 0, 0, 0, 'poopathirajaa02@gmail.com', NULL, '$2y$10$loevkQjOLCnFeVmSXBsQDewCwIZAew7zQ1aNw.LThJObF/Fsw8gXy', 0, '$2y$10$bzF3GqyZwnjSbPx3i6Bpx.ioYL0kutpi7ufWBzeQCavh5Ic12wnbC', '20250301202015.jpg', 1, '2025-02-27 16:53:30', 0, '2025-02-27 16:53:30', 0, 'Site Engineer', 0, NULL, NULL, NULL, '8072731855', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, 0, 0, 1, 0, 3185, '2025-02-27 00:00:00', 5000, NULL, NULL, '2025-02-27 22:23:30', '2025-03-12 15:52:36', NULL),
+(54, 'SANDHIYA', 'S K', 0, 0, 0, 'sandhiyakalimuthu5@gmail.com', NULL, '$2y$10$yuxnbbOGQIyYEYd/gS/z5.1BKBiR4pa59GZV2/TGvxA3L6MrGkQvy', 0, '$2y$10$iiKL20taHoeCmSMMe8FLSu//MWzEMr6.VH6j/sExGxDlSAapgFBKC', '20250418171242.webp', 0, '2025-04-18 11:42:42', 0, '2025-04-18 11:42:42', 0, 'ACCOUNTANT', 0, NULL, NULL, NULL, '6382257870', NULL, NULL, NULL, 2, NULL, NULL, NULL, 0, 0, 0, 1, 0, 320, '2025-04-30 00:00:00', 12000, NULL, NULL, '2025-04-18 17:12:42', '2025-10-06 05:28:09', NULL),
+(56, 'super', 'admin', 0, 0, 0, 'superadmin@gmail.com', NULL, '$2y$10$aF7Tf22.7/ga1ax1gxJq7ucOIkEk83HpO/BareVGLC1rJn3.JwBWe', 0, '$2y$10$Qe0IESCH9kmObeNxdSQy2eC1Sr6ZdW9M0Z5tpDA9xSOHhZX0e1VrG', '20250922125238.jpg', 1, '2025-09-22 12:52:38', 0, '2025-09-22 12:52:38', 0, 'demo', 0, NULL, NULL, NULL, '9876543210', NULL, NULL, NULL, 3, NULL, NULL, NULL, 0, 0, 0, 1, 0, 1000, '2025-09-21 18:30:00', 0, NULL, NULL, '2025-09-22 07:22:38', '2025-09-24 11:31:32', NULL);
 
 -- --------------------------------------------------------
 
@@ -19333,7 +19369,7 @@ CREATE TABLE `vendor_details` (
 
 INSERT INTO `vendor_details` (`id`, `name`, `phone`, `address`, `advance_amt`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (4, 'SARAVANAN', '9342432315', 'NAGAMALAI PUDHUKOTAI', '0', '2024-01-10 11:33:57', '2025-06-16 12:13:53', NULL),
-(5, 'RAMESH', '8778040023', 'JAIHINDPURAM, MADURAI.', '12100', '2024-03-03 18:26:15', '2025-06-27 09:34:05', NULL),
+(5, 'RAMESH', '8778040023', 'JAIHINDPURAM, MADURAI.', '12000', '2024-03-03 18:26:15', '2025-09-25 11:56:43', NULL),
 (6, 'HAKKIM BHAI', '9629270222', 'SEV TILES, GOOD SHED STREET, MADURAI', '76962', '2024-03-03 18:27:53', '2025-06-03 09:00:47', NULL),
 (7, 'KUMARESAN', '7639708642', 'KADACHANETHAL, MADURAI.', '18500', '2024-03-06 22:11:00', '2025-06-04 16:44:25', NULL),
 (8, 'NANDHI SUPPLIER', '9994971525', 'NERHU NAGAR \r\nBY PASS ROAD', '0', '2024-06-13 16:13:55', '2025-01-20 15:36:49', NULL);
@@ -20090,7 +20126,9 @@ INSERT INTO `wallet` (`id`, `amount`, `user_id`, `client_id`, `project_id`, `cur
 (763, 7000, 1, 29, 30, '2025-06-16 10:25:21', 'loan from lms', 1, 0, 11, '2025-06-18 10:25:46', '2025-06-18 10:25:46', NULL, 0),
 (764, 7510, 1, 29, 30, '2025-06-16 10:26:26', 'HDFC CREDIT CARD HOSPITAL', 1, 0, 11, '2025-06-18 10:28:01', '2025-06-18 10:28:01', NULL, 0),
 (765, 12490, 1, 29, 30, '2025-06-16 10:28:04', 'Loan from sumathi', 1, 0, 11, '2025-06-18 10:28:33', '2025-06-18 10:28:33', NULL, 0),
-(766, 1000, 1, 77, 79, '2025-06-18 10:33:04', 'Backya balance ac service cash', 1, 0, 9, '2025-06-18 10:33:44', '2025-06-18 10:33:44', NULL, 0);
+(766, 1000, 1, 77, 79, '2025-06-18 10:33:04', 'Backya balance ac service cash', 1, 0, 9, '2025-06-18 10:33:44', '2025-06-18 10:33:44', NULL, 0),
+(767, 10000, 44, 26, 18, '2025-09-08 06:23:28', NULL, 1, 0, 9, '2025-09-08 06:23:47', '2025-09-08 06:23:47', NULL, 0),
+(768, 1000, 56, 18, 17, '2025-09-23 00:19:58', NULL, 1, 0, 9, '2025-09-23 12:20:11', '2025-09-23 12:20:11', NULL, 0);
 
 --
 -- Indexes for dumped tables
@@ -20237,6 +20275,12 @@ ALTER TABLE `salary_details`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `stage`
 --
 ALTER TABLE `stage`
@@ -20287,7 +20331,7 @@ ALTER TABLE `attendance`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=325;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=328;
 
 --
 -- AUTO_INCREMENT for table `clientdetails`
@@ -20299,13 +20343,13 @@ ALTER TABLE `clientdetails`
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13308;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13313;
 
 --
 -- AUTO_INCREMENT for table `expenses_unpaid_date`
 --
 ALTER TABLE `expenses_unpaid_date`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=991;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=993;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -20329,7 +20373,7 @@ ALTER TABLE `labour_role`
 -- AUTO_INCREMENT for table `main_category`
 --
 ALTER TABLE `main_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -20365,13 +20409,19 @@ ALTER TABLE `project_details`
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `salary_details`
 --
 ALTER TABLE `salary_details`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+
+--
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `stage`
@@ -20389,7 +20439,7 @@ ALTER TABLE `transferdetails`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `vendor_details`
@@ -20401,7 +20451,7 @@ ALTER TABLE `vendor_details`
 -- AUTO_INCREMENT for table `wallet`
 --
 ALTER TABLE `wallet`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=767;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=769;
 
 --
 -- Constraints for dumped tables

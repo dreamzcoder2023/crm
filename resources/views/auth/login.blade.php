@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{asset('assets/vendor/css/pages/page-auth.css')}}">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
 <style>
   .modal-backdrop {
@@ -28,9 +29,25 @@
   </script>
   @endif
 @if(session()->has('msg'))
-    <div class="alert alert-danger">
+    {{-- <div class="alert alert-danger">
         {{ session()->get('msg') }}
-    </div>
+    </div> --}}
+          @if(session('msg'))
+<script>
+   Swal.fire({
+    icon: 'error',
+    title: 'Warning',
+    text: '{{ session('msg') }}',
+    showConfirmButton: true,
+    confirmButtonText: 'OK',
+   // position: 'top-end',
+    // customClass: {
+    //     popup: 'swal2-toast-like'
+    // }
+});
+
+</script>
+@endif
 @endif
 @if(session()->has('success'))
     <div class="alert alert-success">

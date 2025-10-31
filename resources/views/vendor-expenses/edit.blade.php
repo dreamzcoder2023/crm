@@ -28,22 +28,42 @@
 
 
                 <div class="card-body">
-                    <form name="createExpenses" id="createExpenses" action="{{ route('vendor-expenses.update',$expense->id) }}"
-                        method="post" enctype="multipart/form-data">
+                    <form name="createExpenses" id="createExpenses"
+                        action="{{ route('vendor-expenses.update', $expense->id) }}" method="post"
+                        enctype="multipart/form-data">
                         @csrf
                         {{ method_field('PUT') }}
-                        <input type="hidden" name="user_id" id="user_id" value="{{$expense->vendor_id}}">
+                        <input type="hidden" name="user_id" id="user_id" value="{{ $expense->vendor_id }}">
                         <div class="row">
                             <div class="col-6">
+                                <div class="mb-3 " id="here">
+                                    <label class="form-label" for="basic-default-phone">Main Category</label>
+
+                                    <div> <select class="form-control " name="main_category_id" id="main_category_id"
+                                            style="width:100%">
+                                            <option value="">Select category </option>
+                                            @foreach ($main_category as $main)
+                                                <option value="{{ $main->id }}"
+                                                    {{ $main->id == $expense->main_category_id ? 'selected ' : '' }}>
+                                                    {{ $main->name }}</option>
+                                            @endforeach
+                                        </select></div>
+
+                                    <label id="maincategory-error" class="error hide" for="basic-default-role">Main Category
+                                        is
+                                        required</label>
+                                </div>
                                 <div class="mb-3 " id="here">
                                     <label class="form-label" for="basic-default-phone">Category Name</label>
 
                                     <div> <select class="form-control " name="category_id" id="category_id"
-                                            style="width:100%"  >
+                                            style="width:100%">
                                             <option value="">Select category </option>
-                                            @foreach($category as $category)
-                                                <option value="{{ $category->id }}" {{ $category->id == $expense->category_id ? 'selected ' : '' }} >{{ $category->name }}</option>
-                                                @endforeach
+                                            @foreach ($category as $category)
+                                                <option value="{{ $category->id }}"
+                                                    {{ $category->id == $expense->category_id ? 'selected ' : '' }}>
+                                                    {{ $category->name }}</option>
+                                            @endforeach
                                         </select></div>
                                     <label id="showing_error_msg" class="error hide">Category name already exists.</label>
                                     <label id="showing_success_msg" class="success hide" style="color:green">Category added
@@ -53,35 +73,41 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Project Name</label>
-                                    <select class="form-control selectpicker" name="project_id" data-live-search="true" id="project_id">
+                                    <select class="form-control selectpicker" name="project_id" data-live-search="true"
+                                        id="project_id">
                                         <option value="">Select project </option>
                                         @foreach ($project as $project)
-                                            <option value="{{ $project->id }}" {{$expense->project_id  == $project->id ? 'selected' : ''}}>{{ $project->name }}</option>
+                                            <option value="{{ $project->id }}"
+                                                {{ $expense->project_id == $project->id ? 'selected' : '' }}>
+                                                {{ $project->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="project-error" class="error hide" for="basic-default-role">Project is
-                                      required</label>
+                                        required</label>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Vendor Name</label>
                                     <select class="form-control" name="vendor_id" id="vendor_id">
                                         <option value="">Select vendor </option>
                                         @foreach ($vendors as $vendor)
-                                            <option value="{{ $vendor->id }}" {{$expense->vendor_id == $vendor->id ? 'selected' : ''}}>{{ $vendor->name }}</option>
+                                            <option value="{{ $vendor->id }}"
+                                                {{ $expense->vendor_id == $vendor->id ? 'selected' : '' }}>
+                                                {{ $vendor->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="labour-error" class="error hide" for="basic-default-role">Vendor is
-                                      required</label>
+                                        required</label>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-email">Amount</label>
 
                                     <input type="text" id="amount" name="amount" class="form-control"
-                                        placeholder="Enter amount"
-                                        onkeypress="allowNumbersOnly(event)"  value="{{$expense->amount}}"/>
-                                        {{-- <p style="color:blue">wallet balance : {{$expense->wallet}}</p> --}}
-                                    <p class="advance_amt" style="color:blue">Advance Amount: {{ $expense->advance_amt }}</p>
+                                        placeholder="Enter amount" onkeypress="allowNumbersOnly(event)"
+                                        value="{{ $expense->amount }}" />
+                                    {{-- <p style="color:blue">wallet balance : {{$expense->wallet}}</p> --}}
+                                    <p class="advance_amt" style="color:blue">Advance Amount: {{ $expense->advance_amt }}
+                                    </p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
                                     <input type="hidden" class="amount-check-error" value=""><br>
@@ -92,31 +118,36 @@
                                     <select class="form-control" name="payment_mode" id="payment_mode">
                                         <option value="">Select payment </option>
                                         @foreach ($payment as $payment)
-                                            <option value="{{ $payment->id }}" {{$expense->payment_mode == $payment->id ? 'selected' : ''}}>{{ $payment->name }}</option>
+                                            <option value="{{ $payment->id }}"
+                                                {{ $expense->payment_mode == $payment->id ? 'selected' : '' }}>
+                                                {{ $payment->name }}</option>
                                         @endforeach
                                     </select>
                                     <label id="payment-error" class="error" for="basic-default-role">Payment mode is
                                         required</label>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label" for="basic-default-phone">Image</label>
-                                    <input type="file" name="image" class="form-control" accept="application/pdf,image/*"
-                                        placeholder="image">
-                                        @if($expense->image != '' || $expense->image != null)
-                                        <input type="hidden" name="image_status" value="{{ $expense->image }}">
-                                        <?php $extension = explode('.',$expense->image); ?>
-                                        @if($extension[1] == 'pdf')
-                                        <embed src="{{ url('images/' . $expense->image) }}"/>
-                                          @else
-                                        <img src="{{ url('images/' . $expense->image) }}" width="30px">
-                                        <span class="deleteImage" style=" cursor: pointer;" data-id="{{$expense->id}}"><img src="{{asset('assets/img/icons/cancel.png')}}" width="10px"/></span>
-                                        @endif
-                                        @endif
-                                </div>
+
 
                             </div>
                             <div class="col-6">
-
+                                <div class="mb-3">
+                                    <label class="form-label" for="basic-default-phone">Image</label>
+                                    <input type="file" name="image" class="form-control"
+                                        accept="application/pdf,image/*" placeholder="image">
+                                    @if ($expense->image != '' || $expense->image != null)
+                                        <input type="hidden" name="image_status" value="{{ $expense->image }}">
+                                        <?php $extension = explode('.', $expense->image); ?>
+                                        @if ($extension[1] == 'pdf')
+                                            <embed src="{{ url('images/' . $expense->image) }}" />
+                                        @else
+                                            <img src="{{ url('images/' . $expense->image) }}" width="30px">
+                                            <span class="deleteImage" style=" cursor: pointer;"
+                                                data-id="{{ $expense->id }}"><img
+                                                    src="{{ asset('assets/img/icons/cancel.png') }}"
+                                                    width="10px" /></span>
+                                        @endif
+                                    @endif
+                                </div>
 
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Description</label>
@@ -124,18 +155,20 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-message">Paid Amount</label><br>
-                                    <input type="text" class="form-control" id="paid_amt" data-oldvalue="{{ $expense->paid_amt }}" value="{{ $expense->paid_amt }}"
-                                        name="paid_amt" oninput="amountcheck(this.value)" onkeypress="allowNumbersOnly(event)">
+                                    <input type="text" class="form-control" id="paid_amt"
+                                        data-oldvalue="{{ $expense->paid_amt }}" value="{{ $expense->paid_amt }}"
+                                        name="paid_amt" oninput="amountcheck(this.value)"
+                                        onkeypress="allowNumbersOnly(event)">
                                     <label id="paid-error" class="error" for="basic-default-amt">Paid amount is
                                         required.</label>
-                                        <label id="amount-check-error" class="error" for="basic-default-phone">Insufficient
-                                          Balance</label>
+                                    <label id="amount-check-error" class="error" for="basic-default-phone">Insufficient
+                                        Balance</label>
                                     <!-- <label id="paid_amt-error" class="error" for="basic-default-amt">Paid amount must be less than amount.</label> -->
                                 </div>
                                 <!-- <div class="mb-3">
-                    <label class="form-label" for="basic-default-message">Unpaid Amount</label><br>
-                    <input  type="text" class="form-control" value="" id="unpaid_amt" name="unpaid_amt" readonly>
-                  </div> -->
+                        <label class="form-label" for="basic-default-message">Unpaid Amount</label><br>
+                        <input  type="text" class="form-control" value="" id="unpaid_amt" name="unpaid_amt" readonly>
+                      </div> -->
 
                                 <div class="mb-3">
                                     <label class="form-label" for="datetimepicker1">Date</label><br>
@@ -145,7 +178,7 @@
                                 <div class="mb-3">
                                     <label for="appt">Time:</label><br>
                                     <input type="time" id="appt" class="form-control" name="time"
-                                        value="<?php echo date("H:i", strtotime($expense->current_date)); ?>">
+                                        value="<?php echo date('H:i', strtotime($expense->current_date)); ?>">
                                 </div>
                             </div>
 
@@ -179,7 +212,7 @@
         $(document).ready(function() {
             $('.selectpicker').selectpicker();
         });
-   $(document).ready(function() {
+        $(document).ready(function() {
             $('.error').addClass('hide');
             $('.success').addClass('hide');
             $('.addcategory').hide();
@@ -248,6 +281,7 @@
         });
         $('#createExpenses').submit(function(e) {
             e.preventDefault();
+            var main = $('#main_category_id').find(':selected').val();
             var category = $('#category_id').find(":selected").val();
             var project = $('#project_id').find(':selected').val();
             var labour = $('#vendor_id').find(':selected').val();
@@ -262,12 +296,19 @@
             console.log('paid', paid);
 
             var clientname = false,
+                mainname = false,
                 amountname = false,
                 pamtname = false,
                 paymentmode = false,
                 projectname = false,
                 labourname = false,
                 paidname = false;
+            if (main.length < 1) {
+                $('#maincategory-error').removeClass('hide');
+            } else {
+                $('#maincategory-error').addClass('hide');
+                mainname = true;
+            }
             if (category.length < 1) {
                 $('#category-error').removeClass('hide');
             } else {
@@ -319,8 +360,9 @@
                 pamtname = true;
             }
 
-            if (clientname == true && amountname == true && projectname == true && labourname == true && (test == false || test == "false") && paymentmode ==
-                true && paidname == true) {
+            if (clientname == true && amountname == true && projectname == true && labourname == true && (test ==
+                    false || test == "false") && paymentmode ==
+                true && paidname == true && mainname == true) {
                 document.getElementById("createExpenses").submit();
             }
         });
@@ -329,31 +371,53 @@
             console.log(amount, "amount check");
             var old_amt = $('#paid_amt').attr('data-oldvalue');
             var total = 0;
-            if(old_amt < amount){
+            if (old_amt < amount) {
                 total = amount - old_amt;
             }
-            console.log('old_amt',old_amt);
-            console.log('total',total);
+            console.log('old_amt', old_amt);
+            console.log('total', total);
             var user_id = $('#user_id').val();
-            if(total > 0){
-            $.ajax({
-                url: "{{ route('vendor-insufficent') }}",
-                data: {
-                    'amount': total,'vendor_id' : user_id
-                },
-                type: 'GET',
-                dataType: 'json',
-                success: function(result) {
-                    console.log("result", result);
-                    $('.amount-check-error').val(result);
-          if(result == true)
-             $('#amount-check-error').removeClass('hide');
-          else
-          $('#amount-check-error').addClass('hide');
+            if (total > 0) {
+                $.ajax({
+                    url: "{{ route('vendor-insufficent') }}",
+                    data: {
+                        'amount': total,
+                        'vendor_id': user_id
+                    },
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(result) {
+                        console.log("result", result);
+                        $('.amount-check-error').val(result);
+                        if (result == true)
+                            $('#amount-check-error').removeClass('hide');
+                        else
+                            $('#amount-check-error').addClass('hide');
 
+                    }
+                });
+            }
+        }
+        $('#main_category_id').change(function() {
+            var main_id = $(this).val();
+            $.ajax({
+                type: 'get',
+                url: "{{ route('expenses.category') }}",
+                data: {
+                    main_id: main_id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response);
+                    $('#category_id').empty();
+                    $('#category_id').append('<option value="">Select category</option>');
+                    $.each(response, function(index, category) {
+                        $('#category_id').append('<option value="' + category.id + '">' +
+                            category.name + '</option>');
+                        // $('#category_id').append(option);
+                    });
                 }
-            });
-        }
-        }
+            })
+        })
     </script>
 @endsection

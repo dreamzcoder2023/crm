@@ -15,7 +15,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
 {
 
 
-    public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role,$search)
+    public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role,$search,$main_category)
     {
         $this->category_filter = $category_filter;
         $this->project_filter = $project_filter;
@@ -23,7 +23,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
         $this->from = $from;
         $this->to_date = $to_date;
         $this->auth = $auth;
-
+        $this->main_category = $main_category;
         $this->role = $role;
         $this->search = $search;
 
@@ -32,6 +32,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
     // Headings
     public function headings(): array{
         return[
+            'Main Category',
             'Category Name',
             'Paid Date',
             'Paid Time',
@@ -62,14 +63,18 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
       ->leftJoin('project_details', function ($join) {
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
-      });
-
-
-    $expenses = $expenses->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
-      ->where(['category.active_status' => 1, 'category.delete_status' => 0]);
-
-    $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.editedBy')->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance');
-    $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last')
+      })
+      ->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
+      ->where(['category.active_status' => 1, 'category.delete_status' => 0])
+      ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
+      ->leftjoin('users', 'users.id', '=', 'expenses.editedBy')
+      ->leftjoin('users as users_add', 'users_add.id', '=', 'expenses.user_id')
+      ->leftjoin('users as labour_ad', 'labour_ad.id', '=', 'expenses.is_advance')
+      ->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name', 'users_add.first_name as first', 'users_add.last_name as last', 'l.name as vendor_name', 'labour_ad.first_name as labour_first', 'labour_ad.last_name as labour_last',
+      'main_category.name as main_category_name')
+      ->when($this->main_category, function($query,$main_category){
+        $query->where('expenses.main_category_id',$main_category);
+      })
     ->when($this->category_filter, function($query, $category_filter){
       $query->where('expenses.category_id', $category_filter);
     })
@@ -104,6 +109,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
             ->orWhere('expenses.paid_amt','like',"%$search%")
             ->orWhere('expenses.unpaid_amt','like',"%$search%")
             ->orWhere('expenses.extra_amt','like',"%$search%")
+            ->orWhere('main_category.name','like',"%$search%")
             ->orWhere('expenses.description','like',"%$search%");
       });
   });
@@ -123,6 +129,7 @@ class VendorExpensesExport implements FromCollection, WithHeadings, WithMapping
         $unpaid_amt = ExpensesUnpaidDate::where('expense_id',$row->id)?->select('*')?->orderBy('id','desc')?->first();
         $unpaid_amt1 = !empty($unpaid_amt) ? $unpaid_amt->updated_at : $row->current_date;
         $fields = [
+          $row->main_category_name,
            $row->category_name,
             Carbon::parse($row->current_date)->format('m/d/Y'),
            Carbon::parse($row->current_date)->format('H:i A'),

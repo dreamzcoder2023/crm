@@ -31,9 +31,9 @@
     }
 </style>
 <!-- Basic Bootstrap Table -->
-<div class="card">
-    <h5 class="card-header"><b>Labour Name: </b></h5>
-    <div class="table-responsive text-nowrap">
+<div class="">
+    <h5 class=""><b>Labour Name: </b> {{ $labour_name->name }}</h5>
+    <div class="table-responsive ">
         <table class="table" id="labour_datatable">
             <thead>
                 <tr>

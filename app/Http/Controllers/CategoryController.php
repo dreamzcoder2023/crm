@@ -44,7 +44,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $maincategory = MainCategory::latest()->get();
+        $maincategory = MainCategory::where('status',1)->latest()->get();
         return view('category.create',['maincategory' => $maincategory]);
     }
 
@@ -75,9 +75,13 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $maincategory = MainCategory::latest()->get();
+        $maincategory = MainCategory::where('status',1)->latest()->get();
         $category = Category::where('id',$id)->first();
-        return view('category.edit',["category"=>$category,'maincategory' => $maincategory]);
+        return response()->json([
+        'maincategory' => $maincategory,
+        'category' => $category,
+    ]);
+       // return view('category.edit',["category"=>$category,'maincategory' => $maincategory]);
     }
 
     /**
@@ -114,5 +118,21 @@ class CategoryController extends Controller
         $category->update();
         return redirect()->route('category-index')
         ->with('message','Category Deleted Successfully');
+    }
+    public function updateCategory(Request $request){
+        $maincategory = MainCategory::where('status',1)->latest()->get();
+        $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
+        return response()->json([
+            'main_category' => $maincategory,
+            'category' =>$category
+        ]);
+    }
+    public function updateCategoryStatus(Request $request){
+       // dd($request->all());
+       foreach($request->category_id as $category_id){
+        Category::where('id',$category_id)->update(['main_category_id' => $request->main_category_id]);
+       }
+        return redirect()->route('category-index')
+            ->with('success','Category Updated Successfully');
     }
 }

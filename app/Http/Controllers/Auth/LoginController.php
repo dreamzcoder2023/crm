@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Mail\forgetpassword;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -43,17 +44,23 @@ class LoginController extends Controller
     // {
     //     $this->middleware('guest')->except('logout');
     // }
-    // public function login(Request $request)
-    // {
+  public function login(Request $request)
+{
+    $credentials = $request->only($this->username(), 'password');
 
-    //     $credentials = $request->only('phone', 'password');
-    //     if (Auth::attempt($credentials)) {
-    //         return redirect()->intended('dashboard')
-    //                     ->with('msg','You have Successfully loggedin');
-    //     }
+    if (Auth::attempt($credentials)) {
+        if (Auth::user()->status == 1) {
+            return redirect()->intended('dashboard')
+                ->with('msg', 'You have successfully logged in');
+        } else {
+            Auth::logout();
+            return redirect('login')->with('msg', 'You don’t have permission to access');
+        }
+    }
 
-    //     return redirect("login")->with('msg','Oppes! You have entered invalid credentials');
-    // }
+    return redirect('login')->with('msg', 'Oops! You have entered invalid credentials');
+}
+
     public function username()
     {
         return 'phone';

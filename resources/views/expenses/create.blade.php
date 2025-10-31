@@ -55,9 +55,9 @@
                                     <div> <select class="form-control" name="category_id" id="category_id"
                                             style="width:90%">
                                             <option value="">Select category </option>
-                                            @foreach ($category as $category)
+                                            {{-- @foreach ($category as $category)
                                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select></div>
                                     <span class="bi bi-plus d-flex justify-content-end"
                                         style="margin-top: -35px;margin-bottom: 40px; font-size: 28; color: blueviolet;"

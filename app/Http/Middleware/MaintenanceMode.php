@@ -2,28 +2,23 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Settings;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Settings;
 
 class MaintenanceMode
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
     public function handle(Request $request, Closure $next)
     {
-         $maintenance = Settings::where('key','is_maintenance')->first();
+        $maintenance = Settings::where('key', 'is_maintenance')->first();
+        $user = Auth::user();
 
-        // Allow access to admin routes even in maintenance mode
-        if ($maintenance && $maintenance->value == 1) {
-            return response()->view('maintenance');
-        }else{
-            return $next($request);
+        if ($maintenance && (int) $maintenance->value === 1 && $user->email != 'superadmin@gmail.com') {
+            return redirect()->route('maintenance');
         }
+
+        // ✅ Not in maintenance mode
+        return $next($request);
     }
 }

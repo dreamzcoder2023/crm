@@ -15,7 +15,7 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
 {
 
 
-    public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role,$search)
+    public function __construct($category_filter , $project_filter, $user_filter, $from, $to_date,$auth,$role,$search,$main_category)
     {
         $this->category_filter = $category_filter;
         $this->project_filter = $project_filter;
@@ -25,12 +25,14 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
         $this->auth = $auth;
         $this->search = $search;
         $this->role = $role;
+        $this->main_category = $main_category;
 
     }
 
     // Headings
     public function headings(): array{
         return[
+          'Main Category',
             'Category Name',
             'Paid Date',
             'Paid Time',
@@ -64,6 +66,7 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
         $join->on('project_details.id', 'expenses.project_id')
           ->where('expenses.project_id', '!=', null);
       })
+      ->leftjoin('main_category','main_category.id','=','expenses.main_category_id')
       ->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')
       ->where(['category.active_status' => 1, 'category.delete_status' => 0])
       ->leftjoin('users', 'users.id', '=', 'expenses.editedBy')
@@ -73,12 +76,15 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
       'payment.name as payment_name', 'users.first_name', 
       'users.last_name', 'users_add.first_name as first', 
       'users_add.last_name as last','l.name as labour_name',
-      'labour_ad.first_name as labour_first','labour_ad.last_name as labour_last')
+      'labour_ad.first_name as labour_first','labour_ad.last_name as labour_last','main_category.name as main_category_name')
       ->when($this->from, function($query,$from){
         $query->wheredate('current_date', '>=',$from);
       })
    ->when($this->to_date,function($query,$to){
         $query->wheredate('current_date', '<=', $to);
+      })
+      ->when($this->main_category,function($query,$main_category){
+        $query->where('expenses.main_category_id',$main_category);
       })
       ->when($this->category_filter,function($query,$category_id){
         $query->where('expenses.category_id', $category_id);
@@ -109,6 +115,7 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
             ->orWhere('expenses.unpaid_amt', 'like', "%$search%")
             ->orWhere('expenses.extra_amt', 'like', "%$search%")
             ->orWhere('expenses.reason','like',"%$search%")
+            ->orWhere('main_category.name','like',"%$search%")
             ->orWhere('expenses.description', 'like', "%$search%");
         });
       });
@@ -128,6 +135,7 @@ class VendorDeleteExpensesExport implements FromCollection, WithHeadings, WithMa
         $unpaid_amt = ExpensesUnpaidDate::where('expense_id',$row->id)?->select('*')?->orderBy('id','desc')?->first();
         $unpaid_amt1 =  $row->current_date;
         $fields = [
+          $row->main_category_name,
            $row->category_name,
             Carbon::parse($unpaid_amt1)->format('m/d/Y'),
            Carbon::parse($unpaid_amt1)->format('H:i A'),

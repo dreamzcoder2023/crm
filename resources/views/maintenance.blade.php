@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-    <h1>🚧 Under Maintenance 🚧</h1>
+    <h1> Under Maintenance </h1>
     <p>We are working on improvements.<br>Please check back later.</p>
 
     <!-- Add your construction image here -->

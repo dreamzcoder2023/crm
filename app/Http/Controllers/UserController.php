@@ -30,13 +30,15 @@ class UserController extends Controller
     $paginate = $request->paginate ?? 15;
     //return view('roles.index');
     $id = Auth::user()->id;
-    $users = User::when(request('search'), function ($query, $search) {
-      $query->where('first_name', 'like', "%$search%")
+    $users = User::whereNot('email','superadmin@gmail.com')->when(request('search'), function ($query, $search) {
+      $query->where(function ($q) use ($search) {
+      $q->where('first_name', 'like', "%$search%")
         ->orWhere('last_name', 'like', "%$search%")
         ->orWhere('job_title', 'like', "%$search%")
         ->orWhere('email', 'like', "%$search%")
         ->orWhere('phone', 'like', "%$search%")
         ->orWhere('wallet', 'like', "%$search");
+      });
     })
       ->where('active_status', 1)->where('delete_status', 0)
       ->where('id', '!=', $id)->orderBy('id', 'desc')->paginate($paginate)->withQueryString();
@@ -307,5 +309,17 @@ class UserController extends Controller
     }
     $user->update($input);
     return response()->json($user);
+  }
+  public function change_password(Request $request,$id){
+    $user = User::where('id',$id)->first();
+    $user->password = $request->new_password;
+    $user->update();
+    return redirect()->route('user-index')->with('message','Password changed successfully');
+  }
+  public function changestatus(Request $request){
+   $user = User::where('id',$request->id)->first();
+   $user->status = $request->status;
+   $user->update();
+   return response()->json($user);
   }
 }

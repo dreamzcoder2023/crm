@@ -8,26 +8,25 @@
 
 @section('content')
 
-@if (session()->has('expenses-popup'))
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"
-    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    @if (session()->has('expenses-popup'))
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
-<script>
-      $(function() {
-    toastr.success('{{ session('expenses-popup') }}', {
-        timeOut: 1000,
-        fadeOut: 1000,
-    });
-});
-</script>
-@endif
+        <script>
+            $(function() {
+                toastr.success('{{ session('expenses-popup') }}', {
+                    timeOut: 1000,
+                    fadeOut: 1000,
+                });
+            });
+        </script>
+    @endif
     <style>
         .bootstrap-select {
             max-width: 100%;
             color: #697a8d;
             border: solid 0.5px #697a8d !important;
         }
-      
     </style>
     <!-- <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span></h4> -->
 
@@ -45,22 +44,35 @@
                     <form name="createExpenses" id="createExpenses" action="{{ route('labour-expenses.store') }}"
                         method="post" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="user_id" id="user_id" value="{{Auth::user()->id}}">
+                        <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}">
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3 " id="here">
-                                    <label class="form-label" for="basic-default-phone">Category Name</label>
-                                   <input type="hidden" name="category_id" value="{{ $category?->id }}">
-                                    <div> <select class="form-control " name="category_id" id="category_id"
-                                            style="width:100%" disabled >
-                                            <option value="">Select category </option>
+                                    <label class="form-label" for="basic-default-phone">Main Category</label>
 
-                                                <option value="{{ $category?->id }}" {{ $category->name == 'salary' ? 'selected ' : '' }} readonly>{{ $category?->name }}</option>
+                                    <div> <select class="form-control " name="main_category_id" id="main_category_id"
+                                            style="width:100%">
+                                            <option value="">Select</option>
+                                            @foreach ($main_category as $main)
+                                                <option value="{{ $main->id }}">{{ $main->name }}</option>
+                                            @endforeach
 
                                         </select></div>
-                                    <label id="showing_error_msg" class="error hide">Category name already exists.</label>
-                                    <label id="showing_success_msg" class="success hide" style="color:green">Category added
-                                        successfully.</label>
+
+                                    <label id="maincategory-error" class="error hide" for="basic-default-role">Main Category
+                                        is
+                                        required</label>
+                                </div>
+                                <div class="mb-3 " id="here">
+                                    <label class="form-label" for="basic-default-phone">Category Name</label>
+                                   
+                                    <div> <select class="form-control " name="category_id" id="category_id"
+                                            style="width:100%" >
+                                            <option value="">Select category </option>
+
+                                          
+                                        </select></div>
+
                                     <label id="category-error" class="error hide" for="basic-default-role">Category is
                                         required</label>
                                 </div>
@@ -84,9 +96,10 @@
                                             <option value="{{ $project?->id }}">{{ $project?->name }}</option>
                                         @endforeach
                                     </select>
-                                    <label id="project-error" class="error hide" for="basic-default-role">Project is required</label>
+                                    <label id="project-error" class="error hide" for="basic-default-role">Project is
+                                        required</label>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Labour Name</label>
                                     <select class="form-control select2" name="labour_id" id="labour_id">
@@ -96,15 +109,14 @@
                                         @endforeach
                                     </select>
                                     <label id="labour-error" class="error hide" for="basic-default-role">Labour is
-                                      required</label>
+                                        required</label>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-email">Salary</label>
 
                                     <input type="text" id="amount" name="amount" class="form-control"
-                                        placeholder="Enter amount"
-                                        onkeypress="allowNumbersOnly(event)" />
+                                        placeholder="Enter amount" onkeypress="allowNumbersOnly(event)" />
                                     <p class="advance_amt" style="color:blue"> </p>
                                     <label id="amount-error" class="error" for="basic-default-email">Amount is
                                         required</label>
@@ -122,34 +134,35 @@
                                     <label id="payment-error" class="error" for="basic-default-role">Payment mode is
                                         required</label>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label" for="basic-default-phone">Image</label>
-                                    <input type="file" name="image" class="form-control" accept="application/pdf,image/*"
-                                        placeholder="image">
-                                </div>
+
 
                             </div>
                             <div class="col-6">
 
-
+                                <div class="mb-3">
+                                    <label class="form-label" for="basic-default-phone">Image</label>
+                                    <input type="file" name="image" class="form-control"
+                                        accept="application/pdf,image/*" placeholder="image">
+                                </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-phone">Description</label>
-                                    <textarea type="text" name="description" id="description" class="form-control phone-mask" style="height:28px"></textarea>
+                                    <textarea type="text" name="description" id="description" class="form-control phone-mask" rows="2"></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="basic-default-message">Paid Amount</label><br>
-                                    <input type="text" class="form-control" value="" id="paid_amt"  oninput="amountcheck(this.value)"
-                                        name="paid_amt" onkeypress="allowNumbersOnly(event)">
+                                    <input type="text" class="form-control" value="" id="paid_amt"
+                                        oninput="amountcheck(this.value)" name="paid_amt"
+                                        onkeypress="allowNumbersOnly(event)">
                                     <label id="paid-error" class="error" for="basic-default-amt">Paid amount is
                                         required.</label>
-                                        <label id="amount-check-error" class="error" for="basic-default-phone">Insufficient
-                                          Balance</label>
+                                    <label id="amount-check-error" class="error" for="basic-default-phone">Insufficient
+                                        Balance</label>
                                     <!-- <label id="paid_amt-error" class="error" for="basic-default-amt">Paid amount must be less than amount.</label> -->
                                 </div>
                                 <!-- <div class="mb-3">
-                    <label class="form-label" for="basic-default-message">Unpaid Amount</label><br>
-                    <input  type="text" class="form-control" value="" id="unpaid_amt" name="unpaid_amt" readonly>
-                  </div> -->
+                        <label class="form-label" for="basic-default-message">Unpaid Amount</label><br>
+                        <input  type="text" class="form-control" value="" id="unpaid_amt" name="unpaid_amt" readonly>
+                      </div> -->
 
                                 <div class="mb-3">
                                     <label class="form-label" for="datetimepicker1">Date</label><br>
@@ -177,29 +190,28 @@
         <!-- Basic with Icons -->
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  
 
 
 
-<!-- Select2 JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 
     <script>
-       
-       $('#project_id').select2({
-        placeholder: "Select project",
-        allowClear: true,
-        width: '100%',
-    });
-    $('#labour_id').select2({
-        placeholder: "Select labour",
-        allowClear: true,
-        width: '100%',
-    });
-       
-   $(document).ready(function() {
+        $('#project_id').select2({
+            placeholder: "Select project",
+            allowClear: true,
+            width: '100%',
+        });
+        $('#labour_id').select2({
+            placeholder: "Select labour",
+            allowClear: true,
+            width: '100%',
+        });
+
+        $(document).ready(function() {
             $('.error').addClass('hide');
             $('.success').addClass('hide');
             $('.addcategory').hide();
@@ -269,6 +281,7 @@
         });
         $('#createExpenses').submit(function(e) {
             e.preventDefault();
+            var main = $('#main_category_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
             var project = $('#project_id').find(':selected').val();
             var labour = $('#labour_id').find(':selected').val();
@@ -283,12 +296,19 @@
             console.log('paid', paid);
 
             var clientname = false,
+            mainname = false,
                 amountname = false,
                 pamtname = false,
                 paymentmode = false,
                 projectname = false,
                 labourname = false,
                 paidname = false;
+            if(main.length < 1){
+                $('#maincategory-error').removeClass('hide');
+            }else{
+                $('#maincategory-error').addClass('hide');
+                mainname = true;
+            }
             if (category.length < 1) {
                 $('#category-error').removeClass('hide');
             } else {
@@ -340,8 +360,9 @@
                 pamtname = true;
             }
 
-            if (clientname == true && amountname == true && projectname == true && labourname == true && (test == false || test == "false") && paymentmode ==
-                true && paidname == true) {
+            if (clientname == true && amountname == true && projectname == true && labourname == true && (test ==
+                    false || test == "false") && paymentmode ==
+                true && paidname == true && mainname == true) {
                 document.getElementById("createExpenses").submit();
             }
         });
@@ -352,20 +373,39 @@
             $.ajax({
                 url: "{{ route('amount-check') }}",
                 data: {
-                    'amount': amount,'user_id' : user_id
+                    'amount': amount,
+                    'user_id': user_id
                 },
                 type: 'GET',
                 dataType: 'json',
                 success: function(result) {
                     console.log("result", result);
                     $('.amount-check-error').val(result);
-          if(result == true)
-             $('#amount-check-error').removeClass('hide');
-          else
-          $('#amount-check-error').addClass('hide');
+                    if (result == true)
+                        $('#amount-check-error').removeClass('hide');
+                    else
+                        $('#amount-check-error').addClass('hide');
 
                 }
             });
         }
+         $('#main_category_id').change(function(){
+          var main_id = $(this).val();
+          $.ajax({
+            type: 'get',
+            url: "{{ route('expenses.category') }}",
+            data: {main_id:main_id},
+            dataType:'json',
+            success:function(response){
+              console.log(response);
+              $('#category_id').empty();
+              $('#category_id').append('<option value="">Select category</option>');
+              $.each(response, function (index, category) {
+                $('#category_id').append('<option value="'+category.id+'">'+category.name+'</option>');
+               // $('#category_id').append(option);
+            });
+            }
+          })
+        })
     </script>
 @endsection

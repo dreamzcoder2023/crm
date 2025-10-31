@@ -7,6 +7,8 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
     .dropdown-toggle {
         width: 146px !important;
@@ -100,6 +102,63 @@
             margin-bottom: 10px;
         }
     }
+
+    @keyframes dropdownFlipIn {
+        0% {
+            transform: perspective(400px) rotateX(-90deg);
+            /* Only flip down */
+            opacity: 0;
+        }
+
+        100% {
+            transform: perspective(400px) rotateX(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* Glass-style dropdown with full-rounded corners and no horizontal animation */
+    .filter-dropdown {
+        max-height: 350px;
+        overflow-y: auto;
+        border-radius: 16px;
+        width: 360px;
+        padding: 20px;
+        display: none;
+
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    }
+
+    /* Apply only flip-in effect */
+    .dropdown-menu.show.filter-dropdown {
+        display: block !important;
+        animation: dropdownFlipIn 0.4s ease both;
+        transform-origin: top;
+        position: absolute;
+        top: 100% !important;
+    }
+
+    /* Close button styled in red */
+    .btn-close {
+        background-color: rgba(220, 53, 69, 0.8);
+        border-radius: 50%;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        opacity: 1;
+    }
+
+    /* Make labels bold */
+    .filter-dropdown label {
+        font-weight: 600;
+    }
+
+    /* Small & neat buttons side by side */
+    .filter-dropdown .btn {
+        padding: 4px 12px;
+        font-size: 0.85rem;
+    }
 </style>
 @section('title', 'List | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
@@ -138,100 +197,127 @@
             });
         </script>
     @endif
+    <div class="row g-2 mt-3">
+        <div class="col-md-12 text-end">
+            <div class="d-flex justify-content-end flex-wrap gap-2" style="margin-right: 5px">
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-primary no-caret" type="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="false" aria-expanded="false" style="position: relative">
+                        Filter
+                    </button>
 
-    <div class="card p-3">
-        <form id="submit-form">
-            <div id="filter-section">
-                <!-- First Row: Filters + Search -->
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-1">
-                        <label for="entries">Entities</label>
-                        <select id="entries" name="paginate" class="form-control" onchange="submitform()">
-                            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10</option>
-                            <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
+                    <div class="dropdown-menu p-4 shadow filter-dropdown" id="filterDropdown" style="min-width: 380px;">
+                        <div class="d-flex justify-content-end mb-2">
+                            <button type="button" class="btn btn-sm btn-danger" id="closeDropdownBtn">x</button>
 
-                    <div class="col-md-2">
-                        <label for="category_id">Category</label>
-                        <select id="category_id" name="category_id" class="form-control glass-dropdown">
-                            <option value="">Select Category</option>
-                            @foreach ($category as $category)
-                                <option value="{{ $category->id }}"
-                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label for="project_id">Project</label>
-                        <select id="project_id" name="project_id" class="form-control">
-                            <option value="">Select Project</option>
-                            @foreach ($project as $project)
-                                <option value="{{ $project->id }}"
-                                    {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label for="user_id">Member</label>
-                        <select id="user_id" name="user_id" class="form-control">
-                            <option value="">Select Member</option>
-                            @foreach ($user as $member)
-                                <option value="{{ $member->id }}"
-                                    {{ request('user_id') == $member->id ? 'selected' : '' }}>{{ $member->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="date_range">Date Range</label>
-                        <input type="text" id="date_range" name="date_range" class="form-control"
-                            value="{{ request('date_range') }}">
-                    </div>
-                    {{-- <div class="col-md-2">
-                        <label for="from_date">From Date</label>
-                        <input type="date" id="from_date" name="from_date" class="form-control" value="{{ request('from_date') }}">
-                    </div>
-    
-                    <div class="col-md-2">
-                        <label for="to_date">To Date</label>
-                        <input type="date" id="to_date" name="to_date" class="form-control" value="{{ request('to_date') }}">
-                    </div> --}}
-
-                    <div class="col-md-2">
-                        <label for="search">Search</label>
-                        <input type="text" id="search" name="search" value="{{ request('search') }}"
-                            class="form-control" placeholder="Search">
-                    </div>
-                </div>
-
-                <!-- Second Row: Buttons -->
-                <div class="row g-2 mt-3">
-                    <div class="col-md-12 text-end">
-                        <div class="d-flex justify-content-end flex-wrap gap-2">
-                            <button class="btn btn-primary client_search" type="submit">
-                                <i class="bx bx-search"></i>
-                            </button>
-                            <a class="btn btn-danger" href="{{ route('vendor-expenses-index') }}">
-                                <i class="bx bx-x-circle"></i>
-                            </a>
-                            <button type="button" class="btn btn-success" id="expense-export">
-                                <i class="bi bi-file-earmark-excel-fill"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger" id="expense-pdf">
-                                <i class="bi bi-file-pdf"></i>
-                            </button>
                         </div>
+                        <form id="submit-form">
+                            <div id="filter-section">
+                                <!-- First Row: Filters + Search -->
+                               
+                                    <div class="mb-3">
+                                        <label for="entries">Entities</label>
+                                        <select id="entries" name="paginate" class="form-control" onchange="submitform()">
+                                            <option value="10" {{ request('paginate') == '10' ? 'selected' : '' }}>10
+                                            </option>
+                                            <option value="25" {{ request('paginate') == '25' ? 'selected' : '' }}>25
+                                            </option>
+                                            <option value="50" {{ request('paginate') == '50' ? 'selected' : '' }}>50
+                                            </option>
+                                            <option value="100" {{ request('paginate') == '100' ? 'selected' : '' }}>100
+                                            </option>
+                                        </select>
+                                    </div>
+                                      <div class="mb-3">
+                                        <label for="category_id">Main Category</label>
+                                        <select id="main_category_id" name="main_category_id" class="form-control glass-dropdown">
+                                            <option value="">Select Category</option>
+                                            @foreach ($main_category as $main)
+                                                <option value="{{ $main->id }}"
+                                                    {{ request('main_category_id') == $main->id ? 'selected' : '' }}>
+                                                    {{ $main->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category_id">Category</label>
+                                        <select id="category_id" name="category_id" class="form-control glass-dropdown">
+                                            <option value="">Select Category</option>
+                                            @foreach ($category as $category)
+                                                <option value="{{ $category->id }}"
+                                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                                    {{ $category->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="project_id">Project</label>
+                                        <select id="project_id" name="project_id" class="form-control">
+                                            <option value="">Select Project</option>
+                                            @foreach ($project as $project)
+                                                <option value="{{ $project->id }}"
+                                                    {{ request('project_id') == $project->id ? 'selected' : '' }}>
+                                                    {{ $project->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="user_id">Member</label>
+                                        <select id="user_id" name="user_id" class="form-control">
+                                            <option value="">Select Member</option>
+                                            @foreach ($user as $member)
+                                                <option value="{{ $member->id }}"
+                                                    {{ request('user_id') == $member->id ? 'selected' : '' }}>
+                                                    {{ $member->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="date_range">Date Range</label>
+                                        <input type="text" id="date_range" name="date_range" class="form-control"
+                                            value="{{ request('date_range') }}">
+                                    </div>
+                               
+
+                                    <div class="mb-3">
+                                        <label for="search">Search</label>
+                                        <input type="text" id="search" name="search" value="{{ request('search') }}"
+                                            class="form-control" placeholder="Search">
+                                    </div>
+                                
+
+                                <!-- Second Row: Buttons -->
+                               
+                                        <div class="d-flex justify-content-end flex-wrap gap-2">
+                                            <a class="btn btn-danger" href="{{ route('vendor-expenses-index') }}">
+                                               Reset
+                                            </a>
+                                            <button class="btn btn-primary client_search" type="submit">
+                                               Apply
+                                            </button>
+                                            
+
+                                        </div>
+                                   
+                            </div>
+                        </form>
                     </div>
                 </div>
+                <button type="button" class="btn btn-success" id="expense-export">
+                    <i class="bi bi-file-earmark-excel-fill"></i>
+                </button>
+                <button type="button" class="btn btn-danger" id="expense-pdf">
+                    <i class="bi bi-file-pdf"></i>
+                </button>
             </div>
-        </form>
+        </div>
     </div>
 
 
@@ -249,6 +335,7 @@
                                         class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
                         @endcan
                         <th>Paid date</th>
+                        <th>Main <br/>Category</th>
                         <th>Category <br />Name</th>
                         <th>Project Name</th>
                         <th>Vendor Name</th>
@@ -280,7 +367,7 @@
                             @endcan
                             <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br />
                                 {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
-
+                            <td>{{ $expense->main_category_name ? $expense->main_category_name : '--' }}</td>
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
                             <td>{{ $expense->vendor_name }}</td>
@@ -467,6 +554,11 @@
                 $(this).val('');
             });
         });
+        $('#main_category_id').select2({
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
+        });
         $('#category_id').select2({
             placeholder: "Select",
             allowClear: true,
@@ -533,11 +625,11 @@
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
-
+            var main_category = $('#main_category_id').find(":selected").val();
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = '{{ route('vendor-expenses-export') }}';
-            window.location.href = url + '?date_range=' + date_range + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range + '&main_category_id=' +main_category+ '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user + '&search=' + search;
         });
         $('#expense-pdf').click(function() {
@@ -545,11 +637,11 @@
             var user = $('#user_id').find(":selected").val();
             var project = $('#project_id').find(":selected").val();
             var category = $('#category_id').find(":selected").val();
-
+            var main_category = $('#main_category_id').find(":selected").val();
             var date_range = $('#date_range').val();
             var search = $('#search').val();
             var url = '{{ route('vendor-expenses-pdf') }}';
-            window.location.href = url + '?date_range=' + date_range + '&category_id=' +
+            window.location.href = url + '?date_range=' + date_range + '&main_category_id=' +main_category+ '&category_id=' +
                 category + '&project_id=' + project + '&user_id=' + user + '&search=' + search;
         });
         $('.expense_id').on('click', function() {
@@ -597,11 +689,42 @@
                 }
             });
         });
-        // $('#entries').change(function() {
-        //     var paginate = $(this).val();
-        //     console.log('entries', paginate);
-        //     var url = '{{ route('vendor-expenses-index') }}';
-        //     window.location.href = url + '?paginate=' + paginate;
-        // });
+            $(document).ready(function() {
+            // Close dropdown on "Apply"
+            $('#filterForm').on('submit', function() {
+                var dropdownToggle = $('[data-bs-toggle="dropdown"]');
+                var dropdown = bootstrap.Dropdown.getInstance(dropdownToggle[0]);
+                if (dropdown) {
+                    dropdown.hide();
+                }
+            });
+
+            // Close dropdown on custom close button
+            $('#closeDropdownBtn').on('click', function() {
+                var dropdownToggle = $('[data-bs-toggle="dropdown"]');
+                var dropdown = bootstrap.Dropdown.getInstance(dropdownToggle[0]);
+                if (dropdown) {
+                    dropdown.hide();
+                }
+            });
+        });
+              $('#main_category_id').change(function(){
+          var main_id = $(this).val();
+          $.ajax({
+            type: 'get',
+            url: "{{ route('expenses.category') }}",
+            data: {main_id:main_id},
+            dataType:'json',
+            success:function(response){
+              console.log(response);
+              $('#category_id').empty();
+              $('#category_id').append('<option value="">Select category</option>');
+              $.each(response, function (index, category) {
+                $('#category_id').append('<option value="'+category.id+'">'+category.name+'</option>');
+               // $('#category_id').append(option);
+            });
+            }
+          })
+        })
     </script>
 @endsection

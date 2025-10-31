@@ -13,6 +13,7 @@ use App\Models\ProjectDetails;
 use App\Exports\ClientSummaryExport;
 use App\Exports\PaymentIncomeExport;
 use App\Exports\PaymentExpenseExport;
+use App\Models\MainCategory;
 use App\Models\User;
 use Carbon\Carbon;
 use Excel;
@@ -131,30 +132,48 @@ class ReportsController extends Controller
   }
   public function payment_expenses(Request $request)
   {
+     $paginate = $request->paginate??10;
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
-    $from_date = $request->from_date;
-    $to_date1 = $request->to_date;
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+   $from = null;
+    $to = null;
+       if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
 
-    $project = Expenses::leftjoin('users', 'users.id', '=', 'expenses.user_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')->where('expenses.project_id', $request->id)->whereNull('expenses.deleted_at')->select('expenses.*', 'category.name as category_name', 'users.first_name', 'users.last_name', 'payment.name as payment_name');
-    if ($from != '' && $to_date != '') {
-      $project = $project->whereBetween('wallet.current_date', [$from, $to_date]);
-    }
-    if ($category_filter != 'undefined' && $category_filter != '') {
-      $project = $project->where('expenses.category_id', $category_filter);
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
     }
 
-    if ($user_filter != 'undefined' && $user_filter != '') {
-      $project = $project->where('expenses.user_id', $user_filter);
-    }
-    $project = $project->get();
+    $projects = Expenses::leftjoin('users', 'users.id', '=', 'expenses.user_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')->where('expenses.project_id', $request->id)->whereNull('expenses.deleted_at')->select('expenses.*', 'category.name as category_name', 'users.first_name', 'users.last_name', 'payment.name as payment_name')
+      ->when($from,function($query,$from){
+                  $query->whereDate('expenses.current_date','>=',$from);
+                })
+                ->when($to,function($query,$to){
+                  $query->whereDate('expenses.current_date','<=',$to);
+                })
+                 ->when(request('category_id'),function($query,$category_id){
+                  $query->where('expenses.category_id', $category_id);
+                })
+             
+                ->when(request('user_id'),function($query,$user_id){
+                  $query->where('expenses.user_id', $user_id);
+                })
+                ->when(request('search'),function($query,$search){
+                  $query->where(function ($q) use ($search) {
+          $q->where('users.first_name', 'like', "%$search%")
+            ->orWhere('users.last_name', 'like', "%$search%")
+            ->orWhere('expenses.amount', 'like', "%$search%")
+            ->orWhere('expenses.description', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search"); 
+        });
+        })->paginate($paginate);
+ 
     //dd($project);
     $category = Category::where('active_status', 1)->where('delete_status', 0)->get();
     $user = User::where('active_status', 1)->where('delete_status', 0)->get();
-    return view('reports.paymentexpense', ['project' => $project, 'from_date' => $from_date, 'to_date1' => $to_date1, 'user' => $user, 'user_filter' => $user_filter, 'id' => $request->id, 'category_filter' => $category_filter, 'category' => $category]);
+   
+    return view('reports.paymentexpense', ['projects' => $projects,  'user' => $user, 'user_filter' => $user_filter, 'id' => $request->id, 'category_filter' => $category_filter, 'category' => $category,]);
   }
 
   public function client_summary_export(Request $request)
@@ -246,14 +265,17 @@ $clients = ProjectDetails::leftjoin('wallet', 'wallet.project_id', '=', 'project
   {
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
-    $from_date = $request->from_date;
-    $to_date1 = $request->to_date;
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+   $from = null;
+    $to = null;
+       if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
 
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
     $project = Wallet::leftjoin('clientdetails', 'clientdetails.id', '=', 'wallet.client_id')->leftjoin('payment', 'payment.id', '=', 'wallet.payment_mode')?->leftjoin('stage', 'stage.id', '=', 'wallet.stage_id')?->where('wallet.project_id', $request->id)->select('wallet.*', 'clientdetails.first_name', 'clientdetails.last_name', 'payment.name as payment_name', 'stage.name as stage_name');
-    if ($from != '' && $to_date != '') {
-      $project = $project->whereBetween('wallet.current_date', [$from, $to_date]);
+    if ($from != '' && $to != '') {
+      $project = $project->whereBetween('wallet.current_date', [$from, $to]);
     }
 
     if ($user_filter != 'undefined' && $user_filter != '') {
@@ -270,11 +292,15 @@ $clients = ProjectDetails::leftjoin('wallet', 'wallet.project_id', '=', 'project
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
-    $from_date = $request->from_date;
-    $to_date1 = $request->to_date;
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
-    return Excel::download((new PaymentExpenseExport($user_filter, $from, $to_date, $request->id, $category_filter)), 'payment-expense.xlsx');
+   $from = null;
+    $to = null;
+       if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
+
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+    return Excel::download((new PaymentExpenseExport($user_filter, $from, $to, $request->id, $category_filter)), 'payment-expense.xlsx');
   }
   public function payment_expense_pdf(Request $request)
   {
@@ -282,14 +308,18 @@ $clients = ProjectDetails::leftjoin('wallet', 'wallet.project_id', '=', 'project
     $category_filter = $request->category_id;
     $project_filter = $request->project_id;
     $user_filter = $request->user_id;
-    $from_date = $request->from_date;
-    $to_date1 = $request->to_date;
-    $from = (isset($request->from_date) && $request->from_date != 'undefined') ? ($request->from_date . ' ' . '00:00:00') : '';
-    $to_date = (isset($request->to_date) && $request->to_date != 'undefined') ? ($request->to_date . ' ' . '23:59:59') : '';
+   $from = null;
+    $to = null;
+       if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
+
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
 
     $project = Expenses::leftjoin('users', 'users.id', '=', 'expenses.user_id')->leftjoin('category', 'category.id', '=', 'expenses.category_id')->leftjoin('payment', 'payment.id', '=', 'expenses.payment_mode')->where('expenses.project_id', $request->id)->select('expenses.*', 'category.name as category_name', 'users.first_name', 'users.last_name', 'payment.name as payment_name');
-    if ($from != '' && $to_date != '') {
-      $project = $project->whereBetween('wallet.current_date', [$from, $to_date]);
+    if ($from != '' && $to != '') {
+      $project = $project->whereBetween('wallet.current_date', [$from, $to]);
     }
     if ($category_filter != 'undefined' && $category_filter != '') {
       $project = $project->where('expenses.category_id', $category_filter);

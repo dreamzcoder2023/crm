@@ -40,7 +40,8 @@ class MainCategoryController extends Controller
      */
     public function create()
     {
-        return view('main_category.create');
+        $view = view('main_category.create')->render();
+        return response()->json($view);
     }
 
     /**
@@ -83,7 +84,7 @@ class MainCategoryController extends Controller
     public function edit($id)
     {
         $category = MainCategory::where('id',$id)->first();
-        return view('main_category.edit',['category' => $category]);
+        return response()->json($category);
     }
 
     /**
@@ -128,5 +129,10 @@ class MainCategoryController extends Controller
       $category->delete();
       return redirect()->route('maincategory.index')
       ->with('success','Main category deleted successfully');
+    }
+    public function update_status(Request $request){
+      $main = MainCategory::where('id',$request->id)->update(['status'=> $request->status]);
+      return response()->json(['success' => true]);
+
     }
 }
