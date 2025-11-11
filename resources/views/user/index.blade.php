@@ -312,7 +312,7 @@
                                                 @can('user-edit')
                                                     <li><a href="{{ route('user-edit', $user->id) }}">Edit</a></li>
                                                 @endcan
-                                                @role('admin')
+                                                @role('Admin')
                                                 <li><a href="#" class="change-password"
                                                         data-id="{{ $user->id }}">Change Password</a></li>
                                                         @endrole
