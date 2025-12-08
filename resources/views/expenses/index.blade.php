@@ -412,6 +412,11 @@
                                 <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
                                             class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
                             @endcan
+                             @if ($tab == 1)
+                                @canany(['expenses-delete', 'expenses-edit'])
+                                    <th>Action</th>
+                                @endcanany
+                            @endif
                             <th>Paid date</th>
                             <th>Main<br /> Category</th>
                             <th>Category <br /> Name</th>
@@ -434,11 +439,7 @@
                                 <th>Edited By</th>
                             @endrole
 
-                            @if ($tab == 1)
-                                @canany(['expenses-delete', 'expenses-edit'])
-                                    <th>Action</th>
-                                @endcanany
-                            @endif
+                           
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -450,8 +451,24 @@
                                                 value="{{ $expense->id }}">
                                         </td>
                                     @endcan
-                                    <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br />
-                                        {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
+                                      @if ($tab == 1)
+                                        @canany(['expenses-edit', 'expenses-delete'])
+                                            <td>
+                                                @can('expenses-edit')
+                                                    <a class="" href="{{ route('expenses-edit', $expense->id) }}"><i
+                                                            class="bi bi-pencil-square"style="font-size:24px;color:green"></i></a>
+                                                @endcan
+                                                @can('expenses-delete')
+                                                    <a data-toggle="modal" href="javascript:void(0)"
+                                                        data-user="{{ $expense->user_id }}" data-id="{{ $expense->id }}"
+                                                        class="deleteExpense"><i class="bi bi-trash"
+                                                            style="font-size:24px; color:red"></i> </a><br />
+                                                @endcan
+                                            </td>
+                                        @endcanany
+                                    @endif
+                                    <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br /></td>
+                                        {{-- {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }} --}}
                                     <td>{{ $expense->main_category_name ? $expense->main_category_name : '--' }}</td>
 
                                     <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
@@ -499,22 +516,7 @@
                                         <td>{{ $expense->first_name . '' . $expense->last_name }}</td>
                                     @endrole
 
-                                    @if ($tab == 1)
-                                        @canany(['expenses-edit', 'expenses-delete'])
-                                            <td>
-                                                @can('expenses-edit')
-                                                    <a class="" href="{{ route('expenses-edit', $expense->id) }}"><i
-                                                            class="bi bi-pencil-square"style="font-size:24px;color:green"></i></a>
-                                                @endcan
-                                                @can('expenses-delete')
-                                                    <a data-toggle="modal" href="javascript:void(0)"
-                                                        data-user="{{ $expense->user_id }}" data-id="{{ $expense->id }}"
-                                                        class="deleteExpense"><i class="bi bi-trash"
-                                                            style="font-size:24px; color:red"></i> </a><br />
-                                                @endcan
-                                            </td>
-                                        @endcanany
-                                    @endif
+                                  
                                 </tr>
                             @endforeach
                         @else

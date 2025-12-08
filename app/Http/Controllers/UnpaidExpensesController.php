@@ -110,7 +110,7 @@ class UnpaidExpensesController extends Controller
 
     // Get paginated result
     $expenses = $expenses->paginate($paginate)->withQueryString();
-    $maincategory = MainCategory::where('status',1)->latest()->get();
+    $maincategory = MainCategory::where('status',1)->where('expenses_id',1)->latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();

@@ -81,7 +81,7 @@ class TransferController extends Controller
   public function create(Request $request)
   {
     $id = Auth::user()->id;
-    $member = User::where(['active_status' => 1, 'delete_status' => 0])->where('id', '!=', $id)->select('*')->get();
+    $member = User::where(['active_status' => 1, 'delete_status' => 0,'status' => 1])->whereNot('email','superadmin@gmail.com')->where('id', '!=', $id)->select('*')->get();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     return view('transfer.create', ['member' => $member, 'payment' => $payment]);
     //return response()->json($view);

@@ -128,7 +128,7 @@ class VendorExpensesController extends Controller
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = Vendor::get();
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',3)->latest()->get();
     $sum = $expenses->sum('amount');
     $paid_amt = $expenses->sum('paid_amt');
     $unpaid_amt = $expenses->sum('unpaid_amt');
@@ -143,7 +143,7 @@ class VendorExpensesController extends Controller
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
     $vendors = Vendor::get();
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',3)->latest()->get();
     return view('vendor-expenses.create', ['category' => $category, 'project' => $project, 'payment' => $payment, 'vendors' => $vendors,'main_category' =>$main_category]);
   }
   public function store(Request $request)
@@ -198,7 +198,7 @@ class VendorExpensesController extends Controller
     $current_date = $datetime[0];
     $current_time = $datetime[1];
     $vendor = Vendor::latest()->get();
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',3)->latest()->get();
     return view('vendor-expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time, 'vendors' => $vendor,'main_category' => $main_category]);
   }
   public function update(Request $request)
@@ -380,7 +380,7 @@ class VendorExpensesController extends Controller
     $paid_amt = $expenses->sum('paid_amt');
     $unpaid_amt = $expenses->sum('unpaid_amt');
     $advanced_amt = $expenses->sum('extra_amt');
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',3)->latest()->get();
     return view('vendor-expenses.vendordeletedrecord', ['expenses' => $expenses, 'category' => $category,  'project' => $project, 'user' => $user,  'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt,'main_category' => $main_category]);
   }
   public function unpaid_expenses(Request $request)
@@ -463,7 +463,7 @@ class VendorExpensesController extends Controller
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = Vendor::get();
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',3)->latest()->get();
     $sum = $expenses->sum('amount');
     $paid_amt = $expenses->sum('paid_amt');
     $unpaid_amt = $expenses->sum('unpaid_amt');

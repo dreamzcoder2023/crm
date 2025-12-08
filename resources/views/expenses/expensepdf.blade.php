@@ -44,7 +44,7 @@
         @foreach($expenses as $expense)
        <tr>
         <td>{{ $loop->index+1}}</td>
-        <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A')}}</td>
+        <td>{{\Carbon\Carbon::parse($expense->current_date)->format('d-m-Y ')}}</td>
         <td style="width:30px">{{ $expense->main_category_name ? $expense->main_category_name : '--' }}</td>
         <td style="width:30px">{{$expense->category_name ? $expense->category_name : '--'}}</td>
         <td style="width:30px">{{$expense->project_name ? $expense->project_name : '--'}}</td>

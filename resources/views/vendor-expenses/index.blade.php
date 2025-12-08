@@ -334,6 +334,9 @@
                             <th><a data-toggle="modal" href="javascript:void(0)" class="deleteAllExpense disabled"><i
                                         class="bi bi-trash" style="font-size:24px; color:red"></i> </a></th>
                         @endcan
+                          @canany(['vendor expenses-delete', 'vendor expenses-edit'])
+                            <th>Action</th>
+                        @endcanany
                         <th>Paid date</th>
                         <th>Main <br/>Category</th>
                         <th>Category <br />Name</th>
@@ -351,9 +354,7 @@
 
                         <th>Edited By</th>
                         <th>Advance <br />Edited By</th>
-                        @canany(['vendor expenses-delete', 'vendor expenses-edit'])
-                            <th>Action</th>
-                        @endcanany
+                      
 
                     </tr>
                 </thead>
@@ -365,8 +366,22 @@
                                 <td><input type="checkbox" class="expense_id" name="expense_id" id="expense_id"
                                         value="{{ $expense->id }}"></td>
                             @endcan
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br />
-                                {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
+                               @canany(['vendor expenses-delete', 'vendor expenses-edit'])
+                                <td>
+                                    @can('vendor expenses-edit')
+                                        <a class="" href="{{ route('vendor-expenses-edit', $expense->id) }}"><i
+                                                class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
+                                    @endcan
+                                    @can('vendor expenses-delete')
+                                        <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
+                                            data-id="{{ $expense->id }}" class="deleteExpense"><i class="bi bi-trash"
+                                                style="font-size:24px; color:red"></i> </a><br />
+                                    @endcan
+
+                                </td>
+                            @endcanany
+                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }}<br /></td>
+                                {{-- {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td> --}}
                             <td>{{ $expense->main_category_name ? $expense->main_category_name : '--' }}</td>
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
@@ -395,20 +410,7 @@
                             <td>{{ $expense->first }} {{ $expense->last }}</td>
                             <td>{{ $expense->first_name }} {{ $expense->last_name }}</td>
                             <td>{{ $expense->labour_first }} {{ $expense->labour_last }}</td>
-                            @canany(['vendor expenses-delete', 'vendor expenses-edit'])
-                                <td>
-                                    @can('vendor expenses-edit')
-                                        <a class="" href="{{ route('vendor-expenses-edit', $expense->id) }}"><i
-                                                class="bi bi-pencil-square" style="font-size:24px;color:green"></i></a>
-                                    @endcan
-                                    @can('vendor expenses-delete')
-                                        <a data-toggle="modal" href="javascript:void(0)" data-user="{{ $expense->user_id }}"
-                                            data-id="{{ $expense->id }}" class="deleteExpense"><i class="bi bi-trash"
-                                                style="font-size:24px; color:red"></i> </a><br />
-                                    @endcan
-
-                                </td>
-                            @endcanany
+                         
 
                         </tr>
                     @endforeach

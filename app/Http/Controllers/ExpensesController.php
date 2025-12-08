@@ -129,7 +129,7 @@ class ExpensesController extends Controller
     $expenses = $expenses->paginate($paginate)->withQueryString();
 
     // dd($expenses);
-    $maincategory = MainCategory::where('status',1)->latest()->get();
+    $maincategory = MainCategory::where('status',1)->where('expenses_id',1)->latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();
@@ -146,7 +146,7 @@ class ExpensesController extends Controller
 
   public function create(Request $request)
   {
-    $maincategory = MainCategory::where('status',1)->latest()->get();
+    $maincategory = MainCategory::where('status',1)->where('expenses_id',1)->latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
@@ -192,7 +192,7 @@ class ExpensesController extends Controller
   public function edit(Request $request)
   {
     $expense = Expenses::join('users', 'users.id', '=', 'expenses.user_id')->where('expenses.id', '=', $request->id)->select('expenses.*', 'users.wallet')->first();
-    $maincategory = MainCategory::where('status')->latest()->get();
+    $maincategory = MainCategory::where('status',1)->where('expenses_id',1)->latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
@@ -475,7 +475,7 @@ class ExpensesController extends Controller
     $paid_amt = $expenses->sum('paid_amt');
     $unpaid_amt = $expenses->sum('unpaid_amt');
     $advanced_amt = $expenses->sum('extra_amt');
-    $maincategory = MainCategory::where('status',1)->latest()->get();
+    $maincategory = MainCategory::where('status',1)->where('expenses_id',1)->latest()->get();
     return view('expenses.recorddelete', ['expenses' => $expenses, 'category' => $category, 'project' => $project, 'user' => $user, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt,'maincategory' => $maincategory]);
   }
   public function expense_export(Request $request)
@@ -849,7 +849,7 @@ class ExpensesController extends Controller
     $expenses = $expenses->paginate($paginate)->withQueryString();
 
     // dd($expenses);
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',1)->latest()->get();
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
     $user = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where(['users.active_status' => 1, 'users.delete_status' => 0])->select('users.*', 'roles.name')->get();

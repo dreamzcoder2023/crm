@@ -86,7 +86,7 @@ class LabourExpensesController extends Controller
     $payment = Payment::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0, "project_status" => 0])->get();
     $labours = Labour::get();
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',2)->latest()->get();
     return view('labour-expenses.create', ['category' => $category, 'project' => $project, 'payment' => $payment, 'labours' => $labours,'main_category' => $main_category]);
   }
   /**
@@ -315,7 +315,7 @@ class LabourExpensesController extends Controller
 
     $category = Category::where(['active_status' => 1, 'delete_status' => 0])->get();
     $project = ProjectDetails::where(['active_status' => 1, 'delete_status' => 0])->get();
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',2)->latest()->get();
     $user = Labour::get();
 
     $sum = $expenses->sum('amount');
@@ -419,7 +419,7 @@ class LabourExpensesController extends Controller
     $current_date = $datetime[0];
     $current_time = $datetime[1];
     $labour = Labour::latest()->get();
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',2)->latest()->get();
     return view('labour-expenses.edit', ['expense' => $expense, 'category' => $category, 'project' => $project, 'payment' => $payment, 'current_date' => $current_date, 'current_time' => $current_time, 'labours' => $labour,'main_category' => $main_category]);
   }
   public function update(Request $request)
@@ -603,7 +603,7 @@ class LabourExpensesController extends Controller
     $paid_amt = $expenses->sum('paid_amt');
     $unpaid_amt = $expenses->sum('unpaid_amt');
     $advanced_amt = $expenses->sum('extra_amt');
-    $main_category = MainCategory::where('status',1)->latest()->get();
+    $main_category = MainCategory::where('status',1)->where('expenses_id',2)->latest()->get();
     return view('labour-expenses.labourdeletedrecord', ['expenses' => $expenses, 'category' => $category,'project' => $project, 'user' => $user, 'sum' => $sum, 'paid_amt' => $paid_amt, 'unpaid_amt' => $unpaid_amt, 'amount' => $request->amount, 'advanced_amt' => $advanced_amt,'main_category' => $main_category]);
   }
   public function labour_expense_export(Request $request)

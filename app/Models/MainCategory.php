@@ -10,7 +10,7 @@ class MainCategory extends Model
     use SoftDeletes; 
 
     protected $table = 'main_category';
-    protected $fillable = ['id','name','status'];
+    protected $fillable = ['id','name','status','expenses_id'];
 
     public function category(){
       return $this->hasMany(Category::class);

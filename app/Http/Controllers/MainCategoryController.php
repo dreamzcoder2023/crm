@@ -96,7 +96,7 @@ class MainCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-       // dd($request->all());
+       //dd($request->all());
        $validator = Validator::make($request->all(), [
         'name' => [
             
@@ -105,13 +105,16 @@ class MainCategoryController extends Controller
     ]);
 
     if ($validator->fails()) {
+     //   dd('if');
         return redirect()->back()
                          ->with('error_sweet','This  name already exists.')
                          ->withInput();
     }else{
+       // dd('else');
        $category = MainCategory::where('id',$id)->first();
        $category->update([
-        'name' => $request->input('name')
+        'name' => $request->input('name'),
+        'expenses_id' => $request->input('expenses_id')
     ]);
        return redirect()->route('maincategory.index')->with('success','Main category updated successfully');
     }

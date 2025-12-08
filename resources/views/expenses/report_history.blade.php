@@ -422,8 +422,8 @@
                                                     value="{{ $expense->id }}">
                                             </td>
                                         @endcan
-                                        <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br />
-                                            {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y') }} <br /></td>
+                                            {{-- {{ \Carbon\Carbon::parse($expense->current_date)->format('h:i A') }}</td> --}}
                                         <td>{{ $expense->main_category_name ?? '--' }}</td>
 
                                         <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>

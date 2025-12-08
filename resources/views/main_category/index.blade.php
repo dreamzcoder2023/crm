@@ -169,6 +169,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Expenses</th>
                         <th>Name</th>
                         <th>Status</th>
                         @canany(['maincategory-edit', 'maincategory-delete'])
@@ -181,10 +182,22 @@
                         @foreach ($categorys as $category)
                             <tr>
                                 <td>{{ $loop->index + 1 }}</td>
+                                <td>
+                                    @if ($category->expenses_id == 1)
+                                        Expenses
+                                    @elseif($category->expenses_id == 2)
+                                        Labour Expenses
+                                    @elseif($category->expenses_id == 3)
+                                        Vendor Expenses
+                                    @else
+                                        --
+                                    @endif
+                                </td>
                                 <td>{{ $category->name }}</td>
                                 <td>
                                     <label class="toggle">
-                                        <input type="checkbox" {{ $category->status == 1 ? "checked" : '' }} class="toggle-status" data-id="{{ $category->id }}">
+                                        <input type="checkbox" {{ $category->status == 1 ? 'checked' : '' }}
+                                            class="toggle-status" data-id="{{ $category->id }}">
                                         <span class="slider"></span>
                                     </label>
                                 </td>
@@ -270,6 +283,17 @@
                         id="createCategory">
                         @csrf
                         <div class="row mb-3 ">
+                            <label class="col-sm-3 col-form-label text-end" for="basic-default-name">Expenses</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" id="expenses_id" name="expenses_id">
+                                    <option value=''>Select</option>
+                                    <option value="1">Expenses</option>
+                                    <option value='2'>Labour Expenses</option>
+                                    <option value='3'>Vendor Expenses</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3 ">
                             <label class="col-sm-3 col-form-label text-end" for="basic-default-name">Name</label>
                             <div class="col-sm-7">
                                 <input type="text" name="name" autofocus class="form-control"
@@ -307,6 +331,14 @@
                     <form name="editCategory" action="" method="post" id="editCategory">
                         @csrf
                         @method('PUT')
+                        <div class="row mb-3 ">
+                            <label class="col-sm-3 col-form-label text-end" for="basic-default-name">Expenses</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" id="editexpenses_id" name="expenses_id">
+
+                                </select>
+                            </div>
+                        </div>
                         <div class="row mb-3 ">
                             <label class="col-sm-3 col-form-label text-end" for="basic-default-name">Name</label>
                             <div class="col-sm-7">
@@ -383,6 +415,38 @@
                 dataType: 'json',
                 success: function(response) {
                     console.log('response edit', response);
+                    var expenses = [{
+                            id: 1,
+                            name: 'Expenses'
+                        },
+                        {
+                            id: 2,
+                            name: 'Labour Expenses'
+                        },
+                        {
+                            id: 3,
+                            name: 'Vendor Expenses'
+                        }
+                    ];
+
+                    var select = $('#editexpenses_id');
+                    select.empty();
+                    select.append('<option value="">Select Expenses</option>');
+
+                    $.each(expenses, function(index, item) {
+
+                        var selected = (parseInt(item.id) === parseInt(response.expenses_id ??
+                                0)) ?
+                            'selected' :
+                            '';
+
+                        select.append(
+                            '<option value="' + item.id + '" ' + selected + '>' + item
+                            .name + '</option>'
+                        );
+                    });
+
+
                     var url11 = "{{ route('maincategory.update', ':id') }}";
                     var url12 = url11.replace(':id', response.id);
                     $('#editCategory').attr('action', url12);
@@ -395,11 +459,17 @@
         });
         $('#createCategory').validate({
             rules: {
+                expenses_id: {
+                    required: true,
+                },
                 name: {
                     required: true
                 }
             },
             messages: {
+                expenses_id: {
+                    required: "Choose the Expenses"
+                },
                 name: {
                     required: "Enter the main category name"
                 }
@@ -423,21 +493,24 @@
                 form.submit();
             }
         });
-        $(document).on('change','.toggle-status',function(){
+        $(document).on('change', '.toggle-status', function() {
             let id = $(this).attr('data-id');
-            let status =$(this).is(':checked') ? 1 : 0; 
+            let status = $(this).is(':checked') ? 1 : 0;
             //alert(status);
             $.ajax({
-                type:'get',
+                type: 'get',
                 url: "{{ route('admin.main.status') }}",
-                data:{id:id, status:status},
-                dataType:'json',
-                success: function(response){
+                data: {
+                    id: id,
+                    status: status
+                },
+                dataType: 'json',
+                success: function(response) {
                     console.log(response);
                     toastr.success('Status Updated Successfully', {
-            timeOut: 1000,
-            fadeOut: 1000,
-        });
+                        timeOut: 1000,
+                        fadeOut: 1000,
+                    });
                 }
             })
         })

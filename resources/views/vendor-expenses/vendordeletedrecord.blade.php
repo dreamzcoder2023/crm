@@ -319,7 +319,7 @@
                     @foreach ($expenses as $expense)
                         <tr>
                             <td>{{ $loop->index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($expense->current_date)->format('d-m-Y ') }}</td>
                             <td>{{ $expense->main_category_name ?? '--' }}</td>
                             <td>{{ $expense->category_name ? $expense->category_name : '--' }}</td>
                             <td>{{ $expense->project_name ? $expense->project_name : '--' }}</td>
@@ -358,7 +358,7 @@
                             <td>{{ $expense->first }} {{ $expense->last }}</td>
                             <td>{{ $expense->first_name }} {{ $expense->last_name }}</td>
                             <td>{{ $expense->labour_first }} {{ $expense->labour_last }}</td>
-                            <td>{{ \Carbon\Carbon::parse($expense->deleted_at)->format('d-m-Y h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($expense->deleted_at)->format('d-m-Y') }}</td>
                         </tr>
                     @endforeach
 

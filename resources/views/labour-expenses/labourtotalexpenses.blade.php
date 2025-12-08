@@ -50,8 +50,8 @@
 
                 @foreach ($labours as $labour)
                     <tr>
-                        <td>{{ \Carbon\Carbon::parse($labour->current_date)->format('d-m-Y') }} <br />
-                          {{ \Carbon\Carbon::parse($labour->current_date)->format('h:i A') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($labour->current_date)->format('d-m-Y') }} <br /></td>
+                          {{-- {{ \Carbon\Carbon::parse($labour->current_date)->format('h:i A') }}</td> --}}
                         <td>{{ $labour->project_name }}</td>
                         <td>{{ $labour->amount }} </td>
                         <td>{{ $labour->paid_amt }}</td>
