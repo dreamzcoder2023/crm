@@ -97,6 +97,7 @@ class LabourExpensesController extends Controller
     // dd($request->all());
     $user_id = Auth::user()->id;
     $input = $request->all();
+     $category_name = Category::where('id',$request->category_id)->first()->name;
     $input['user_id'] = $user_id;
     $extra_amt = 0;
     $unpaid_amt = 0;
@@ -111,7 +112,7 @@ class LabourExpensesController extends Controller
     $input['current_date'] = $request->current_date . ' ' . $request->time;
     $input['paid_amt'] = $request->paid_amt ? $request->paid_amt : 0;
     if ($image = $request->file('image')) {
-      $destinationPath = public_Path('images');
+      $destinationPath = public_Path('images/'.$category_name);
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
@@ -427,6 +428,7 @@ class LabourExpensesController extends Controller
     $user_id = Auth::user()->id;
     $input = $request->all();
     //dd($input);
+    $category_name = Category::where('id',$request->category_id)->first()->name;
     $input['editedBy'] = $user_id;
     $input['current_date'] = $request->current_date . ' ' . $request->time;
 
@@ -434,7 +436,7 @@ class LabourExpensesController extends Controller
 
     if ($image = $request->file('image')) {
 
-      $destinationPath = public_Path('images');
+      $destinationPath = public_Path('images/'.$category_name);
       'public/images/';
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);

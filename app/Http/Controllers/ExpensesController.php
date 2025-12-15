@@ -158,7 +158,8 @@ class ExpensesController extends Controller
   public function store(Request $request)
   {
   //  dd($request->all());
-
+  $category_name = Category::where('id',$request->category_id)->first()->name;
+ // dd($category_name);
     $user_id = Auth::user()->id;
     $input = $request->all();
     $input['user_id'] = $user_id;
@@ -175,7 +176,7 @@ class ExpensesController extends Controller
     $input['current_date'] = $request->current_date . ' ' . $request->time;
     $input['paid_amt'] = $request->paid_amt ? $request->paid_amt : 0;
     if ($image = $request->file('image')) {
-      $destinationPath = public_Path('images');
+      $destinationPath = public_Path('images/'.$category_name);
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
@@ -208,13 +209,13 @@ class ExpensesController extends Controller
     //dd($input);
     $input['editedBy'] = $user_id;
     $input['current_date'] = $request->current_date . ' ' . $request->time;
-
+    $category_name = Category::where('id',$request->category_id)->first()->name;
 
 
     if ($image = $request->file('image')) {
 
-      $destinationPath = public_Path('images');
-      'public/images/';
+      $destinationPath = public_Path('images/'.$category_name);
+    //  'public/images/';
       $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
       $image->move($destinationPath, $profileImage);
 
