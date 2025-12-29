@@ -3,6 +3,22 @@
 @section('title', 'Create | HOUSE FIX - A DOCTOR FOR YOUR HOUSE')
 
 @section('content')
+<style>
+    select,::picker(select){
+        appearance: base-select !important;
+        width:200px;
+        overflow: hidden;
+    }
+    ::picker(select){
+        border: 0;
+        margin:.4rem 0;
+        box-shadow : 0 0 5px rgba(0,0,0,.15);
+    }
+    option{
+        font-size: 14px;
+        padding: 12px;
+    }
+</style>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />

@@ -100,11 +100,13 @@ class DeleteExpensesExport implements FromCollection, WithHeadings, WithMapping
       })
       ->when($this->project_filter, function ($query, $project_id) {
         $query->where('expenses.project_id', $project_id);
-      })
-      ->when($this->user_filter, function ($query, $user_id) {
+      });
+      if($this->role == 1){
+      $expenses = $expenses->when($this->user_filter, function ($query, $user_id) {
         $query->where('expenses.user_id', $user_id);
-      })
-      ->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
+      });
+    }
+      $expenses = $expenses->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
     if ($this->role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $this->auth);
       $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','main_category.name as main_category_name')->when($this->search, function ($query, $search) {

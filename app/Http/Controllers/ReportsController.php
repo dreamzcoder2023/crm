@@ -333,4 +333,56 @@ $clients = ProjectDetails::leftjoin('wallet', 'wallet.project_id', '=', 'project
 
     return $pdf->download('paymentexpense.pdf');
   }
+  public function over_all_in_ex(Request $request){
+    
+    $tab = $request->transaction_type == 1 ? 1: 2;
+    $paginate = $request->paginate ?? 10;
+    $from = null;
+    $to = null;
+    if (!empty($request->date_range)) {
+      [$from, $to] = array_map('trim', explode('-', $request->date_range));
+
+      $from = Carbon::createFromFormat('m/d/Y', $from)->format('Y-m-d');
+      $to = Carbon::createFromFormat('m/d/Y', $to)->format('Y-m-d');
+    }
+
+    $clients = ProjectDetails::leftjoin('wallet', 'wallet.project_id', '=', 'project_details.id')
+      ->leftjoin('stage', 'stage.id', '=', 'wallet.stage_id')
+      ->leftjoin('clientdetails', 'wallet.client_id', '=', 'clientdetails.id')
+      ->leftjoin('payment', 'payment.id', '=', 'wallet.payment_mode')
+      ->select(
+        'project_details.*',
+        'stage.name as stage_name',
+        'wallet.amount',
+        'payment.name as payment',
+        'wallet.current_date as currentdate',
+        'clientdetails.first_name',
+        'clientdetails.last_name'
+      )
+      ->when($from, function ($query, $from) {
+        $query->whereDate('wallet.current_date', '>=', $from);
+      })
+      ->when($to, function ($query, $to) {
+        $query->whereDate('wallet.current_date', '<=', $to);
+      })
+      ->when(request('category_id'), function ($query, $category_id) {
+        $query->where('wallet.client_id', $category_id);
+      })
+      ->when(request('project_id'), function ($query, $project_id) {
+        $query->where('wallet.project_id', $project_id);
+      })
+      ->when(request('search'), function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+          $q->where('clientdetails.first_name', 'like', "%$search%")
+            ->orWhere('clientdetails.last_name', 'like', "%$search%")
+            ->orWhere('project_details.name', 'like', "%$search%")
+            ->orWhere('wallet.amount', 'like', "%$search%")
+            ->orWhere('project_details.total_amt', 'like', "%$search%")
+            ->orWhere('payment.name', 'like', "%$search")
+            ->orWhere('stage.name', 'like', "%$search");
+        });
+      })
+      ->paginate($paginate)->withQueryString();
+    return view('reports.overall-in-ex',['tab' => $tab,'clients' => $clients]);
+  }
 }

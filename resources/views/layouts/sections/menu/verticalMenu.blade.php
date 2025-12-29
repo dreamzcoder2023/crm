@@ -419,10 +419,31 @@
                             </a>
                         </li>
                     @endcan
+                    @role('Admin')
+                      <li class="menu-item {{ \Request::route()->getName() == 'over-all-in-ex' ? 'active open' : '' }}">
+                            <a href="{{ route('over-all-in-ex') }}" class="menu-link">
+                                {{-- <img
+                                    src="{{ asset('assets/img/icons/payment.png') }}" alt="slack" class="me-3"
+                                    height="20"> --}}
+                                <div class="dark">Over All Income & Expenses</div>
+                            </a>
+                        </li>
+                    @endrole
                 </ul>
             </li>
 
         @endcanany
+        @role('Admin')
+         <li class="menu-item {{ \Request::route()->getName() == 'expenses-image' ? 'active open' : '' }}">
+                            <a href="{{ route('expenses-image') }}" class="menu-link">
+                                
+                                <img
+                                    src="{{ asset('assets/img/icons/receipt.png') }}" alt="slack" class="me-3"
+                                    height="20">
+                                <div class="dark">Bill Images</div>
+                            </a>
+                        </li>
+        @endrole
         <!--- expenses -->
     </ul>
 

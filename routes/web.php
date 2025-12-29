@@ -16,6 +16,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\LabourController;
 use App\Http\Controllers\LabourExpensesController;
 use App\Http\Controllers\LabourRoleController;
@@ -186,6 +187,7 @@ Route::get('/paymentincome-export',[ReportsController::class,'payment_income_exp
 Route::get('/paymentincome-pdf',[ReportsController::class,'payment_income_pdf'])->name('paymentincome-pdf');
 Route::get('/paymentexpense-export',[ReportsController::class,'payment_expense_export'])->name('paymentexpense-export');
 Route::get('/paymentexpense-pdf',[ReportsController::class,'payment_expense_pdf'])->name('paymentexpense-pdf');
+Route::get('/over-all-in-ex',[ReportsController::class,'over_all_in_ex'])->name('over-all-in-ex');
 
 // expenses ended
 // reports ended
@@ -270,5 +272,8 @@ Route::resource('maincategory',MainCategoryController::class);
 Route::post('changepassword/{id}',[UserController::class,'change_password'])->name('admin.changepassword');
 Route::get('status-update',[UserController::class,'changestatus'])->name('admin.changestatus');
 Route::get('main-status-update',[MainCategoryController::class,'update_status'])->name('admin.main.status');
+Route::get('expenses-images',[ImageController::class,'index'])->name('expenses-image');
+Route::get('bill-main-category',[ImageController::class,'fetchmaincategory'])->name('bill-main-category');
+Route::get('bill-category',[ImageController::class,'fetchcategory'])->name('bill-category');
 //vendor ended
 });

@@ -106,10 +106,12 @@ class ReportExpensesHistory implements FromCollection, WithHeadings, WithMapping
       })
       ->when($this->project_filter, function ($query, $project_id) {
         $query->where('expenses.project_id', $project_id);
-      })
-      ->when($this->user_filter, function ($query, $user_id) {
+      });
+      if($this->role == 1){
+      $expenses = $expenses->when($this->user_filter, function ($query, $user_id) {
         $query->where('expenses.user_id', $user_id);
       });
+    }
   
     if ($this->role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $this->auth);

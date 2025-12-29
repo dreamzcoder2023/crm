@@ -102,10 +102,13 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
       })
       ->when($this->project_filter, function ($query, $project_id) {
         $query->where('expenses.project_id', $project_id);
-      })
-      ->when($this->user_filter, function ($query, $user_id) {
+      });
+      if($this->role == 1){
+      $expenses = $expenses->when($this->user_filter, function ($query, $user_id) {
         $query->where('expenses.user_id', $user_id);
       });
+    }
+    //  dd($expenses);
        if($this->tab == 1){
         $expenses = $expenses->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
       }
@@ -116,7 +119,9 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
         $expenses = $expenses->whereNotNull('expenses.vendor_id');
       }
     if ($this->role != 1) {
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $this->auth);
+      // dd($this->auth);
+       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('expenses.user_id', $this->auth);
+      // dd($expenses);
       $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 
       'users.first_name', 'users.last_name','main_category.name as main_category_name')->when($this->search, function ($query, $search) {
         $query->where(function ($q) use ($search) {
@@ -154,7 +159,7 @@ class ExportExpenses implements FromCollection, WithHeadings, WithMapping
       });
     }
     $expenses = $expenses->orderBy($this->from || $this->to_date ? 'expenses.current_date' : 'expenses.id', 'desc')->get();
-
+// dd($expenses);
     return collect($expenses);
   }
   // here you select the row that you want in the file

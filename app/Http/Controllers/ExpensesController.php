@@ -502,6 +502,7 @@ class ExpensesController extends Controller
 
     $auth = Auth::user()->id;
     $role = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->join('users', 'users.id', '=', 'model_has_roles.model_id')->where('users.id', $auth)->pluck('roles.id')->first();
+  //  dd($role);
 
     return Excel::download((new ExportExpenses($category_filter, $project_filter, $user_filter, $from, $to, $auth, $role, $search, $tab,$main_id)), 'expenses.xlsx');
   }
@@ -551,10 +552,12 @@ class ExpensesController extends Controller
       })
       ->when(request('project_id'), function ($query, $project_id) {
         $query->where('expenses.project_id', $project_id);
-      })
-      ->when(request('user_id'), function ($query, $user_id) {
+      });
+      if($role == 1){
+      $expenses = $expenses->when(request('user_id'), function ($query, $user_id) {
         $query->where('expenses.user_id', $user_id);
       });
+    }
     if ($tab == 1) {
       $expenses = $expenses->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
     }
@@ -565,7 +568,7 @@ class ExpensesController extends Controller
       $expenses = $expenses->whereNotNull('expenses.vendor_id');
     }
     if ($role != 1) {
-      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
+      $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('expenses.user_id', $auth);
       $expenses = $expenses->select('expenses.*', 'category.name as category_name', 'project_details.name as project_name', 'payment.name as payment_name', 'users.first_name', 'users.last_name','main_category.name as main_category_name')
         ->when(request('search'), function ($query, $search) {
           $query->where(function ($q) use ($search) {
@@ -653,11 +656,13 @@ class ExpensesController extends Controller
       })
       ->when(request('project_id'), function ($query, $project_id) {
         $query->where('expenses.project_id', $project_id);
-      })
-      ->when(request('user_id'), function ($query, $user_id) {
+      });
+      if($role == 1){
+      $expenses = $expenses->when(request('user_id'), function ($query, $user_id) {
         $query->where('expenses.user_id', $user_id);
-      })
-      ->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
+      });
+    }
+      $expenses = $expenses->whereNull('expenses.labour_id')->whereNull('expenses.vendor_id');
 
     if ($role != 'Admin') {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
@@ -938,10 +943,12 @@ class ExpensesController extends Controller
       })
       ->when(request('project_id'), function ($query, $project_id) {
         $query->where('expenses.project_id', $project_id);
-      })
-      ->when(request('user_id'), function ($query, $user_id) {
+      });
+      if($role == 1){
+      $expenses = $expenses->when(request('user_id'), function ($query, $user_id) {
         $query->where('expenses.user_id', $user_id);
       });
+    }
 
     if ($role != 1) {
       $expenses = $expenses->leftjoin('users', 'users.id', '=', 'expenses.user_id')->where('users.id', $auth);
